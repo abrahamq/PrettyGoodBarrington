@@ -4,9 +4,11 @@ import './style.css';
 import { GAME_HEIGHT, GAME_WIDTH } from './layout.ts';
 import { PALETTE } from './palette.ts';
 import { Boot } from './scenes/Boot.ts';
+import { MinigamePlaceholder } from './scenes/minigames/Placeholder.ts';
 import { Options } from './scenes/Options.ts';
 import { Overworld } from './scenes/Overworld.ts';
 import { Title } from './scenes/Title.ts';
+import { UI } from './scenes/UI.ts';
 
 const config: Phaser.Types.Core.GameConfig = {
     type: AUTO,
@@ -24,8 +26,17 @@ const config: Phaser.Types.Core.GameConfig = {
         Boot,
         Title,
         Options,
-        Overworld
+        Overworld,
+        UI,
+        new MinigamePlaceholder('ScoopStack', 'SCOOP STACK', 3),
+        new MinigamePlaceholder('OrderUp', 'ORDER UP!', 4),
+        new MinigamePlaceholder('CurtainCall', 'CURTAIN CALL', 5)
     ]
 };
 
-new Game(config);
+const game = new Game(config);
+
+// Dev builds only: lets you inspect the running game from the browser console as `game`.
+if (import.meta.env.DEV) {
+    (window as unknown as { game: Game }).game = game;
+}

@@ -1,4 +1,4 @@
-// Options screen: turn sound on or off, and erase the save (after a confirm step).
+// Options screen: turn sound and the on-screen d-pad on or off, and erase the save (after a confirm step).
 // Escape, Backspace, or BACK returns to the Title menu.
 import { Scene } from 'phaser';
 import { TEXTURES } from '../art/textures.ts';
@@ -33,7 +33,8 @@ export class Options extends Scene {
 
         this.menu?.destroy();
         this.menu = new Menu(this, CENTER_X, MENU_TOP, [
-            { label: soundLabel(settings.sound), onSelect: () => this.toggleSound() },
+            { label: switchLabel('SOUND', settings.sound), onSelect: () => this.toggleSound() },
+            { label: switchLabel('D-PAD', settings.dpad), onSelect: () => this.toggleDpad() },
             { label: 'RESET SAVE', enabled: hasSave(), onSelect: () => this.confirmReset() },
             { label: 'BACK', onSelect: () => this.back() }
         ], { heading, onCancel: () => this.back() });
@@ -45,7 +46,16 @@ export class Options extends Scene {
         saveSettings(settings);
 
         this.sound.mute = !settings.sound;
-        this.menu?.setLabel(0, soundLabel(settings.sound));
+        this.menu?.setLabel(0, switchLabel('SOUND', settings.sound));
+    }
+
+    // The on-screen d-pad for touch screens; it appears in the Overworld when this is on.
+    private toggleDpad(): void {
+        const settings = loadSettings();
+        settings.dpad = !settings.dpad;
+        saveSettings(settings);
+
+        this.menu?.setLabel(1, switchLabel('D-PAD', settings.dpad));
     }
 
     private confirmReset(): void {
@@ -69,7 +79,7 @@ export class Options extends Scene {
     }
 }
 
-// Both labels are 9 characters, so the menu keeps the same width when the setting flips.
-function soundLabel(on: boolean): string {
-    return on ? 'SOUND  ON' : 'SOUND OFF';
+// "ON" gets an extra space, so the label keeps the same width when the setting flips.
+function switchLabel(name: string, on: boolean): string {
+    return on ? `${name}  ON` : `${name} OFF`;
 }

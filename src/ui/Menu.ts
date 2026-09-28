@@ -2,7 +2,7 @@
 // Up/Down (or W/S) move the highlight, Enter or Space picks, Escape or Backspace calls onCancel.
 // Tapping an item picks it at once. Disabled items are grey and skipped.
 // Each row is 12 game pixels tall (48 screen pixels at 4x), a comfortable tap target.
-import type { GameObjects, Scene } from 'phaser';
+import type { GameObjects, Scene, Types } from 'phaser';
 import { TEXTURES } from '../art/textures.ts';
 import { colorHex, colorNumber, type ColorName } from '../palette.ts';
 import { PANEL_BORDER, Panel } from './Panel.ts';
@@ -28,6 +28,25 @@ const CURSOR_LEFT = 3;
 const TEXT_LEFT = 12;
 const TEXT_TOP = 2;
 
+export interface MenuSize {
+    width: number;
+    height: number;
+    rowWidth: number;
+    headingHeight: number;
+}
+
+// The size of a menu with these labels, including its panel border (but not its drop shadow).
+export function menuSize(labels: string[], heading: string[] = []): MenuSize {
+    const inset = PANEL_BORDER + PADDING;
+    const widestLabel = Math.max(...labels.map((label) => pixelTextWidth(label)));
+    const widestHeading = Math.max(0, ...heading.map((line) => pixelTextWidth(line)));
+    const rowWidth = Math.max(TEXT_LEFT + widestLabel + CURSOR_LEFT, widestHeading);
+    const headingHeight = heading.length > 0 ? heading.length * HEADING_LINE_HEIGHT + HEADING_GAP : 0;
+    const rowsHeight = labels.length * ROW_HEIGHT + (labels.length - 1) * ROW_GAP;
+
+    return { width: rowWidth + inset * 2, height: headingHeight + rowsHeight + inset * 2, rowWidth, headingHeight };
+}
+
 interface Row {
     item: MenuItem;
     y: number;
@@ -52,13 +71,7 @@ export class Menu {
 
         const heading = options.heading ?? [];
         const inset = PANEL_BORDER + PADDING;
-        const widestLabel = Math.max(...items.map((item) => pixelTextWidth(item.label)));
-        const widestHeading = Math.max(0, ...heading.map((line) => pixelTextWidth(line)));
-        const rowWidth = Math.max(TEXT_LEFT + widestLabel + CURSOR_LEFT, widestHeading);
-        const headingHeight = heading.length > 0 ? heading.length * HEADING_LINE_HEIGHT + HEADING_GAP : 0;
-        const rowsHeight = items.length * ROW_HEIGHT + (items.length - 1) * ROW_GAP;
-        const width = rowWidth + inset * 2;
-        const height = headingHeight + rowsHeight + inset * 2;
+        const { width, height, rowWidth, headingHeight } = menuSize(items.map((item) => item.label), heading);
         const left = Math.round(centerX - width / 2);
 
         this.panel = new Panel(scene, left, top, width, height, { shadow: true });
@@ -76,7 +89,11 @@ export class Menu {
             const label = addPixelText(scene, x + TEXT_LEFT, y + TEXT_TOP, item.label, 'ink');
             const zone = scene.add.zone(x, y, rowWidth, ROW_HEIGHT).setOrigin(0).setInteractive({ useHandCursor: true });
 
-            zone.on('pointerdown', () => this.pick(index));
+            // Stop the tap here, so scenes underneath (the Overworld) do not also react to it.
+            zone.on('pointerdown', (_pointer: unknown, _x: number, _y: number, event: Types.Input.EventData) => {
+                event.stopPropagation();
+                this.pick(index);
+            });
             this.rows.push({ item, y, highlight, label, zone });
         });
 
@@ -123,7 +140,10 @@ export class Menu {
             case 'Enter':
             case 'NumpadEnter':
             case 'Space':
-                this.pick(this.selected);
+                // Ignore held-down repeats, so holding Enter cannot pick an item that just appeared.
+                if (!event.repeat) {
+                    this.pick(this.selected);
+                }
                 break;
             case 'Escape':
             case 'Backspace':

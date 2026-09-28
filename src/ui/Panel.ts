@@ -16,7 +16,7 @@ export class Panel {
     readonly y: number;
     readonly width: number;
     readonly height: number;
-    private readonly parts: GameObjects.GameObject[] = [];
+    private readonly parts: (GameObjects.Rectangle | GameObjects.NineSlice)[] = [];
 
     constructor(scene: Scene, x: number, y: number, width: number, height: number, options: PanelOptions = {}) {
         this.x = x;
@@ -34,6 +34,12 @@ export class Panel {
             PANEL_BORDER, PANEL_BORDER, PANEL_BORDER, PANEL_BORDER
         );
         this.parts.push(frame.setOrigin(0));
+    }
+
+    setVisible(visible: boolean): void {
+        for (const part of this.parts) {
+            part.setVisible(visible);
+        }
     }
 
     destroy(): void {
