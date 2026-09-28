@@ -13,7 +13,7 @@
     "typecheck": "tsc",
     "test": "vitest run",
     "test:watch": "vitest",
-    "build:map": "node scripts/build-map.js"
+    "build:map": "node --experimental-strip-types --disable-warning=ExperimentalWarning scripts/build-map.ts"
   },
   "dependencies": {
     "phaser": "4.2.1"
