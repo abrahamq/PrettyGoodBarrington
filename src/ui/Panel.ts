@@ -36,6 +36,13 @@ export class Panel {
         this.parts.push(frame.setOrigin(0));
     }
 
+    setDepth(depth: number): this {
+        for (const part of this.parts) {
+            part.setDepth(depth);
+        }
+        return this;
+    }
+
     setVisible(visible: boolean): void {
         for (const part of this.parts) {
             part.setVisible(visible);
