@@ -105,6 +105,18 @@ export const SCENERY = {
     mintShine: '#e3f7ee',
     emptyScoop: '#a88f63',
 
+    // GB Eats (Order Up!), from docs/mocks/GBEats.dc.html
+    dinerGrout: '#ddd0b3',
+    steel: '#a8a6b3',
+    steelLight: '#c9c7d3',
+    grillTop: '#3b3a45',
+    grillLine: '#4e4d5a',
+    grillFront: '#57555f',
+    smoke: '#8e8a9a',
+    kitchenFloorLine: '#357866',
+    pattyRare: '#b8645a',
+    pattyRareLight: '#d98b7e',
+
     // People
     skinLight: '#f1c27d',
     skinTan: '#c68642',

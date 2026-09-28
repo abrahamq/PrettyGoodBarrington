@@ -7,7 +7,9 @@ import { drawLayers, graphicsTarget, type Layer } from './paint.ts';
 import {
     CHARACTER_HEIGHT, CHARACTER_WIDTH, NPC_ART, NPC_KEYS, PLAYER_FRAMES_PER_ROW, PLAYER_KEY, PLAYER_ROWS, playerFrame
 } from './people.ts';
+import type { Doneness } from '../logic/orderUp.ts';
 import type { Flavor } from '../logic/scoopStack.ts';
+import { BURGER, EXTRA_ICONS, KITCHEN_BACKGROUND, PATTIES, SMOKE } from './diner.ts';
 import { CONE, EMPTY_SCOOP_ICON, SCOOPS, SHOP_BACKGROUND, scoopIcon } from './scoopShop.ts';
 import { rectPath } from './svgPath.ts';
 import { TITLE_BACKGROUND } from './titleBackground.ts';
@@ -23,8 +25,21 @@ export const TEXTURES = {
     player: PLAYER_KEY,
     socoBackground: 'soco-bg',
     cone: 'cone',
-    emptyScoopIcon: 'icon-scoop-empty'
+    emptyScoopIcon: 'icon-scoop-empty',
+    gbeatsBackground: 'gbeats-bg',
+    smoke: 'smoke',
+    burger: 'burger',
+    cheeseIcon: 'icon-cheese',
+    friesIcon: 'icon-fries'
 } as const;
+
+export const PATTY_TEXTURES: Record<Doneness, string> = {
+    raw: 'patty-raw',
+    rare: 'patty-rare',
+    medium: 'patty-medium',
+    well: 'patty-well',
+    burnt: 'patty-burnt'
+};
 
 export const SCOOP_TEXTURES: Record<Flavor, string> = {
     vanilla: 'scoop-vanilla',
@@ -60,6 +75,15 @@ export function generatePlaceholderTextures(scene: Scene): void {
     for (const flavor of Object.keys(SCOOPS) as Flavor[]) {
         makeTexture(scene, SCOOP_TEXTURES[flavor], 16, 11, (graphics) => paintArt(graphics, SCOOPS[flavor]));
         makeTexture(scene, SCOOP_ICON_TEXTURES[flavor], 16, 12, (graphics) => paintArt(graphics, scoopIcon(flavor)));
+    }
+
+    makeTexture(scene, TEXTURES.gbeatsBackground, 240, 160, (graphics) => paintArt(graphics, KITCHEN_BACKGROUND));
+    makeTexture(scene, TEXTURES.smoke, 10, 11, (graphics) => paintArt(graphics, SMOKE));
+    makeTexture(scene, TEXTURES.burger, 20, 16, (graphics) => paintArt(graphics, BURGER));
+    makeTexture(scene, TEXTURES.cheeseIcon, 7, 6, (graphics) => paintArt(graphics, EXTRA_ICONS.cheese));
+    makeTexture(scene, TEXTURES.friesIcon, 7, 6, (graphics) => paintArt(graphics, EXTRA_ICONS.fries));
+    for (const doneness of Object.keys(PATTIES) as Doneness[]) {
+        makeTexture(scene, PATTY_TEXTURES[doneness], 16, 10, (graphics) => paintArt(graphics, PATTIES[doneness]));
     }
 
     if (makeTexture(scene, TEXTURES.player, CHARACTER_WIDTH * PLAYER_FRAMES_PER_ROW, CHARACTER_HEIGHT * PLAYER_ROWS.length, paintPlayer)) {
