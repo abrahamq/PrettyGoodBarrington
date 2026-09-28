@@ -20,6 +20,11 @@ All sizes are in game pixels. The game draws at 240x160 and scales up with neare
 | `cone` | 16x22 | The waffle cone (rows 0-17) in its holder (rows 17-21). The first scoop sits on row 0. | Scoop Stack |
 | `scoop-vanilla`, `scoop-dark-choc`, `scoop-strawberry`, `scoop-mint-chip` | 16x11 each | One scoop. Rows 9-10 are drips that hang over the scoop below; scoops stack 9px apart. | Scoop Stack |
 | `icon-scoop-vanilla`, `icon-scoop-dark-choc`, `icon-scoop-strawberry`, `icon-scoop-mint-chip`, `icon-scoop-empty` | 16x12 each | HUD icons for stacked scoops, and the outline for scoops still to go. | Scoop Stack |
+| `gbeats-bg` | 240x160 | The GB Eats kitchen: tile wall, steel backsplash, ticket rail, grill with knobs, pass-through board with a plate and fries, green floor. | Order Up! |
+| `patty-raw`, `patty-rare`, `patty-medium`, `patty-well`, `patty-burnt` | 16x10 each | A patty from above, one per doneness. | Order Up! |
+| `smoke` | 10x11 | Smoke puffs over a burnt patty. | Order Up! |
+| `burger` | 20x16 | The finished burger shown on the plate after a good order. | Order Up! |
+| `icon-cheese`, `icon-fries` | 7x6 each | Extras icons on order tickets. | Order Up! |
 | `npc-scooper`, `npc-grillcook`, `npc-usher`, `npc-pizzaiolo`, `npc-projectionist`, `npc-grocer`, `npc-clerk`, `npc-ranger`, `npc-local`, `npc-dog` | 12x16 each | One standing frame, facing down (the local faces up). Feet on the bottom row. | Overworld |
 
 ## Map

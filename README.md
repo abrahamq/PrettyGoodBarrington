@@ -34,6 +34,7 @@ You need [nvm](https://github.com/nvm-sh/nvm). This project uses Node 22.12.0, s
 | Enter a shop | Walk into its door | Tap the shopkeeper in the doorway |
 | Passport | P | Tap `[P] PASSPORT` |
 | Drop a scoop (Scoop Stack) | Space, Enter, Z, or A | Tap anywhere, or tap `[A] DROP` |
+| Grill a patty (Order Up!) | Left/Right to pick a spot, then Space, Enter, Z, or A; or 1-4 | Tap a grill spot: add, flip, serve, or toss |
 | Leave a minigame | Escape, Backspace, X, or B | Tap `[B] QUIT` |
 | Back to the title menu | Escape | (none yet) |
 

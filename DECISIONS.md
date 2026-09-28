@@ -68,3 +68,15 @@ Choices that `docs/PLAN.md` does not cover. Each entry says what we chose and wh
 7. **Input.** A tap anywhere drops the scoop, and so do Space, Enter, Z, and A. Escape, Backspace, X, B, or [B] QUIT leave without a stamp.
 8. **Ending.** A spill drops the missed scoop onto the floor; a topple tips the scoops toward the side the stack leans. A banner shows the result and score for 1.8 seconds, then the game returns to the street. Quitting also shows the scooper's "try again" line.
 9. **New UI parts.** `src/ui/Button.ts` (primary and secondary styles from the mockups) and `src/ui/ProgressBar.ts` (the TIME bar).
+
+## Phase 4: Order Up! (2026-09-28)
+
+1. **Cooking.** Only the side facing down cooks. Doneness comes from the total cooking time: rare at 3 s, medium at 6 s, well at 9 s. One side alone burns at 6 s, so burning always comes from one side. A well-done patty needs its one flip between 3 s and 6 s. A blinking "FLIP!" appears when the bottom side passes 4.5 s.
+2. **Taps.** A tap on a grill spot does one of these: add a patty (empty spot), flip it (first tap), serve it to the oldest ticket (second tap), or toss it (burnt). With no ticket waiting, the patty stays on the grill. There is no drag-to-plate; the plan offered it only as an alternative to the second tap.
+3. **Tips.** The right doneness pays $3 plus 50 cents per extra, times the share of patience left, rounded to a quarter. The wrong doneness pays $0, and the ticket is gone. Extras (cheese, fries) change only the tip. Tips are stored in cents (`save.tips`), so totals stay exact.
+4. **Tickets.** The round starts with 1 ticket; a new one comes every 7 s, up to 3 on the rail. Each has 25 s of patience; when it runs out, the ticket leaves with no tip. Tickets come from a seeded random generator, so tests are repeatable; the game seeds it from the clock.
+5. **Balance.** A near-perfect scripted player earned $39 in 90 s, so the $10 goal is forgiving. The tuning numbers are in `ORDER_UP` in `src/logic/orderUp.ts`.
+6. **Result and tips.** `MinigameResult` has an optional `tips` (in cents), added to the saved total whether the round is won or lost. Quitting gives up the round's tips.
+7. **HUD at 8px.** Changes from `GBEats.dc.html`: the title panel shows the tips and a round time bar (the mockup has no timer, but a 90-second round needs one), and no subtitle; tickets hang at slightly different heights instead of being rotated (rotation blurs pixel art); each ticket shows #, RARE/MED/WELL with a color swatch, extras icons, and a patience bar that goes teal, amber, then red; a gold strip marks the oldest ticket; each patty has a label (RAW, RARE, MED, WELL, or TOSS when burnt); the action button's label follows the selected spot ([A] ADD, FLIP, SERVE, TOSS); the spatula is left out.
+8. **Keyboard.** Left and Right pick a grill spot, 1-4 act on a spot directly, and Space, Enter, Z, or A act on the picked spot. Escape, Backspace, X, or B quit.
+9. **Shared UI.** `src/ui/Banner.ts` (the end-of-round banner, now used by both minigames) and `src/ui/Popup.ts` (rising text like "+$2.75"). `Button` gained `setLabel`.
