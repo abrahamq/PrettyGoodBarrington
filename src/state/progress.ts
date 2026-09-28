@@ -1,4 +1,5 @@
 // Applies a finished minigame to the save: a win stamps the passport, and the best score only goes up.
+// A score of 0 (for example, from quitting) is not recorded, so the passport shows no score instead of 0.
 // Minigames hand their result back to the Overworld as { stopId, passed, score }.
 import { STOPS, type StopId } from '../data/stops.ts';
 import type { SaveData } from './save.ts';
@@ -11,15 +12,13 @@ export interface MinigameResult {
 }
 
 export function applyResult(save: SaveData, result: MinigameResult): SaveData {
-    const best = save.bestScores[result.stopId];
+    const best = save.bestScores[result.stopId] ?? 0;
+    const bestScores = result.score > best ? { ...save.bestScores, [result.stopId]: result.score } : save.bestScores;
 
     return {
         ...save,
         stamps: { ...save.stamps, [result.stopId]: save.stamps[result.stopId] || result.passed },
-        bestScores: {
-            ...save.bestScores,
-            [result.stopId]: best === undefined ? result.score : Math.max(best, result.score)
-        }
+        bestScores
     };
 }
 

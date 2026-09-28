@@ -26,6 +26,12 @@ describe('applyResult', () => {
         expect(later.bestScores.gbeats).toBe(14);
     });
 
+    it('does not record a best score of 0, so quitting leaves no score behind', () => {
+        const save = applyResult(newSave(), { stopId: 'soco', passed: false, score: 0 });
+
+        expect(save.bestScores).toEqual({});
+    });
+
     it('does not change the save it was given', () => {
         const save = newSave();
         applyResult(save, { stopId: 'soco', passed: true, score: 5 });
