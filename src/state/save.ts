@@ -16,6 +16,7 @@ export interface SaveData {
     version: typeof SAVE_VERSION;
     stamps: Record<StopId, boolean>;
     bestScores: Partial<Record<StopId, number>>;
+    // Total tips earned in Order Up!, in cents.
     tips: number;
     dayMinutes: number;
     // null means "start at the map's start point".

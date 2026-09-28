@@ -32,6 +32,13 @@ describe('applyResult', () => {
         expect(save.bestScores).toEqual({});
     });
 
+    it('adds the tips from a round to the saved total, win or lose', () => {
+        const first = applyResult(newSave(), { stopId: 'gbeats', passed: true, score: 1250, tips: 1250 });
+        const second = applyResult(first, { stopId: 'gbeats', passed: false, score: 400, tips: 400 });
+
+        expect(second.tips).toBe(1650);
+    });
+
     it('does not change the save it was given', () => {
         const save = newSave();
         applyResult(save, { stopId: 'soco', passed: true, score: 5 });
@@ -52,8 +59,10 @@ describe('stampCount', () => {
 });
 
 describe('isMinigameResult', () => {
-    it('accepts a well-formed result', () => {
+    it('accepts a well-formed result, with or without tips', () => {
         expect(isMinigameResult({ stopId: 'soco', passed: true, score: 5 })).toBe(true);
+        expect(isMinigameResult({ stopId: 'gbeats', passed: true, score: 5, tips: 500 })).toBe(true);
+        expect(isMinigameResult({ stopId: 'gbeats', passed: true, score: 5, tips: 'lots' })).toBe(false);
     });
 
     it('rejects anything else', () => {
