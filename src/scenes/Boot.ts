@@ -1,7 +1,7 @@
 // Boot scene: the first scene that runs. For now it only draws a 1-pixel frame, so you can
 // check that the canvas is 240x160 and scales up crisply. Phase 1 adds fonts and placeholder textures.
 import { Scene } from 'phaser';
-import { colorNumber } from '../palette.js';
+import { colorNumber } from '../palette.ts';
 
 export class Boot extends Scene {
     constructor() {
@@ -13,7 +13,7 @@ export class Boot extends Scene {
     }
 }
 
-function drawPixelFrame(scene) {
+function drawPixelFrame(scene: Scene) {
     const { width, height } = scene.scale;
     const frame = scene.add.graphics();
 

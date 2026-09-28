@@ -1,10 +1,10 @@
 // Entry point: the Phaser game config (a 240x160 pixel-art canvas scaled to fit the screen) and the scene list.
 import { AUTO, Game, Scale } from 'phaser';
 import './style.css';
-import { PALETTE } from './palette.js';
-import { Boot } from './scenes/Boot.js';
+import { PALETTE } from './palette.ts';
+import { Boot } from './scenes/Boot.ts';
 
-const config = {
+const config: Phaser.Types.Core.GameConfig = {
     type: AUTO,
     width: 240,
     height: 160,

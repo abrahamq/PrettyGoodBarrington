@@ -1,4 +1,5 @@
 // Vite settings for the dev server, the production build, and Vitest.
+/// <reference types="vitest/config" />
 import { defineConfig } from 'vite';
 
 export default defineConfig({
@@ -8,7 +9,7 @@ export default defineConfig({
         port: 8080
     },
     build: {
-        // Phaser alone is about 1.2 MB minified. Keep it in its own file so the
+        // Phaser alone is about 1.4 MB minified. Keep it in its own file so the
         // browser can keep it cached when only game code changes.
         chunkSizeWarningLimit: 1500,
         rolldownOptions: {
@@ -22,6 +23,6 @@ export default defineConfig({
         }
     },
     test: {
-        include: ['tests/**/*.test.js']
+        include: ['tests/**/*.test.ts']
     }
 });

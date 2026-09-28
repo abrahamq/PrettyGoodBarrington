@@ -1,6 +1,6 @@
 // Checks the shared color palette: every color is a valid hex code, and names convert to Phaser color numbers.
 import { describe, expect, it } from 'vitest';
-import { PALETTE, colorNumber } from '../src/palette.js';
+import { PALETTE, colorNumber } from '../src/palette.ts';
 
 describe('PALETTE', () => {
     it('has 17 colors, each written as #rrggbb', () => {
@@ -18,7 +18,8 @@ describe('colorNumber', () => {
         expect(colorNumber('sky')).toBe(0x6f9fd8);
     });
 
-    it('throws on an unknown name, so typos fail loudly', () => {
+    it('throws on an unknown name, so typos in JSON data fail loudly', () => {
+        // @ts-expect-error: TypeScript also rejects this name at compile time.
         expect(() => colorNumber('purple')).toThrow('Unknown palette color: purple');
     });
 });

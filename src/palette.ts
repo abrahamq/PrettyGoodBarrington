@@ -1,6 +1,6 @@
 // The game's 17-color palette. Use these names everywhere instead of hard-coded hex values.
 
-export const PALETTE = Object.freeze({
+export const PALETTE = {
     ink: '#2b2230',
     cream: '#f4ecd6',
     parchment: '#e7d3a1',
@@ -18,11 +18,14 @@ export const PALETTE = Object.freeze({
     road: '#6d6a7a',
     paver: '#dcc9a0',
     sky: '#6f9fd8'
-});
+} as const;
+
+export type PaletteColor = keyof typeof PALETTE;
 
 // Phaser Graphics methods (fillStyle, lineStyle) take numbers like 0x2b2230,
 // while text styles take '#2b2230' strings.
-export function colorNumber(name) {
+// The runtime check still matters for names that come from JSON data, which TypeScript cannot see.
+export function colorNumber(name: PaletteColor): number {
     const hex = PALETTE[name];
 
     if (!hex) {
