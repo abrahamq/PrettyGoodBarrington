@@ -1,25 +1,23 @@
-// Boot scene: the first scene that runs. For now it only draws a 1-pixel frame, so you can
-// check that the canvas is 240x160 and scales up crisply. Phase 1 adds fonts and placeholder textures.
+// Boot scene: loads the fonts, draws the placeholder textures, applies the saved sound setting,
+// then opens the Title screen. No text appears before the fonts finish loading here.
 import { Scene } from 'phaser';
-import { colorNumber } from '../palette.ts';
+import { generatePlaceholderTextures } from '../art/textures.ts';
+import { loadSettings } from '../state/settings.ts';
+import { FONTS } from '../ui/text.ts';
 
 export class Boot extends Scene {
     constructor() {
         super('Boot');
     }
 
-    create() {
-        drawPixelFrame(this);
+    preload(): void {
+        this.load.font(FONTS.pixel, 'assets/fonts/press-start-2p.woff2', 'woff2');
+        this.load.font(FONTS.dialogue, 'assets/fonts/vt323.woff2', 'woff2');
     }
-}
 
-function drawPixelFrame(scene: Scene) {
-    const { width, height } = scene.scale;
-    const frame = scene.add.graphics();
-
-    frame.fillStyle(colorNumber('parchment'));
-    frame.fillRect(0, 0, width, 1);
-    frame.fillRect(0, height - 1, width, 1);
-    frame.fillRect(0, 0, 1, height);
-    frame.fillRect(width - 1, 0, 1, height);
+    create(): void {
+        generatePlaceholderTextures(this);
+        this.sound.mute = !loadSettings().sound;
+        this.scene.start('Title');
+    }
 }
