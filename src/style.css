@@ -1,0 +1,17 @@
+/* Page styles: an ink background that fills the screen, with the game canvas centered in it. */
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    /* Same as PALETTE.ink in src/palette.js. CSS cannot import the JS palette. */
+    background-color: #2b2230;
+}
+
+#game-container {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+}
