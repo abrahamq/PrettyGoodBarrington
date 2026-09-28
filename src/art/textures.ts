@@ -7,6 +7,8 @@ import { drawLayers, graphicsTarget, type Layer } from './paint.ts';
 import {
     CHARACTER_HEIGHT, CHARACTER_WIDTH, NPC_ART, NPC_KEYS, PLAYER_FRAMES_PER_ROW, PLAYER_KEY, PLAYER_ROWS, playerFrame
 } from './people.ts';
+import type { Flavor } from '../logic/scoopStack.ts';
+import { CONE, EMPTY_SCOOP_ICON, SCOOPS, SHOP_BACKGROUND, scoopIcon } from './scoopShop.ts';
 import { rectPath } from './svgPath.ts';
 import { TITLE_BACKGROUND } from './titleBackground.ts';
 
@@ -18,8 +20,25 @@ export const TEXTURES = {
     arrow: 'ui-arrow',
     more: 'ui-more',
     tiles: TILESET_NAME,
-    player: PLAYER_KEY
+    player: PLAYER_KEY,
+    socoBackground: 'soco-bg',
+    cone: 'cone',
+    emptyScoopIcon: 'icon-scoop-empty'
 } as const;
+
+export const SCOOP_TEXTURES: Record<Flavor, string> = {
+    vanilla: 'scoop-vanilla',
+    darkChoc: 'scoop-dark-choc',
+    strawberry: 'scoop-strawberry',
+    mintChip: 'scoop-mint-chip'
+};
+
+export const SCOOP_ICON_TEXTURES: Record<Flavor, string> = {
+    vanilla: 'icon-scoop-vanilla',
+    darkChoc: 'icon-scoop-dark-choc',
+    strawberry: 'icon-scoop-strawberry',
+    mintChip: 'icon-scoop-mint-chip'
+};
 
 export function generatePlaceholderTextures(scene: Scene): void {
     makeTexture(scene, TEXTURES.titleBackground, 240, 160, (graphics) => drawLayers(graphicsTarget(graphics), TITLE_BACKGROUND));
@@ -33,6 +52,14 @@ export function generatePlaceholderTextures(scene: Scene): void {
     for (const key of NPC_KEYS) {
         makeTexture(scene, key, CHARACTER_WIDTH, CHARACTER_HEIGHT, (graphics) =>
             drawLayers(graphicsTarget(graphics), NPC_ART[key], { width: CHARACTER_WIDTH, height: CHARACTER_HEIGHT }));
+    }
+
+    makeTexture(scene, TEXTURES.socoBackground, 240, 160, (graphics) => paintArt(graphics, SHOP_BACKGROUND));
+    makeTexture(scene, TEXTURES.cone, 16, 22, (graphics) => paintArt(graphics, CONE));
+    makeTexture(scene, TEXTURES.emptyScoopIcon, 16, 12, (graphics) => paintArt(graphics, EMPTY_SCOOP_ICON));
+    for (const flavor of Object.keys(SCOOPS) as Flavor[]) {
+        makeTexture(scene, SCOOP_TEXTURES[flavor], 16, 11, (graphics) => paintArt(graphics, SCOOPS[flavor]));
+        makeTexture(scene, SCOOP_ICON_TEXTURES[flavor], 16, 12, (graphics) => paintArt(graphics, scoopIcon(flavor)));
     }
 
     if (makeTexture(scene, TEXTURES.player, CHARACTER_WIDTH * PLAYER_FRAMES_PER_ROW, CHARACTER_HEIGHT * PLAYER_ROWS.length, paintPlayer)) {

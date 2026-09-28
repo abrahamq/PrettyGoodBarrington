@@ -86,6 +86,25 @@ export const SCENERY = {
     carBlueDark: '#3d5a96',
     glassLight: '#bfe3ef',
 
+    // SoCo Creamery (Scoop Stack), from docs/mocks/SoCo.dc.html
+    socoWallStripe: '#ecb4b8',
+    socoFloorTile: '#d9a8ae',
+    mintWainscot: '#9dd3c0',
+    mintTrimDark: '#7fc2ad',
+    counterTop: '#c28b4f',
+    counterWood: '#a86b3a',
+    caseGlass: '#d8eef4',
+    coneHolder: '#6b6878',
+    vanillaIce: '#fbf1d3',
+    vanillaShade: '#e9d3a0',
+    white: '#ffffff',
+    chocShade: '#4a2a17',
+    chocShine: '#9a6444',
+    strawberryShade: '#d97787',
+    strawberryShine: '#ffd6de',
+    mintShine: '#e3f7ee',
+    emptyScoop: '#a88f63',
+
     // People
     skinLight: '#f1c27d',
     skinTan: '#c68642',
