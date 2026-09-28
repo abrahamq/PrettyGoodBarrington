@@ -4,22 +4,22 @@ import { SETTINGS_KEY, loadSettings, saveSettings } from '../src/state/settings.
 import { memoryStore } from './helpers/memoryStore.ts';
 
 describe('loadSettings', () => {
-    it('turns sound on when nothing is stored', () => {
-        expect(loadSettings(memoryStore())).toEqual({ version: 1, sound: true });
+    it('turns sound on and the d-pad off when nothing is stored', () => {
+        expect(loadSettings(memoryStore())).toEqual({ version: 1, sound: true, dpad: false });
     });
 
     it('loads back what was saved', () => {
         const store = memoryStore();
-        saveSettings({ version: 1, sound: false }, store);
+        saveSettings({ version: 1, sound: false, dpad: true }, store);
 
-        expect(loadSettings(store)).toEqual({ version: 1, sound: false });
+        expect(loadSettings(store)).toEqual({ version: 1, sound: false, dpad: true });
     });
 
     it('uses the defaults when the stored text is broken', () => {
         const store = memoryStore();
         store.data.set(SETTINGS_KEY, '{oops');
 
-        expect(loadSettings(store)).toEqual({ version: 1, sound: true });
+        expect(loadSettings(store)).toEqual({ version: 1, sound: true, dpad: false });
     });
 
     it('turns sound on when the stored sound value is not true or false', () => {
@@ -29,8 +29,15 @@ describe('loadSettings', () => {
         expect(loadSettings(store).sound).toBe(true);
     });
 
+    it('keeps older settings that have no d-pad value, with the d-pad off', () => {
+        const store = memoryStore();
+        store.data.set(SETTINGS_KEY, '{"version":1,"sound":false}');
+
+        expect(loadSettings(store)).toEqual({ version: 1, sound: false, dpad: false });
+    });
+
     it('works without localStorage', () => {
-        expect(loadSettings(null)).toEqual({ version: 1, sound: true });
-        expect(saveSettings({ version: 1, sound: false }, null)).toBe(false);
+        expect(loadSettings(null)).toEqual({ version: 1, sound: true, dpad: false });
+        expect(saveSettings({ version: 1, sound: false, dpad: false }, null)).toBe(false);
     });
 });
