@@ -42,13 +42,15 @@ src/
   logic/          minigame rules, no Phaser (unit-tested)
   scenes/         Phaser scenes, minigames in scenes/minigames/
   ui/             Panel, Button, DialogueBox, and so on
+  art/            placeholder art drawn at startup from the mockup shapes
 public/
-  assets/         images, audio, fonts
+  assets/         images, audio, fonts (README lists every texture key and size)
   maps/           downtown.json (Tiled format)
 scripts/          build-map.js (plain JavaScript, run by Node)
 tests/            Vitest specs (*.test.ts)
 tsconfig.json     TypeScript settings (strict)
 docs/PLAN.md      the build plan, phase by phase
+docs/mocks/       screen mockups (.dc.html); their SVGs use game pixels
 DECISIONS.md      choices the plan does not cover
 ```
 

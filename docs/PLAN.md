@@ -14,7 +14,7 @@ This plan is written for Claude Code. Work through it one phase at a time. At th
 
 ## Visual spec
 
-Mockups are in `docs/mockups/` as `.dc.html` files. They won't render on their own, but their inline SVGs are drawn on the game's real 240×160 pixel grid, so the `path` coordinates can be ported directly into sprites and tiles.
+Mockups are in `docs/mocks/` as `.dc.html` files. They won't render on their own, but their inline SVGs are drawn on the game's real 240×160 pixel grid, so the `path` coordinates can be ported directly into sprites and tiles.
 
 | Mockup file | Screen |
 |---|---|

@@ -22,3 +22,20 @@ Choices that `docs/PLAN.md` does not cover. Each entry says what we chose and wh
     - **Imports use the `.ts` extension**, as in Vite's starter, so each import names the real file.
     - **`npm run build` runs `tsc` first.** Vite and Vitest do not check types, so a type error stops the build (and the deploy) instead.
     - **`scripts/build-map.js` stays JavaScript.** Node 22.12 runs `.ts` files only with an experimental flag, and type-checking Node scripts needs `@types/node`, which is not on the allowed list.
+
+## Phase 1: Title screen, scene flow, saving (2026-09-27)
+
+1. **Mockups folder.** The mockups are in `docs/mocks/`, not `docs/mockups/` as the plan first said. We kept Abe's folder name and changed the plan.
+2. **Text sizes.** The mockup SVGs use game pixels, but the mockup HTML text does not (for example, 20px CSS is 5 game pixels). All text uses Press Start 2P at 8px, and the logo uses 16px, so each glyph pixel lands on a game pixel.
+3. **Tagline on two lines, without the dark box.** At 8px the tagline is 304 pixels wide, wider than the 240-pixel screen. VT323 is 243 pixels wide at 16px, and its glyph pixels blur at smaller sizes. So the tagline takes two lines. A 1px ink shadow replaces the box, so the text does not cover the sun.
+4. **Extra mockup colors.** The sunset, mountains, and skyline use colors that are not in the 17-color palette. They are in `SCENERY` in `src/palette.ts` with names, so no hex codes appear anywhere else.
+5. **Placeholder art is painted one pixel row at a time.** Phaser's `generateTexture` draws with the Canvas 2D API, which blurs diagonal edges (the church steeple). `src/art/svgPath.ts` turns the mockup paths into rows of whole pixels, so every edge stays crisp. The mockup paths are copied as-is.
+6. **PRESS START comes first.** The mockup shows PRESS START and the menu together. Both do not fit at 8px, so the first key or tap hides PRESS START and opens the menu. Phase 5 can unlock audio on that same first tap. The menu opens on the key or tap *release*, so the same press cannot also pick a menu item.
+7. **Menu input.** Tapping a menu row picks it at once. Escape or Backspace goes back. Rows are 12 game pixels tall (48 screen pixels at 4x).
+8. **New Game over an existing save asks first.** One wrong tap on a phone must not erase progress. Continue is disabled (grey) when there is no valid save.
+9. **Settings are stored apart from the save** (`msq-settings`), so "Reset save" does not turn the sound back on.
+10. **Save details.** The stop `id` is also the stamp id. `lastPosition: null` means "start at the map's start point". `loadSave` replaces missing or broken values with new-game defaults, and it ignores a save from a newer game version. Two browser tabs share one save; the last write wins.
+11. **The save in play lives in Phaser's registry** (`src/state/session.ts`), so every scene can read it.
+12. **Placeholder Overworld.** A 15x10 grid of grass with a box for the player. Arrows, WASD, or a tap move one tile, and each step writes the save. MENU or Escape goes back to the Title menu. Phase 2 replaces it.
+13. **Streets in `stops.ts`.** SoCo and the Triplex are on Railroad St; GB Eats, Baba Louie's, and Town Hall on Main St; the Mahaiwe on Castle St; the Co-op on Bridge St; the River Walk on River St. Change them in that one file if they are wrong.
+14. **Panels need WebGL.** Phaser's NineSlice works only in WebGL. `AUTO` picks WebGL on every phone we target.
