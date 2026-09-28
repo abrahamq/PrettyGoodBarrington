@@ -1,6 +1,6 @@
 # Main Street Quest
 
-A retro top-down game set in downtown Great Barrington, MA. You walk Main Street and Railroad Street, talk to shopkeepers, and play short minigames to collect stamps in a Main Street Passport. It runs in a phone browser and on desktop. It uses Phaser 4 and Vite, in plain JavaScript.
+A retro top-down game set in downtown Great Barrington, MA. You walk Main Street and Railroad Street, talk to shopkeepers, and play short minigames to collect stamps in a Main Street Passport. It runs in a phone browser and on desktop. It uses Phaser 4, Vite, and TypeScript.
 
 ## Setup
 
@@ -20,7 +20,8 @@ You need [nvm](https://github.com/nvm-sh/nvm). This project uses Node 22.12.0, s
 | `npm run dev -- --host` | Same, but also opens the server to your local network, so a phone can connect. |
 | `npm test` | Runs the Vitest specs in `tests/` one time. |
 | `npm run test:watch` | Runs the specs again each time you save. |
-| `npm run build` | Builds the game into `dist/`. |
+| `npm run typecheck` | Checks all types with `tsc`. Vite and Vitest do not check types, so run this (or `build`) to find type errors. |
+| `npm run build` | Checks types, then builds the game into `dist/`. |
 | `npm run preview` | Serves `dist/`, so you can check the production build. |
 | `npm run build:map` | Makes `public/maps/downtown.json` again. This overwrites edits made in Tiled. |
 
@@ -34,8 +35,8 @@ You need [nvm](https://github.com/nvm-sh/nvm). This project uses Node 22.12.0, s
 
 ```
 src/
-  main.js         game config and scene list
-  palette.js      the 17 colors; use these, not hex codes
+  main.ts         game config and scene list
+  palette.ts      the 17 colors; use these, not hex codes
   data/           stops, dialogue, rhythm charts
   state/          saving to localStorage
   logic/          minigame rules, no Phaser (unit-tested)
@@ -44,8 +45,9 @@ src/
 public/
   assets/         images, audio, fonts
   maps/           downtown.json (Tiled format)
-scripts/          build-map.js
-tests/            Vitest specs
+scripts/          build-map.js (plain JavaScript, run by Node)
+tests/            Vitest specs (*.test.ts)
+tsconfig.json     TypeScript settings (strict)
 docs/PLAN.md      the build plan, phase by phase
 DECISIONS.md      choices the plan does not cover
 ```

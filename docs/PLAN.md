@@ -7,8 +7,8 @@ This plan is written for Claude Code. Work through it one phase at a time. At th
 ## Goals and constraints
 
 - **Mobile-first, no app stores.** The game runs in a phone browser and installs as a PWA ("Add to Home Screen"). It must also work on desktop with a keyboard.
-- **Engine:** Phaser 4, JavaScript (not TypeScript), bundled with Vite. Scaffold with `npm create @phaserjs/game@latest` and pick Web Bundler → Vite → JavaScript.
-- **Allowed dependencies:** `phaser`, `vite`, `vitest`, and `vite-plugin-pwa`. Ask before adding anything else.
+- **Engine:** Phaser 4, TypeScript, bundled with Vite. Scaffold with `npm create @phaserjs/game@latest` and pick Web Bundler → Vite → TypeScript. (Changed from JavaScript on 2026-09-27; see `DECISIONS.md`.)
+- **Allowed dependencies:** `phaser`, `vite`, `vitest`, `vite-plugin-pwa`, and `typescript`. Ask before adding anything else.
 - **No server.** All state lives in the browser (`localStorage`).
 - **I'm newer to JavaScript** (my background is Ruby). Keep code plain and readable, and prefer small, well-named functions over clever abstractions. Add a short comment at the top of each file explaining what it does.
 
@@ -29,7 +29,7 @@ Mockups are in `docs/mockups/` as `.dc.html` files. They won't render on their o
 
 **Tiles:** 16×16. Character sprites are 12×16.
 
-**Palette.** Put these in `src/palette.js` and use them everywhere instead of hard-coding hex values:
+**Palette.** Put these in `src/palette.ts` and use them everywhere instead of hard-coding hex values:
 
 | Name | Hex | Use |
 |---|---|---|
@@ -53,31 +53,31 @@ Mockups are in `docs/mockups/` as `.dc.html` files. They won't render on their o
 
 **Fonts:** "Press Start 2P" (all in-canvas text, at 8px so it lands on the pixel grid) and "VT323" (optional, for longer dialogue if it reads well at 16px). Both are OFL-licensed. Bundle the font files locally so the game works offline, and wait for them to load in the Boot scene before showing any text.
 
-**UI panel style:** cream fill, 1px ink outer border, 1px parchment line inside it, then 1px wood line. Build it once as a reusable 9-slice panel (`src/ui/Panel.js`).
+**UI panel style:** cream fill, 1px ink outer border, 1px parchment line inside it, then 1px wood line. Build it once as a reusable 9-slice panel (`src/ui/Panel.ts`).
 
 ## Architecture
 
 ```
 src/
-  main.js              game config + scene list
-  palette.js
+  main.ts              game config + scene list
+  palette.ts
   data/
-    stops.js           the 8 passport stops (name, street, minigame key, stamp id)
-    dialogue.js        all NPC lines, keyed by id
+    stops.ts           the 8 passport stops (name, street, minigame key, stamp id)
+    dialogue.ts        all NPC lines, keyed by id
     charts/            rhythm-game note charts (JSON)
   state/
-    save.js            load/save/reset to localStorage, versioned
+    save.ts            load/save/reset to localStorage, versioned
   logic/               pure game logic, no Phaser imports (unit-tested)
-    scoopStack.js
-    orderUp.js
-    curtainCall.js
+    scoopStack.ts
+    orderUp.ts
+    curtainCall.ts
   scenes/
-    Boot.js            load assets, fonts, generate placeholder textures
-    Title.js
-    Overworld.js
-    UI.js              HUD + dialogue, runs on top of Overworld
-    Passport.js
-    minigames/ScoopStack.js, OrderUp.js, CurtainCall.js
+    Boot.ts            load assets, fonts, generate placeholder textures
+    Title.ts
+    Overworld.ts
+    UI.ts              HUD + dialogue, runs on top of Overworld
+    Passport.ts
+    minigames/ScoopStack.ts, OrderUp.ts, CurtainCall.ts
   ui/                  Panel, Button, DialogueBox, ProgressBar, TouchControls
 public/
   assets/              tilesets, spritesheets, audio, fonts
@@ -88,7 +88,7 @@ tests/                 vitest specs for src/logic and src/state
 **Rules that keep this manageable:**
 
 - **Keep rules and rendering apart.** Minigame rules (timing windows, doneness, wobble) live in `src/logic/` as plain functions that take state plus elapsed time and return new state. Scenes only draw and handle input. This keeps the fun parts testable.
-- **One source for names.** Business names appear in `src/data/stops.js` only. These are real local businesses: use their names as plain text, never their logos, and keep the names easy to swap.
+- **One source for names.** Business names appear in `src/data/stops.ts` only. These are real local businesses: use their names as plain text, never their logos, and keep the names easy to swap.
 - **Scene flow.** Minigames always exit with `this.scene.start('Overworld', { result })`, where `result` is `{ stopId, passed, score }`. Overworld applies the result, updates the save, and shows the shopkeeper's win or lose line.
 
 **Save format** (`localStorage` key `msq-save`), versioned so it can be migrated later:
@@ -101,7 +101,7 @@ tests/                 vitest specs for src/logic and src/state
 
 Start with generated placeholder art so everything is playable immediately. Real art can be swapped in later without code changes.
 
-- In `Boot.js`, draw textures with `Phaser.GameObjects.Graphics` using the rectangles from the mockup SVGs, then `generateTexture()` them under stable keys (`player`, `npc-scooper`, `tiles`, `scoop-vanilla`, and so on).
+- In `Boot.ts`, draw textures with `Phaser.GameObjects.Graphics` using the rectangles from the mockup SVGs, then `generateTexture()` them under stable keys (`player`, `npc-scooper`, `tiles`, `scoop-vanilla`, and so on).
 - Every texture key used by a scene must also work if a real PNG spritesheet with the same key is loaded instead. Document the expected frame sizes and layouts in `public/assets/README.md`.
 - The player needs 4-direction walk cycles (2–3 frames each). Placeholder frames can be simple bobs or leg swaps.
 
@@ -134,7 +134,7 @@ Collecting all 8 stamps unlocks an ending where the Monument Mountain trail open
 
 ### Phase 0 — Scaffold and deploy
 
-Scaffold the Vite + JavaScript template, then:
+Scaffold the Vite + TypeScript template, then:
 
 - set the game config above
 - create the folder structure
@@ -149,7 +149,7 @@ Scaffold the Vite + JavaScript template, then:
 - **Boot** loads the fonts and generates placeholder textures.
 - **Title** matches `Main.dc.html`: sunset sky bands, mountain silhouette, town skyline, logo, and a menu with New Game, Continue (only enabled if a save exists), and Options.
 - **Options** holds sound on/off and "Reset save" (with a confirm step).
-- `src/state/save.js` handles load, save, and reset, with tests.
+- `src/state/save.ts` handles load, save, and reset, with tests.
 - Menu works with arrow keys + Enter and with tapping.
 
 **Done when:** New Game → Overworld (blank placeholder is fine) and Continue restore the saved state, including after a page reload.
