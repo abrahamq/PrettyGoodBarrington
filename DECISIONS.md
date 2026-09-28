@@ -56,3 +56,15 @@ Choices that `docs/PLAN.md` does not cover. Each entry says what we chose and wh
 12. **Passport button.** Until Phase 6, `[P] PASSPORT` shows a dialogue with the stamp count.
 13. **On-screen d-pad.** Off by default, turned on in Options, stored as `dpad` in `msq-settings`. It adds an A button for talking. It hides while dialogue is open.
 14. **Small choices.** Escape goes back to the Title menu (a desktop shortcut). The player's facing is kept in memory across a minigame, not in the save. NPCs draw above decor, so shopkeepers show in front of their door art.
+
+## Phase 3: Scoop Stack (2026-09-28)
+
+1. **Numbers.** A scoop lands if it is within 7 px of the top scoop's current position. The stack topples at 20 wobble. The sliding scoop moves ±44 px at 60 px/s, plus 15 px/s for each scoop already stacked, and falls at 180 px/s. All tuning numbers are in `SCOOP_STACK` in `src/logic/scoopStack.ts`.
+2. **Wobble settles over time** (2 per second). The plan did not say whether wobble goes down. With settling, the mockup's tip "Drop when the cone stops swaying" has a real choice behind it: waiting steadies the stack but uses up the 30 seconds.
+3. **Sway.** Amplitude = wobble × 0.35 × (1 + 0.25 × scoops), at most 10 px, on a 1.4-second cycle. Higher scoops lean further, and a landing is measured against where the top scoop is at that moment.
+4. **The fifth scoop can still topple the stack.** The topple check comes before the win check.
+5. **Score** = 100 per scoop, plus 10 per whole second left on a win (at most 800). A score of 0, for example from quitting, is not saved as a best score, so the passport shows no score instead of 0.
+6. **HUD at 8px.** Changes from `SoCo.dc.html`: no subtitle under SCOOP STACK; the flavor board shows swatches with marks instead of names, and a gold arrow points at the current flavor; the tip panel shows "NEXT: <flavor>" plus a tip that changes with the wobble; [B] QUIT and [A] DROP are stacked at the bottom right; the framed picture is gone (the HUD would cover it), and there is one lamp over the cone.
+7. **Input.** A tap anywhere drops the scoop, and so do Space, Enter, Z, and A. Escape, Backspace, X, B, or [B] QUIT leave without a stamp.
+8. **Ending.** A spill drops the missed scoop onto the floor; a topple tips the scoops toward the side the stack leans. A banner shows the result and score for 1.8 seconds, then the game returns to the street. Quitting also shows the scooper's "try again" line.
+9. **New UI parts.** `src/ui/Button.ts` (primary and secondary styles from the mockups) and `src/ui/ProgressBar.ts` (the TIME bar).

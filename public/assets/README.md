@@ -16,6 +16,10 @@ All sizes are in game pixels. The game draws at 240x160 and scales up with neare
 | `ui-more` | 5x3 | Small down arrow: "tap for more" in the dialogue box. | `src/ui/DialogueBox.ts` |
 | `tiles` | 128x96 | The overworld tileset: 16x16 tiles, 8 per row, in the order of `TILE_ART` in `src/map/tileset.ts`. Must match `public/maps/tiles.png`. | Overworld |
 | `player` | 36x64 | Spritesheet of 12x16 frames. Rows, top to bottom: facing down, left, right, up. Columns: standing, left foot forward, right foot forward. Frames are numbered 0-11 row by row. Load a real one with `this.load.spritesheet('player', url, { frameWidth: 12, frameHeight: 16 })`. | Overworld |
+| `soco-bg` | 240x160 | The inside of SoCo Creamery: wall, wainscot, floor, lamp, flavor board (swatches only), counter, ice cream case, tip jar. | Scoop Stack |
+| `cone` | 16x22 | The waffle cone (rows 0-17) in its holder (rows 17-21). The first scoop sits on row 0. | Scoop Stack |
+| `scoop-vanilla`, `scoop-dark-choc`, `scoop-strawberry`, `scoop-mint-chip` | 16x11 each | One scoop. Rows 9-10 are drips that hang over the scoop below; scoops stack 9px apart. | Scoop Stack |
+| `icon-scoop-vanilla`, `icon-scoop-dark-choc`, `icon-scoop-strawberry`, `icon-scoop-mint-chip`, `icon-scoop-empty` | 16x12 each | HUD icons for stacked scoops, and the outline for scoops still to go. | Scoop Stack |
 | `npc-scooper`, `npc-grillcook`, `npc-usher`, `npc-pizzaiolo`, `npc-projectionist`, `npc-grocer`, `npc-clerk`, `npc-ranger`, `npc-local`, `npc-dog` | 12x16 each | One standing frame, facing down (the local faces up). Feet on the bottom row. | Overworld |
 
 ## Map
