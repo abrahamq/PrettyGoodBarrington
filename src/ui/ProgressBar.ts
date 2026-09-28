@@ -17,6 +17,10 @@ export class ProgressBar {
         this.parts = [border, empty, this.fill];
     }
 
+    gameObjects(): GameObjects.Rectangle[] {
+        return [...this.parts];
+    }
+
     // Objects with the same depth draw in the order they were added, so the fill stays on top.
     setDepth(depth: number): this {
         for (const part of this.parts) {

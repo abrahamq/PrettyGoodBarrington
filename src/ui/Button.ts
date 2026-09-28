@@ -17,6 +17,8 @@ const SHADOW = 2;
 
 export class Button {
     private readonly parts: (GameObjects.Rectangle | GameObjects.Text)[] = [];
+    private readonly label: GameObjects.Text;
+    private readonly centerX: number;
 
     constructor(
         scene: Scene,
@@ -30,14 +32,18 @@ export class Button {
     ) {
         const colors = STYLES[style];
         const textY = y + Math.round((height - EDGE - 8) / 2);
+        this.centerX = x + width / 2;
 
         this.parts.push(
             scene.add.rectangle(x + SHADOW, y + SHADOW, width, height, colorNumber('ink'), 0.4).setOrigin(0),
             scene.add.rectangle(x, y, width, height, colorNumber('ink')).setOrigin(0),
             scene.add.rectangle(x + 1, y + 1, width - 2, height - 2, colorNumber(colors.edge)).setOrigin(0),
-            scene.add.rectangle(x + 1, y + 1, width - 2, height - 2 - EDGE, colorNumber(colors.fill)).setOrigin(0),
-            addPixelText(scene, Math.round(x + (width - pixelTextWidth(label)) / 2), textY, label, colors.text)
+            scene.add.rectangle(x + 1, y + 1, width - 2, height - 2 - EDGE, colorNumber(colors.fill)).setOrigin(0)
         );
+        // Added last, so it draws on top of the button face.
+        this.label = addPixelText(scene, 0, textY, label, colors.text);
+        this.parts.push(this.label);
+        this.setLabel(label);
 
         const hitArea = this.parts[1];
         hitArea.setInteractive({ useHandCursor: true });
@@ -45,6 +51,11 @@ export class Button {
             event.stopPropagation();
             onPress();
         });
+    }
+
+    setLabel(text: string): void {
+        this.label.setText(text);
+        this.label.x = Math.round(this.centerX - pixelTextWidth(text) / 2);
     }
 
     setVisible(visible: boolean): void {

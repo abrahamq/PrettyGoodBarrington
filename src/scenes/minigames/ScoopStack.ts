@@ -13,6 +13,7 @@ import {
 import { colorNumber } from '../../palette.ts';
 import type { MinigameResult } from '../../state/progress.ts';
 import { Button } from '../../ui/Button.ts';
+import { showBanner } from '../../ui/Banner.ts';
 import { Panel } from '../../ui/Panel.ts';
 import { ProgressBar } from '../../ui/ProgressBar.ts';
 import { addPixelText, centeredX } from '../../ui/text.ts';
@@ -32,7 +33,7 @@ const SPILL_FLOOR_Y = 104;
 const DROP_KEYS = ['Space', 'Enter', 'NumpadEnter', 'KeyZ', 'KeyA'];
 const QUIT_KEYS = ['Escape', 'Backspace', 'KeyX', 'KeyB'];
 
-const DEPTH = { cone: 1, stack: 2, hud: 10, moving: 20, banner: 30 };
+const DEPTH = { cone: 1, stack: 2, hud: 10, moving: 20 };
 
 const TITLE = { x: 4, y: 4, width: 102, height: 31 };
 const STACK = { x: 4, y: 38, width: 102, height: 54 };
@@ -257,7 +258,8 @@ export class ScoopStack extends Scene {
             this.showTopple();
         }
 
-        this.showBanner(ENDINGS[state.lossReason ?? 'won'], `SCORE ${scoreFor(state)}`);
+        // Top 12 sits above the tallest possible stack, so the finished cone stays in view.
+        showBanner(this, CONE_X, 12, ENDINGS[state.lossReason ?? 'won'], `SCORE ${scoreFor(state)}`);
         this.time.delayedCall(END_DELAY_MS, () => this.finish({ stopId: this.stopId, passed, score: scoreFor(state) }));
     }
 
@@ -285,16 +287,6 @@ export class ScoopStack extends Scene {
                 duration: 600
             });
         });
-    }
-
-    // Sits above the tallest possible stack, so the finished cone stays in view.
-    private showBanner(title: string, subtitle: string): void {
-        const width = 120;
-        const top = 12;
-
-        new Panel(this, CONE_X - width / 2, top, width, 32, { shadow: true }).setDepth(DEPTH.banner);
-        addPixelText(this, centeredX(title, CONE_X), top + 7, title, 'brick').setDepth(DEPTH.banner);
-        addPixelText(this, centeredX(subtitle, CONE_X), top + 17, subtitle, 'ink').setDepth(DEPTH.banner);
     }
 
     private finish(result: MinigameResult): void {
