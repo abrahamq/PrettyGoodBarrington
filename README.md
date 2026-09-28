@@ -23,7 +23,21 @@ You need [nvm](https://github.com/nvm-sh/nvm). This project uses Node 22.12.0, s
 | `npm run typecheck` | Checks all types with `tsc`. Vite and Vitest do not check types, so run this (or `build`) to find type errors. |
 | `npm run build` | Checks types, then builds the game into `dist/`. |
 | `npm run preview` | Serves `dist/`, so you can check the production build. |
-| `npm run build:map` | Makes `public/maps/downtown.json` again. This overwrites edits made in Tiled. |
+| `npm run build:map` | Makes `public/maps/downtown.json` and `public/maps/tiles.png` again from `src/map/`. This overwrites edits made in Tiled. |
+
+## Controls
+
+| Action | Keyboard | Touch |
+|---|---|---|
+| Walk | Arrow keys or WASD | Tap a tile to walk there, or turn on the D-PAD in Options |
+| Talk, read a sign, next page | Space, Enter, or Z (face the person first) | Tap the person or sign; tap anywhere for the next page |
+| Enter a shop | Walk into its door | Tap the shopkeeper in the doorway |
+| Passport | P | Tap `[P] PASSPORT` |
+| Back to the title menu | Escape | (none yet) |
+
+## Edit the map
+
+The map is made by code in `src/map/downtown.ts` (layout) and `src/map/tileset.ts` (tile art). After a change, run `npm run build:map`, then reload the game. You can also open `public/maps/downtown.json` in [Tiled](https://www.mapeditor.org/), but `build:map` overwrites edits made there.
 
 ## Play on your phone during development
 
@@ -39,14 +53,15 @@ src/
   palette.ts      the 17 colors; use these, not hex codes
   data/           stops, dialogue, rhythm charts
   state/          saving to localStorage
-  logic/          minigame rules, no Phaser (unit-tested)
+  logic/          game rules with no Phaser: grid paths, clock, text pages (unit-tested)
+  map/            the downtown map, its tileset, and the Tiled reader
   scenes/         Phaser scenes, minigames in scenes/minigames/
   ui/             Panel, Button, DialogueBox, and so on
   art/            placeholder art drawn at startup from the mockup shapes
 public/
   assets/         images, audio, fonts (README lists every texture key and size)
   maps/           downtown.json (Tiled format)
-scripts/          build-map.js (plain JavaScript, run by Node)
+scripts/          build-map.ts (run by Node; writes the map files)
 tests/            Vitest specs (*.test.ts)
 tsconfig.json     TypeScript settings (strict)
 docs/PLAN.md      the build plan, phase by phase

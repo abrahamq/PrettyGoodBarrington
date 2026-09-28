@@ -11,6 +11,16 @@ All sizes are in game pixels. The game draws at 240x160 and scales up with neare
 | `title-bg` | 240x160 | One image: sky, sun, mountains, skyline, street. No text. | Title, Options |
 | `ui-panel` | 7x7 | 9-slice with 3px corners. From the outside in: 1px ink, 1px parchment, 1px wood, then cream. The 1x1 center stretches. | `src/ui/Panel.ts` |
 | `ui-cursor` | 6x7 | Right-pointing gold menu arrow on a transparent background. | `src/ui/Menu.ts` |
+| `ui-stamp` | 10x10 | Red stamp icon for the HUD stamp count. | UI scene |
+| `ui-arrow` | 7x4 | Up-pointing arrow; the game rotates it for the other d-pad buttons. | `src/ui/TouchControls.ts` |
+| `ui-more` | 5x3 | Small down arrow: "tap for more" in the dialogue box. | `src/ui/DialogueBox.ts` |
+| `tiles` | 128x96 | The overworld tileset: 16x16 tiles, 8 per row, in the order of `TILE_ART` in `src/map/tileset.ts`. Must match `public/maps/tiles.png`. | Overworld |
+| `player` | 36x64 | Spritesheet of 12x16 frames. Rows, top to bottom: facing down, left, right, up. Columns: standing, left foot forward, right foot forward. Frames are numbered 0-11 row by row. Load a real one with `this.load.spritesheet('player', url, { frameWidth: 12, frameHeight: 16 })`. | Overworld |
+| `npc-scooper`, `npc-grillcook`, `npc-usher`, `npc-pizzaiolo`, `npc-projectionist`, `npc-grocer`, `npc-clerk`, `npc-ranger`, `npc-local`, `npc-dog` | 12x16 each | One standing frame, facing down (the local faces up). Feet on the bottom row. | Overworld |
+
+## Map
+
+`public/maps/downtown.json` (the map, Tiled JSON) and `public/maps/tiles.png` (its tileset image) are made by `npm run build:map` from `src/map/downtown.ts` and `src/map/tileset.ts`. You can open the JSON in Tiled. Running the script again overwrites any edits made in Tiled.
 
 ## Fonts
 
