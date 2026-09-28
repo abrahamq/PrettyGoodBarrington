@@ -5,6 +5,7 @@ import { GAME_HEIGHT, GAME_WIDTH } from './layout.ts';
 import { PALETTE } from './palette.ts';
 import { Boot } from './scenes/Boot.ts';
 import { MinigamePlaceholder } from './scenes/minigames/Placeholder.ts';
+import { ScoopStack } from './scenes/minigames/ScoopStack.ts';
 import { Options } from './scenes/Options.ts';
 import { Overworld } from './scenes/Overworld.ts';
 import { Title } from './scenes/Title.ts';
@@ -28,7 +29,7 @@ const config: Phaser.Types.Core.GameConfig = {
         Options,
         Overworld,
         UI,
-        new MinigamePlaceholder('ScoopStack', 'SCOOP STACK', 3),
+        ScoopStack,
         new MinigamePlaceholder('OrderUp', 'ORDER UP!', 4),
         new MinigamePlaceholder('CurtainCall', 'CURTAIN CALL', 5)
     ]
