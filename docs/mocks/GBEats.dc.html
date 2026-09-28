@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Minigame — Order Up!</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;family=VT323&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#2b2230}
+a{color:#2b2230}a:hover{color:#b5553c}
+</style>
+</helmet>
+<div style="width: 960px; height: 640px; position: relative; overflow: hidden; background: #f4ecd6; font-family: 'VT323', monospace; color: #2b2230">
+<svg width="960" height="640" viewBox="0 0 240 160" shape-rendering="crispEdges" aria-hidden="true" style="position: absolute; left: 0; top: 0; display: block">
+<defs>
+<pattern id="gb-tile" width="8" height="4" patternUnits="userSpaceOnUse">
+<rect width="8" height="4" fill="#f4ecd6"></rect>
+<path d="M0 3h8v1h-8z M3 0h1v3h-1z" fill="#ddd0b3"></path>
+</pattern>
+<pattern id="gb-check" width="8" height="4" patternUnits="userSpaceOnUse">
+<rect width="8" height="4" fill="#f4ecd6"></rect>
+<path d="M0 0h2v2h-2z M4 0h2v2h-2z M2 2h2v2h-2z M6 2h2v2h-2z" fill="#2b2230"></path>
+</pattern>
+</defs>
+
+<rect x="0" y="0" width="240" height="56" fill="url(#gb-tile)"></rect>
+<rect x="0" y="56" width="240" height="4" fill="url(#gb-check)"></rect>
+<rect x="0" y="60" width="240" height="60" fill="#a8a6b3"></rect>
+<path d="M0 60h240v1h-240z" fill="#c9c7d3"></path>
+<rect x="76" y="6" width="160" height="2" fill="#8e8a7a"></rect>
+
+<rect x="16" y="64" width="150" height="56" fill="#6b6878"></rect>
+<rect x="20" y="68" width="142" height="46" fill="#3b3a45"></rect>
+<path d="M24 72h20v1h-20z M90 104h30v1h-30z M140 74h14v1h-14z" fill="#4e4d5a"></path>
+<rect x="16" y="114" width="150" height="6" fill="#57555f"></rect>
+<path d="M30 115h4v4h-4z M60 115h4v4h-4z M90 115h4v4h-4z M120 115h4v4h-4z M150 115h4v4h-4z" fill="#2b2230"></path>
+<path d="M31 115h2v1h-2z M61 115h2v1h-2z M91 115h2v1h-2z M121 115h2v1h-2z M151 115h2v1h-2z" fill="#d9534f"></path>
+
+<path d="M30 76h12v1h-12z M28 77h16v8h-16z M30 85h12v1h-12z" fill="#d97787"></path>
+<path d="M32 79h2v1h-2z M38 82h3v1h-3z M34 83h2v1h-2z" fill="#f29bab"></path>
+
+<path d="M62 86h12v1h-12z M60 87h16v8h-16z M62 95h12v1h-12z" fill="#6b3e22"></path>
+<path d="M62 88h12v4h-12z M64 92h2v2h-2z M70 92h2v3h-2z" fill="#f2b84b"></path>
+
+<path d="M98 76h12v1h-12z M96 77h16v8h-16z M98 85h12v1h-12z" fill="#8a5a2b"></path>
+<path d="M99 79h10v1h-10z M99 82h10v1h-10z" fill="#6b3e22"></path>
+
+<path d="M130 94h12v1h-12z M128 95h16v8h-16z M130 103h12v1h-12z" fill="#2b2230"></path>
+<path d="M132 98h1v1h-1z M139 100h1v1h-1z" fill="#d9534f"></path>
+<path d="M146 88h4v3h-4z M150 84h5v4h-5z M145 80h4v3h-4z" fill="#8e8a9a"></path>
+
+<path d="M30 73h1v1h-1z M40 72h1v1h-1z M100 73h1v1h-1z M108 72h1v1h-1z M64 83h1v1h-1z M74 82h1v1h-1z" fill="#fff4c2"></path>
+
+<path d="M110 80h12v8h-12z" fill="#c9c7d3"></path>
+<path d="M113 82h6v1h-6z M113 85h6v1h-6z" fill="#8e8a9a"></path>
+<path d="M122 83h6v2h-6z" fill="#8e8a7a"></path>
+<path d="M128 82h16v4h-16z" fill="#8a5a2b"></path>
+<path d="M129 82h14v1h-14z" fill="#a86b3a"></path>
+
+<rect x="174" y="66" width="60" height="48" fill="#8a5a2b"></rect>
+<rect x="176" y="68" width="56" height="44" fill="#c28b4f"></rect>
+<path d="M180 98h36v4h-36z M184 102h28v2h-28z" fill="#fff7ea"></path>
+<path d="M190 94h16v4h-16z" fill="#d9a45b"></path>
+<path d="M189 91h18v3h-18z" fill="#6b3e22"></path>
+<path d="M189 90h18v1h-18z M192 91h2v2h-2z" fill="#f2b84b"></path>
+<path d="M188 89h20v1h-20z" fill="#6fae4f"></path>
+<path d="M190 88h16v1h-16z" fill="#d9534f"></path>
+<path d="M192 82h12v1h-12z M190 83h16v5h-16z" fill="#d9a45b"></path>
+<path d="M194 84h1v1h-1z M199 85h1v1h-1z M202 84h1v1h-1z" fill="#fff7ea"></path>
+<path d="M216 80h2v8h-2z M219 78h2v10h-2z M222 81h2v7h-2z M225 79h2v9h-2z" fill="#f2c94c"></path>
+<path d="M214 86h14v8h-14z" fill="#d9534f"></path>
+<path d="M216 88h10v1h-10z M216 91h10v1h-10z" fill="#f4ecd6"></path>
+
+<rect x="0" y="120" width="240" height="3" fill="#c9c7d3"></rect>
+<rect x="0" y="123" width="240" height="37" fill="#3f8f7a"></rect>
+<path d="M0 130h240v1h-240z M0 150h240v1h-240z" fill="#357866"></path>
+</svg>
+
+<div style="position: absolute; left: 416px; top: 236px; width: 120px; text-align: center; font-family: 'Press Start 2P', monospace; font-size: 18px; color: #f7d58c; text-shadow: 3px 3px 0 #b5553c, 5px 5px 0 #2b2230">FLIP!</div>
+
+<div style="position: absolute; left: 16px; top: 16px; width: 280px; box-sizing: border-box; padding: 16px 20px; background: #f4ecd6; border: 4px solid #2b2230; box-shadow: inset 0 0 0 3px #e7d3a1, inset 0 0 0 6px #8a5a2b, 4px 4px 0 0 rgba(43, 34, 48, 0.4); display: flex; flex-direction: column; gap: 10px">
+<h1 style="margin: 0; font-family: 'Press Start 2P', monospace; font-size: 16px; font-weight: 400">ORDER UP!</h1>
+<div style="font-size: 24px; color: #6b4a3a">GB Eats · Main St</div>
+<div style="display: flex; justify-content: space-between; align-items: baseline">
+<div style="font-family: 'Press Start 2P', monospace; font-size: 10px">TIPS</div>
+<div style="font-family: 'Press Start 2P', monospace; font-size: 14px; color: #3f8f7a">$12.75</div>
+</div>
+</div>
+
+<div style="position: absolute; left: 320px; top: 34px; display: flex; gap: 18px; align-items: flex-start">
+<div style="width: 190px; box-sizing: border-box; padding: 18px 14px 14px; background: #fff7ea; border: 3px solid #2b2230; box-shadow: 4px 4px 0 0 rgba(43, 34, 48, 0.3); transform: rotate(-2deg); display: flex; flex-direction: column; gap: 6px">
+<div style="font-family: 'Press Start 2P', monospace; font-size: 12px">#12</div>
+<div style="font-size: 24px; line-height: 1">Burger, medium<br>+ cheese<br>+ fries</div>
+<div style="height: 10px; border: 2px solid #2b2230; background: #e7d3a1"><div style="width: 20%; height: 100%; background: #9b2d30"></div></div>
+</div>
+<div style="width: 190px; box-sizing: border-box; padding: 18px 14px 14px; background: #fff7ea; border: 3px solid #2b2230; box-shadow: 4px 4px 0 0 rgba(43, 34, 48, 0.3); transform: rotate(1deg); display: flex; flex-direction: column; gap: 6px">
+<div style="font-family: 'Press Start 2P', monospace; font-size: 12px">#13</div>
+<div style="font-size: 24px; line-height: 1">Burger, well<br>no onion</div>
+<div style="height: 10px; border: 2px solid #2b2230; background: #e7d3a1"><div style="width: 60%; height: 100%; background: #c9953c"></div></div>
+</div>
+<div style="width: 190px; box-sizing: border-box; padding: 18px 14px 14px; background: #fff7ea; border: 3px solid #2b2230; box-shadow: 4px 4px 0 0 rgba(43, 34, 48, 0.3); transform: rotate(-1deg); display: flex; flex-direction: column; gap: 6px">
+<div style="font-family: 'Press Start 2P', monospace; font-size: 12px">#14</div>
+<div style="font-size: 24px; line-height: 1">Double, rare<br>+ fries</div>
+<div style="height: 10px; border: 2px solid #2b2230; background: #e7d3a1"><div style="width: 90%; height: 100%; background: #3f8f7a"></div></div>
+</div>
+</div>
+
+<div style="position: absolute; left: 16px; bottom: 16px; width: 540px; box-sizing: border-box; padding: 14px 20px; background: #f4ecd6; border: 4px solid #2b2230; box-shadow: inset 0 0 0 3px #e7d3a1, inset 0 0 0 6px #8a5a2b, 4px 4px 0 0 rgba(43, 34, 48, 0.4); font-size: 28px; line-height: 1.1">Flip each patty once, then plate it before the ticket runs out.</div>
+
+<div style="position: absolute; right: 16px; bottom: 16px; display: flex; gap: 12px">
+<a href="Overworld.dc.html" style="display: flex; align-items: center; min-height: 56px; padding: 0 18px; background: #f4ecd6; border: 4px solid #2b2230; color: #2b2230; text-decoration: none; font-family: 'Press Start 2P', monospace; font-size: 12px">[B] QUIT</a>
+<button type="button" style="min-height: 64px; padding: 0 24px; background: #b5553c; border: 4px solid #2b2230; box-shadow: inset 0 -6px 0 0 #7d3326, 4px 4px 0 0 rgba(43, 34, 48, 0.4); color: #fff7ea; font-family: 'Press Start 2P', monospace; font-size: 14px; cursor: pointer">[A] FLIP</button>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":960,"height":640}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Minigame — Curtain Call</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;family=VT323&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#1f1830}
+a{color:#2b2230}a:hover{color:#b5553c}
+</style>
+</helmet>
+<div style="width: 960px; height: 640px; position: relative; overflow: hidden; background: #1f1830; font-family: 'VT323', monospace; color: #2b2230">
+<svg width="960" height="640" viewBox="0 0 240 160" shape-rendering="crispEdges" aria-hidden="true" style="position: absolute; left: 0; top: 0; display: block">
+<defs>
+<pattern id="mh-curtain" width="6" height="8" patternUnits="userSpaceOnUse">
+<rect width="6" height="8" fill="#9b2d30"></rect>
+<rect x="4" width="2" height="8" fill="#7a1f24"></rect>
+<rect x="1" width="1" height="8" fill="#b8403f"></rect>
+</pattern>
+<pattern id="mh-wood" width="16" height="4" patternUnits="userSpaceOnUse">
+<rect width="16" height="4" fill="#a86b3a"></rect>
+<path d="M0 3h16v1h-16z M9 0h1v3h-1z" fill="#8a5a2b"></path>
+</pattern>
+</defs>
+
+<rect width="240" height="160" fill="#1f1830"></rect>
+<rect x="20" y="8" width="200" height="104" fill="#2e2445"></rect>
+<path d="M110 8L130 8L162 108L78 108Z" fill="#fff4c2" opacity="0.12" shape-rendering="auto"></path>
+<rect x="20" y="104" width="200" height="16" fill="url(#mh-wood)"></rect>
+<ellipse cx="120" cy="111" rx="40" ry="5" fill="#fff4c2" opacity="0.2" shape-rendering="auto"></ellipse>
+<rect x="20" y="120" width="200" height="3" fill="#5a3a22"></rect>
+
+<path d="M72 8h24v96h-24z M97 8h23v96h-23z M121 8h23v96h-23z M145 8h23v96h-23z" fill="#140f20" opacity="0.5"></path>
+<path d="M72 8h1v96h-1z M96 8h1v96h-1z M120 8h1v96h-1z M144 8h1v96h-1z M168 8h1v96h-1z" fill="#6a5f80" opacity="0.6"></path>
+<rect x="72" y="86" width="97" height="1" fill="#f7d58c" opacity="0.8"></rect>
+
+<g transform="translate(78 88) rotate(-90 6 6)"><path d="M5 1h2v1h-2z M4 2h4v1h-4z M3 3h6v1h-6z M2 4h8v1h-8z M4 5h4v6h-4z" fill="#4a3f63"></path></g>
+<g transform="translate(102 88) rotate(180 6 6)"><path d="M5 1h2v1h-2z M4 2h4v1h-4z M3 3h6v1h-6z M2 4h8v1h-8z M4 5h4v6h-4z" fill="#4a3f63"></path></g>
+<g transform="translate(126 88)"><path d="M5 1h2v1h-2z M4 2h4v1h-4z M3 3h6v1h-6z M2 4h8v1h-8z M4 5h4v6h-4z" fill="#f2b84b"></path></g>
+<g transform="translate(150 88) rotate(90 6 6)"><path d="M5 1h2v1h-2z M4 2h4v1h-4z M3 3h6v1h-6z M2 4h8v1h-8z M4 5h4v6h-4z" fill="#4a3f63"></path></g>
+
+<path d="M131 80h2v4h-2z M131 104h2v2h-2z M118 93h4v2h-4z M142 93h4v2h-4z M122 83h2v2h-2z M140 83h2v2h-2z M122 102h2v2h-2z M140 102h2v2h-2z" fill="#fff4c2"></path>
+
+<g transform="translate(78 58) rotate(-90 6 6)"><path d="M5 1h2v1h-2z M4 2h4v1h-4z M3 3h6v1h-6z M2 4h8v1h-8z M4 5h4v6h-4z" fill="#f29bab"></path></g>
+<g transform="translate(78 18) rotate(-90 6 6)"><path d="M5 1h2v1h-2z M4 2h4v1h-4z M3 3h6v1h-6z M2 4h8v1h-8z M4 5h4v6h-4z" fill="#f29bab"></path></g>
+<g transform="translate(102 40) rotate(180 6 6)"><path d="M5 1h2v1h-2z M4 2h4v1h-4z M3 3h6v1h-6z M2 4h8v1h-8z M4 5h4v6h-4z" fill="#6f9fd8"></path></g>
+<g transform="translate(126 28)"><path d="M5 1h2v1h-2z M4 2h4v1h-4z M3 3h6v1h-6z M2 4h8v1h-8z M4 5h4v6h-4z" fill="#f2b84b"></path></g>
+<g transform="translate(150 66) rotate(90 6 6)"><path d="M5 1h2v1h-2z M4 2h4v1h-4z M3 3h6v1h-6z M2 4h8v1h-8z M4 5h4v6h-4z" fill="#6cc3a0"></path></g>
+<g transform="translate(150 12) rotate(90 6 6)"><path d="M5 1h2v1h-2z M4 2h4v1h-4z M3 3h6v1h-6z M2 4h8v1h-8z M4 5h4v6h-4z" fill="#6cc3a0"></path></g>
+
+<path d="M20 8h44v40h-4v20h-6v20h-4v32h-30z" fill="url(#mh-curtain)"></path>
+<path d="M220 8h-44v40h4v20h6v20h4v32h30z" fill="url(#mh-curtain)"></path>
+<path d="M44 86h10v3h-10z M186 86h10v3h-10z" fill="#f2b84b"></path>
+<rect x="20" y="8" width="200" height="10" fill="#7a1f24"></rect>
+<path d="M20 18h10v2h-10z M40 18h10v2h-10z M60 18h10v2h-10z M80 18h10v2h-10z M100 18h10v2h-10z M120 18h10v2h-10z M140 18h10v2h-10z M160 18h10v2h-10z M180 18h10v2h-10z M200 18h10v2h-10z" fill="#7a1f24"></path>
+<rect x="20" y="17" width="200" height="1" fill="#c9953c"></rect>
+<path d="M16 4h208v4h-208z M16 4h4v120h-4z M220 4h4v120h-4z" fill="#c9953c"></path>
+<rect x="20" y="8" width="200" height="1" fill="#8a6a2a"></rect>
+
+<rect x="0" y="124" width="240" height="36" fill="#140f20"></rect>
+<path d="M30 124h2v4h-2z M36 124h2v4h-2z M150 122h2v5h-2z M156 122h2v5h-2z M204 124h2v4h-2z" fill="#2e2540"></path>
+<path d="M4 131h8v7h-8z M20 131h8v7h-8z M36 131h8v7h-8z M52 131h8v7h-8z M68 131h8v7h-8z M84 131h8v7h-8z M100 131h8v7h-8z M116 131h8v7h-8z M132 131h8v7h-8z M148 131h8v7h-8z M164 131h8v7h-8z M180 131h8v7h-8z M196 131h8v7h-8z M212 131h8v7h-8z M228 131h8v7h-8z" fill="#2e2540"></path>
+<path d="M10 144h10v10h-10z M26 144h10v10h-10z M42 144h10v10h-10z M58 144h10v10h-10z M74 144h10v10h-10z M90 144h10v10h-10z M106 144h10v10h-10z M122 144h10v10h-10z M138 144h10v10h-10z M154 144h10v10h-10z M170 144h10v10h-10z M186 144h10v10h-10z M202 144h10v10h-10z M218 144h10v10h-10z M234 144h10v10h-10z" fill="#3a3050"></path>
+<rect x="0" y="152" width="240" height="8" fill="#2a1f38"></rect>
+</svg>
+
+<div style="position: absolute; left: 504px; top: 280px; width: 160px; text-align: center; font-family: 'Press Start 2P', monospace; font-size: 20px; color: #f7d58c; text-shadow: 3px 3px 0 #9b2d30, 5px 5px 0 #140f20">GREAT!</div>
+
+<div style="position: absolute; left: 16px; top: 16px; width: 280px; box-sizing: border-box; padding: 16px 20px; background: #f4ecd6; border: 4px solid #2b2230; box-shadow: inset 0 0 0 3px #e7d3a1, inset 0 0 0 6px #8a5a2b, 4px 4px 0 0 rgba(0, 0, 0, 0.5); display: flex; flex-direction: column; gap: 10px">
+<h1 style="margin: 0; font-family: 'Press Start 2P', monospace; font-size: 16px; font-weight: 400">CURTAIN CALL</h1>
+<div style="font-size: 24px; line-height: 1; color: #6b4a3a">Mahaiwe Performing Arts Center</div>
+</div>
+
+<div style="position: absolute; right: 16px; top: 16px; width: 220px; box-sizing: border-box; padding: 16px 20px; background: #f4ecd6; border: 4px solid #2b2230; box-shadow: inset 0 0 0 3px #e7d3a1, inset 0 0 0 6px #8a5a2b, 4px 4px 0 0 rgba(0, 0, 0, 0.5); display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: baseline">
+<div style="font-family: 'Press Start 2P', monospace; font-size: 10px">SCORE</div>
+<div style="font-family: 'Press Start 2P', monospace; font-size: 14px">04,820</div>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: baseline">
+<div style="font-family: 'Press Start 2P', monospace; font-size: 10px">COMBO</div>
+<div style="font-family: 'Press Start 2P', monospace; font-size: 14px; color: #9b2d30">×12</div>
+</div>
+</div>
+
+<div style="position: absolute; left: 240px; bottom: 20px; width: 480px; box-sizing: border-box; padding: 14px 20px; background: #f4ecd6; border: 4px solid #2b2230; box-shadow: inset 0 0 0 3px #e7d3a1, inset 0 0 0 6px #8a5a2b, 4px 4px 0 0 rgba(0, 0, 0, 0.5); display: flex; align-items: center; gap: 14px">
+<div style="font-family: 'Press Start 2P', monospace; font-size: 10px">APPLAUSE</div>
+<div style="flex-grow: 1; height: 16px; border: 3px solid #2b2230; background: #e7d3a1">
+<div style="width: 72%; height: 100%; background: #c9953c"></div>
+</div>
+</div>
+
+<a href="Overworld.dc.html" style="position: absolute; right: 16px; bottom: 20px; display: flex; align-items: center; min-height: 56px; padding: 0 18px; background: #f4ecd6; border: 4px solid #2b2230; color: #2b2230; text-decoration: none; font-family: 'Press Start 2P', monospace; font-size: 12px">[B] QUIT</a>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":960,"height":640}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>
