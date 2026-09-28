@@ -39,7 +39,61 @@ export const SCENERY = {
     lawnDark: '#243a24',
     curb: '#6b5f5a',
     asphaltDusk: '#4a4452',
-    laneLine: '#f2c94c'
+    laneLine: '#f2c94c',
+    goldenTint: '#f2963c',
+    nightTint: '#1c1850',
+
+    // Overworld ground, from docs/mocks/Overworld.dc.html
+    grassLight: '#98cd6c',
+    paverJoint: '#c2ab7f',
+    asphaltSpeck: '#615e6e',
+    curbStone: '#8e8a7a',
+    waterLight: '#a9c9ee',
+    waterDeep: '#5a86c0',
+    plank: '#b07a35',
+
+    // Overworld buildings
+    brickMortar: '#8f3f2c',
+    shinglePurple: '#5b4a6e',
+    shinglePurpleLine: '#4a3b5b',
+    shingleRed: '#9a4040',
+    shingleRedLine: '#7a2f30',
+    roofRedEdge: '#5a1f22',
+    shingleTeal: '#4a7b8c',
+    shingleTealLine: '#386473',
+    roofTealEdge: '#2c4f5a',
+    shingleGreen: '#5e8a4a',
+    shingleGreenLine: '#4a7039',
+    facadeCream: '#e8d9b5',
+    facadePink: '#f3c6c8',
+    facadeSage: '#a7c49a',
+    facadeSageLine: '#8fae82',
+    facadeNavy: '#3d4f7a',
+    facadeNavyLine: '#34446a',
+    facadeMustard: '#e0a040',
+    facadeMustardLine: '#c98d33',
+    whiteCream: '#fff7ea',
+    glassShine: '#cfe6f5',
+    signGreen: '#2f7a4f',
+    ochre: '#d9a45b',
+
+    // Overworld plants and props
+    leaf: '#4e8a36',
+    leafLight: '#6fae4f',
+    leafDark: '#3a6b28',
+    bark: '#6b3e22',
+    carBlue: '#4b6fb5',
+    carBlueDark: '#3d5a96',
+    glassLight: '#bfe3ef',
+
+    // People
+    skinLight: '#f1c27d',
+    skinTan: '#c68642',
+    skinDeep: '#8d5a3b',
+    hairBrown: '#5a3a22',
+    hairGray: '#a09aa6',
+    shirtOlive: '#6b8f3a',
+    mintLight: '#a8e0c8'
 } as const;
 
 const COLORS = { ...PALETTE, ...SCENERY };
