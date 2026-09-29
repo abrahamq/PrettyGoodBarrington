@@ -88,8 +88,16 @@ function scoop(base: ColorName, shade: ColorName, shine: ColorName, extras: Laye
     ];
 }
 
+// Vanilla is nearly the color of the cream floor and panels, so it gets an outline, ridge lines,
+// and bean flecks to stay readable. The outline follows the scoop's edge, drips included.
+const VANILLA_OUTLINE = 'M3 0h10v1h-10z M1 1h2v1h-2z M13 1h2v1h-2z M1 2h1v1h-1z M14 2h1v1h-1z M0 3h1v5h-1z M15 3h1v5h-1z M1 8h1v1h-1z M5 8h3v1h-3z M10 8h2v1h-2z M14 8h1v1h-1z M2 9h1v1h-1z M4 9h1v1h-1z M8 9h2v1h-2z M12 9h2v1h-2z M2 10h3v1h-3z M12 10h2v1h-2z';
+
 export const SCOOPS: Record<Flavor, Layer[]> = {
-    vanilla: scoop('vanillaIce', 'vanillaShade', 'white'),
+    vanilla: scoop('vanillaIce', 'vanillaShade', 'white', [
+        { color: 'paverJoint', path: 'M3 5h4v1h-4z M9 4h4v1h-4z' },
+        { color: 'bark', path: 'M7 3h1v1h-1z M11 6h1v1h-1z M4 6h1v1h-1z' },
+        { color: 'scoopOutline', path: VANILLA_OUTLINE }
+    ]),
     darkChoc: scoop('bark', 'chocShade', 'chocShine'),
     strawberry: scoop('pink', 'strawberryShade', 'strawberryShine'),
     mintChip: scoop('mintLight', 'mintTrimDark', 'mintShine', [{ color: 'ink', path: 'M5 4h1v1h-1z M10 5h1v1h-1z M7 7h1v1h-1z' }])
@@ -98,14 +106,23 @@ export const SCOOPS: Record<Flavor, Layer[]> = {
 // 16x12 HUD icons: a scoop for each stacked flavor, and an outline for scoops still to go.
 const ICON_SHAPE = 'M3 0h10v1h-10z M1 1h14v2h-14z M0 3h16v6h-16z M2 9h12v2h-12z';
 
+// The vanilla icon would vanish on the cream HUD panel, so it gets the same outline as the scoop.
+const ICON_EXTRAS: Partial<Record<Flavor, Layer[]>> = {
+    vanilla: [{
+        color: 'scoopOutline',
+        path: 'M3 0h10v1h-10z M1 1h2v1h-2z M13 1h2v1h-2z M1 2h1v1h-1z M14 2h1v1h-1z M0 3h1v5h-1z M15 3h1v5h-1z M2 9h1v1h-1z M13 9h1v1h-1z M2 10h12v1h-12z'
+    }]
+};
+
 export function scoopIcon(flavor: Flavor): Layer[] {
     const base = SCOOPS[flavor][0].color;
     return [
         { color: base, path: ICON_SHAPE },
-        { color: 'ink', path: 'M0 8h16v1h-16z' }
+        { color: 'ink', path: 'M0 8h16v1h-16z' },
+        ...(ICON_EXTRAS[flavor] ?? [])
     ];
 }
 
 export const EMPTY_SCOOP_ICON: Layer[] = [
-    { color: 'emptyScoop', path: 'M3 0h10v1h-10z M1 1h2v1h-2z M13 1h2v1h-2z M0 2h1v7h-1z M15 2h1v7h-1z M1 9h1v1h-1z M14 9h1v1h-1z M2 10h12v1h-12z' }
+    { color: 'scoopOutline', path: 'M3 0h10v1h-10z M1 1h2v1h-2z M13 1h2v1h-2z M0 2h1v7h-1z M15 2h1v7h-1z M1 9h1v1h-1z M14 9h1v1h-1z M2 10h12v1h-12z' }
 ];

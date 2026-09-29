@@ -103,7 +103,7 @@ export const SCENERY = {
     strawberryShade: '#d97787',
     strawberryShine: '#ffd6de',
     mintShine: '#e3f7ee',
-    emptyScoop: '#a88f63',
+    scoopOutline: '#a88f63',
 
     // GB Eats (Order Up!), from docs/mocks/GBEats.dc.html
     dinerGrout: '#ddd0b3',
