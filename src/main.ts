@@ -4,8 +4,9 @@ import './style.css';
 import { GAME_HEIGHT, GAME_WIDTH } from './layout.ts';
 import { PALETTE } from './palette.ts';
 import { Boot } from './scenes/Boot.ts';
+import { Calibrate } from './scenes/Calibrate.ts';
+import { CurtainCall } from './scenes/minigames/CurtainCall.ts';
 import { OrderUp } from './scenes/minigames/OrderUp.ts';
-import { MinigamePlaceholder } from './scenes/minigames/Placeholder.ts';
 import { ScoopStack } from './scenes/minigames/ScoopStack.ts';
 import { Options } from './scenes/Options.ts';
 import { Overworld } from './scenes/Overworld.ts';
@@ -28,11 +29,12 @@ const config: Phaser.Types.Core.GameConfig = {
         Boot,
         Title,
         Options,
+        Calibrate,
         Overworld,
         UI,
         ScoopStack,
         OrderUp,
-        new MinigamePlaceholder('CurtainCall', 'CURTAIN CALL', 5)
+        CurtainCall
     ]
 };
 

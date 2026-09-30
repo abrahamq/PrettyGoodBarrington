@@ -1,4 +1,5 @@
-// Options screen: turn sound and the on-screen d-pad on or off, and erase the save (after a confirm step).
+// Options screen: turn sound and the on-screen d-pad on or off, open the rhythm-game Calibrate screen,
+// and erase the save (after a confirm step).
 // Escape, Backspace, or BACK returns to the Title menu.
 import { Scene } from 'phaser';
 import { TEXTURES } from '../art/textures.ts';
@@ -35,6 +36,7 @@ export class Options extends Scene {
         this.menu = new Menu(this, CENTER_X, MENU_TOP, [
             { label: switchLabel('SOUND', settings.sound), onSelect: () => this.toggleSound() },
             { label: switchLabel('D-PAD', settings.dpad), onSelect: () => this.toggleDpad() },
+            { label: 'CALIBRATE', onSelect: () => this.scene.start('Calibrate') },
             { label: 'RESET SAVE', enabled: hasSave(), onSelect: () => this.confirmReset() },
             { label: 'BACK', onSelect: () => this.back() }
         ], { heading, onCancel: () => this.back() });

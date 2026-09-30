@@ -36,6 +36,8 @@ export class Title extends Scene {
         }
     }
 
+    // This first tap or key press also unlocks audio: Phaser listens for it on the page (mobile browsers
+    // block sound until the player touches the page).
     private waitForStart(): void {
         const prompt = addPixelText(this, centeredX('PRESS START', CENTER_X), 145, 'PRESS START', 'cream');
         const blink = this.time.addEvent({
