@@ -10,6 +10,7 @@ import {
 import type { Doneness } from '../logic/orderUp.ts';
 import type { Flavor } from '../logic/scoopStack.ts';
 import { BURGER, EXTRA_ICONS, KITCHEN_BACKGROUND, PATTIES, SMOKE } from './diner.ts';
+import { LANE_COLORS, SPARKLE, STAGE_BACKGROUND, arrow } from './stage.ts';
 import { CONE, EMPTY_SCOOP_ICON, SCOOPS, SHOP_BACKGROUND, scoopIcon } from './scoopShop.ts';
 import { rectPath } from './svgPath.ts';
 import { TITLE_BACKGROUND } from './titleBackground.ts';
@@ -30,8 +31,15 @@ export const TEXTURES = {
     smoke: 'smoke',
     burger: 'burger',
     cheeseIcon: 'icon-cheese',
-    friesIcon: 'icon-fries'
+    friesIcon: 'icon-fries',
+    stageBackground: 'stage-bg',
+    targetOff: 'arrow-off',
+    targetLit: 'arrow-lit',
+    sparkle: 'sparkle'
 } as const;
+
+// One note color per lane: left, down, up, right.
+export const NOTE_TEXTURES = ['note-left', 'note-down', 'note-up', 'note-right'];
 
 export const PATTY_TEXTURES: Record<Doneness, string> = {
     raw: 'patty-raw',
@@ -85,6 +93,14 @@ export function generatePlaceholderTextures(scene: Scene): void {
     for (const doneness of Object.keys(PATTIES) as Doneness[]) {
         makeTexture(scene, PATTY_TEXTURES[doneness], 16, 10, (graphics) => paintArt(graphics, PATTIES[doneness]));
     }
+
+    makeTexture(scene, TEXTURES.stageBackground, 240, 160, (graphics) => paintArt(graphics, STAGE_BACKGROUND));
+    makeTexture(scene, TEXTURES.targetOff, 12, 12, (graphics) => paintArt(graphics, arrow('receptorOff')));
+    makeTexture(scene, TEXTURES.targetLit, 12, 12, (graphics) => paintArt(graphics, arrow('gold')));
+    makeTexture(scene, TEXTURES.sparkle, 28, 26, (graphics) => paintArt(graphics, SPARKLE));
+    LANE_COLORS.forEach((color, lane) => {
+        makeTexture(scene, NOTE_TEXTURES[lane], 12, 12, (graphics) => paintArt(graphics, arrow(color)));
+    });
 
     if (makeTexture(scene, TEXTURES.player, CHARACTER_WIDTH * PLAYER_FRAMES_PER_ROW, CHARACTER_HEIGHT * PLAYER_ROWS.length, paintPlayer)) {
         addPlayerFrames(scene);

@@ -117,6 +117,21 @@ export const SCENERY = {
     pattyRare: '#b8645a',
     pattyRareLight: '#d98b7e',
 
+    // Mahaiwe stage (Curtain Call), from docs/mocks/Mahaiwe.dc.html
+    stageDark: '#1f1830',
+    stageBack: '#2e2445',
+    spotlight: '#fff4c2',
+    curtainShade: '#7a1f24',
+    curtainLight: '#b8403f',
+    laneShadow: '#140f20',
+    laneEdge: '#6a5f80',
+    receptorOff: '#4a3f63',
+    stageFrame: '#c9953c',
+    stageFrameDark: '#8a6a2a',
+    audienceHead: '#2e2540',
+    audienceBack: '#3a3050',
+    audienceFloor: '#2a1f38',
+
     // People
     skinLight: '#f1c27d',
     skinTan: '#c68642',
