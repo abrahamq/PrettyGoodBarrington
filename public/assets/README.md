@@ -25,6 +25,10 @@ All sizes are in game pixels. The game draws at 240x160 and scales up with neare
 | `smoke` | 10x11 | Smoke puffs over a burnt patty. | Order Up! |
 | `burger` | 20x16 | The finished burger shown on the plate after a good order. | Order Up! |
 | `icon-cheese`, `icon-fries` | 7x6 each | Extras icons on order tickets. | Order Up! |
+| `stage-bg` | 240x160 | The Mahaiwe stage: backdrop, spotlight, wood floor, four lanes with the gold hit line, curtains, valance, gold frame, audience. | Curtain Call |
+| `note-left`, `note-down`, `note-up`, `note-right` | 12x12 each | A note arrow, pointing up (the game turns it per lane). Pink, blue, amber, mint. | Curtain Call |
+| `arrow-off`, `arrow-lit` | 12x12 each | The targets on the hit line, dark and lit gold. | Curtain Call, Calibrate |
+| `sparkle` | 28x26 | Bright bits around a target on a Great hit, centered on (14, 14). | Curtain Call |
 | `npc-scooper`, `npc-grillcook`, `npc-usher`, `npc-pizzaiolo`, `npc-projectionist`, `npc-grocer`, `npc-clerk`, `npc-ranger`, `npc-local`, `npc-dog` | 12x16 each | One standing frame, facing down (the local faces up). Feet on the bottom row. | Overworld |
 
 ## Map
