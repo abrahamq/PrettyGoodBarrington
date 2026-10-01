@@ -5,9 +5,11 @@ import { GAME_HEIGHT, GAME_WIDTH } from './layout.ts';
 import { PALETTE } from './palette.ts';
 import { Boot } from './scenes/Boot.ts';
 import { Calibrate } from './scenes/Calibrate.ts';
+import { Leaderboard } from './scenes/Leaderboard.ts';
 import { CurtainCall } from './scenes/minigames/CurtainCall.ts';
 import { OrderUp } from './scenes/minigames/OrderUp.ts';
 import { ScoopStack } from './scenes/minigames/ScoopStack.ts';
+import { NameEntry } from './scenes/NameEntry.ts';
 import { Options } from './scenes/Options.ts';
 import { Overworld } from './scenes/Overworld.ts';
 import { Title } from './scenes/Title.ts';
@@ -30,6 +32,8 @@ const config: Phaser.Types.Core.GameConfig = {
         Title,
         Options,
         Calibrate,
+        Leaderboard,
+        NameEntry,
         Overworld,
         UI,
         ScoopStack,

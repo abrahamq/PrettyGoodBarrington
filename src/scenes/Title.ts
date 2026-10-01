@@ -1,5 +1,5 @@
 // Title screen, matching docs/mocks/Main.dc.html: the sunset backdrop, the logo, and the main menu
-// (New Game, Continue, Options). It first shows a blinking PRESS START; the first key or tap opens the menu.
+// (New Game, Continue, Leaderboard, Options). It first shows a blinking PRESS START; the first key or tap opens the menu.
 import { Scene } from 'phaser';
 import { TEXTURES } from '../art/textures.ts';
 import { CENTER_X } from '../layout.ts';
@@ -14,7 +14,7 @@ interface TitleData {
 }
 
 const TAGLINE = ['A downtown adventure', 'in the Berkshires'];
-const MENU_TOP = 98;
+const MENU_TOP = 88;
 const CONFIRM_TOP = 92;
 
 export class Title extends Scene {
@@ -58,6 +58,7 @@ export class Title extends Scene {
         this.menu = new Menu(this, CENTER_X, MENU_TOP, [
             { label: 'NEW GAME', onSelect: () => this.newGame() },
             { label: 'CONTINUE', enabled: hasSave(), onSelect: () => this.continueGame() },
+            { label: 'LEADERBOARD', onSelect: () => this.scene.start('Leaderboard') },
             { label: 'OPTIONS', onSelect: () => this.scene.start('Options') }
         ]);
     }

@@ -1,6 +1,6 @@
 // Checks how a finished minigame changes the save: stamps, best scores, and the stamp count.
 import { describe, expect, it } from 'vitest';
-import { applyResult, isMinigameResult, stampCount } from '../src/state/progress.ts';
+import { applyResult, isMinigameResult, leaderboardProgress, stampCount } from '../src/state/progress.ts';
 import { newSave } from '../src/state/save.ts';
 
 describe('applyResult', () => {
@@ -55,6 +55,16 @@ describe('stampCount', () => {
         save.stamps.mahaiwe = true;
 
         expect(stampCount(save)).toBe(2);
+    });
+});
+
+describe('leaderboardProgress', () => {
+    it('sends the stamp count and the tips total', () => {
+        const save = newSave();
+        save.stamps.soco = true;
+        save.tips = 1250;
+
+        expect(leaderboardProgress(save)).toEqual({ stamps: 1, tipsCents: 1250 });
     });
 });
 

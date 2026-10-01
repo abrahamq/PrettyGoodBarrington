@@ -3,6 +3,7 @@
 // Minigames hand their result back to the Overworld as { stopId, passed, score }, plus `tips` (in cents)
 // from Order Up!, which add to the saved total whether the round was won or not.
 import { STOPS, type StopId } from '../data/stops.ts';
+import type { Progress } from '../net/leaderboardClient.ts';
 import type { SaveData } from './save.ts';
 import { isRecord } from './storage.ts';
 
@@ -27,6 +28,10 @@ export function applyResult(save: SaveData, result: MinigameResult): SaveData {
 
 export function stampCount(save: SaveData): number {
     return Object.values(save.stamps).filter(Boolean).length;
+}
+
+export function leaderboardProgress(save: SaveData): Progress {
+    return { stamps: stampCount(save), tipsCents: save.tips };
 }
 
 export function isStopId(value: unknown): value is StopId {
