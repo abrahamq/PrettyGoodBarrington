@@ -2,6 +2,8 @@
 // without adding @types/node (it is not on the allowed dependency list).
 
 declare module 'node:fs' {
+    export function existsSync(path: string): boolean;
+    export function mkdirSync(path: string, options?: { recursive?: boolean }): string | undefined;
     export function writeFileSync(path: string, data: string | Uint8Array): void;
 }
 

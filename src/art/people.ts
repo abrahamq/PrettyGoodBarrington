@@ -4,7 +4,7 @@
 // The player is one of three boys (src/data/characters.ts). Each stands at his own height inside the frame:
 // the 5-year-old is 11 pixels tall, the 11-year-old 14, and the 15-year-old 16, as tall as the adults.
 import type { CharacterId } from '../data/characters.ts';
-import type { Layer } from './paint.ts';
+import { drawLayers, type Layer, type PixelTarget } from './paint.ts';
 import type { ColorName } from '../palette.ts';
 
 export const CHARACTER_WIDTH = 12;
@@ -13,6 +13,8 @@ export const CHARACTER_HEIGHT = 16;
 // Rows of each player spritesheet, top to bottom. Each row has 3 frames: standing, left foot, right foot.
 export const PLAYER_ROWS = ['down', 'left', 'right', 'up'] as const;
 export const PLAYER_FRAMES_PER_ROW = 3;
+export const PLAYER_SHEET_WIDTH = CHARACTER_WIDTH * PLAYER_FRAMES_PER_ROW;
+export const PLAYER_SHEET_HEIGHT = CHARACTER_HEIGHT * PLAYER_ROWS.length;
 
 export type PlayerRow = (typeof PLAYER_ROWS)[number];
 
@@ -122,6 +124,29 @@ export function playerFrame(character: CharacterId, row: PlayerRow, step: number
     const layers = [SHADOW, ...view, { color: 'ink', path: boy.legs[step] } satisfies Layer];
 
     return { layers, mirror: row === 'right' };
+}
+
+export function spriteUrl(key: string): string {
+    return `assets/sprites/${key}.png`;
+}
+
+export function drawPlayerSheet(target: PixelTarget, character: CharacterId): void {
+    PLAYER_ROWS.forEach((row, rowIndex) => {
+        for (let step = 0; step < PLAYER_FRAMES_PER_ROW; step++) {
+            const frame = playerFrame(character, row, step);
+            drawLayers(target, frame.layers, {
+                x: step * CHARACTER_WIDTH,
+                y: rowIndex * CHARACTER_HEIGHT,
+                width: CHARACTER_WIDTH,
+                height: CHARACTER_HEIGHT,
+                mirror: frame.mirror
+            });
+        }
+    });
+}
+
+export function drawNpc(target: PixelTarget, key: NpcKey): void {
+    drawLayers(target, NPC_ART[key], { width: CHARACTER_WIDTH, height: CHARACTER_HEIGHT });
 }
 
 interface PersonColors {

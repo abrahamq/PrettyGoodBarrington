@@ -5,10 +5,10 @@ import type { GameObjects, Scene } from 'phaser';
 import { TILESET_HEIGHT, TILESET_NAME, TILESET_WIDTH, drawTileset } from '../map/tileset.ts';
 import { drawLayers, graphicsTarget, type Layer } from './paint.ts';
 import {
-    CHARACTER_HEIGHT, CHARACTER_WIDTH, NPC_ART, NPC_KEYS, PLAYER_FRAMES_PER_ROW, PLAYER_ROWS, playerFrame, playerTextureKey,
-    walkAnimationKey
+    CHARACTER_HEIGHT, CHARACTER_WIDTH, NPC_KEYS, PLAYER_FRAMES_PER_ROW, PLAYER_ROWS, PLAYER_SHEET_HEIGHT, PLAYER_SHEET_WIDTH,
+    drawNpc, drawPlayerSheet, playerTextureKey, walkAnimationKey
 } from './people.ts';
-import { CHARACTER_IDS, type CharacterId } from '../data/characters.ts';
+import { CHARACTER_IDS } from '../data/characters.ts';
 import type { Doneness } from '../logic/orderUp.ts';
 import type { Flavor } from '../logic/scoopStack.ts';
 import { BURGER, EXTRA_ICONS, KITCHEN_BACKGROUND, PATTIES, SMOKE } from './diner.ts';
@@ -76,8 +76,7 @@ export function generatePlaceholderTextures(scene: Scene): void {
     makeTexture(scene, TEXTURES.tiles, TILESET_WIDTH, TILESET_HEIGHT, (graphics) => drawTileset(graphicsTarget(graphics)));
 
     for (const key of NPC_KEYS) {
-        makeTexture(scene, key, CHARACTER_WIDTH, CHARACTER_HEIGHT, (graphics) =>
-            drawLayers(graphicsTarget(graphics), NPC_ART[key], { width: CHARACTER_WIDTH, height: CHARACTER_HEIGHT }));
+        makeTexture(scene, key, CHARACTER_WIDTH, CHARACTER_HEIGHT, (graphics) => drawNpc(graphicsTarget(graphics), key));
     }
 
     makeTexture(scene, TEXTURES.socoBackground, 240, 160, (graphics) => paintArt(graphics, SHOP_BACKGROUND));
@@ -107,10 +106,9 @@ export function generatePlaceholderTextures(scene: Scene): void {
 
     for (const character of CHARACTER_IDS) {
         const key = playerTextureKey(character);
-        const width = CHARACTER_WIDTH * PLAYER_FRAMES_PER_ROW;
-        const height = CHARACTER_HEIGHT * PLAYER_ROWS.length;
+        const paint = (graphics: GameObjects.Graphics) => drawPlayerSheet(graphicsTarget(graphics), character);
 
-        if (makeTexture(scene, key, width, height, (graphics) => paintPlayer(graphics, character))) {
+        if (makeTexture(scene, key, PLAYER_SHEET_WIDTH, PLAYER_SHEET_HEIGHT, paint)) {
             addPlayerFrames(scene, key);
         }
     }
@@ -177,22 +175,6 @@ function paintPanel(graphics: GameObjects.Graphics): void {
         { color: 'wood', path: rectPath(2, 2, 3, 3) },
         { color: 'cream', path: rectPath(3, 3, 1, 1) }
     ]);
-}
-
-// 3 columns (standing, left foot, right foot) by 4 rows (down, left, right, up).
-function paintPlayer(graphics: GameObjects.Graphics, character: CharacterId): void {
-    PLAYER_ROWS.forEach((row, rowIndex) => {
-        for (let step = 0; step < PLAYER_FRAMES_PER_ROW; step++) {
-            const frame = playerFrame(character, row, step);
-            drawLayers(graphicsTarget(graphics), frame.layers, {
-                x: step * CHARACTER_WIDTH,
-                y: rowIndex * CHARACTER_HEIGHT,
-                width: CHARACTER_WIDTH,
-                height: CHARACTER_HEIGHT,
-                mirror: frame.mirror
-            });
-        }
-    });
 }
 
 // Numbers the frames 0-11, row by row, the same way load.spritesheet() numbers a real sheet.

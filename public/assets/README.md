@@ -4,6 +4,10 @@ The game draws placeholder art at startup (`src/art/textures.ts`). To swap in re
 
 All sizes are in game pixels. The game draws at 240x160 and scales up with nearest-neighbor filtering, so art must use whole pixels and no anti-aliasing.
 
+## Character sprites
+
+`npm run export:sprites` saves the player and NPC art from `src/art/people.ts` as PNGs in `assets/sprites/`, one file per key below. Boot loads them, so a pixel edit made in Aseprite, Piskel, or LibreSprite shows in the game. The script skips files that already exist. To redraw one from `people.ts`, delete it and run the script again.
+
 ## Textures
 
 | Key | Size | Layout | Used by |

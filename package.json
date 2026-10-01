@@ -14,6 +14,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "build:map": "node --experimental-strip-types --disable-warning=ExperimentalWarning scripts/build-map.ts",
+    "export:sprites": "node --experimental-strip-types --disable-warning=ExperimentalWarning scripts/export-sprites.ts",
     "server": "cd server && bin/rails server -b 0.0.0.0 -p 3030",
     "server:test": "cd server && bin/rails test",
     "wt": "sh scripts/worktree.sh add",
