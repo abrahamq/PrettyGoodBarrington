@@ -25,7 +25,7 @@ Mockups are in `docs/mocks/` as `.dc.html` files. They won't render on their own
 | `Mahaiwe.dc.html` | Curtain Call minigame |
 | `GBEats.dc.html` | Order Up! minigame |
 
-**Resolution:** internal size 240×160 (landscape, 3:2), with `pixelArt: true`, `Scale.FIT`, and `CENTER_BOTH`. Never render at fractional positions: round sprr enable `roundPixels`.
+**Resolution:** internal size 240×160 (landscape, 3:2), with `pixelArt: true`, `Scale.FIT`, and `CENTER_BOTH`. On wider screens the view grows sideways up to 384×160, so a phone in landscape has no black bars (added 2026-09-30; see `DECISIONS.md`). Never render at fractional positions: round sprr enable `roundPixels`.
 
 **Tiles:** 16×16. Character sprites are 12×16.
 
@@ -245,7 +245,7 @@ Open the passport from the HUD button or the P key. Back returns to the Overworl
 ### Phase 7 — Mobile polish and PWA
 
 - **Install and offline:** `vite-plugin-pwa` with a manifest (name, a 192 and 512 px icon made from the player sprite, `display: fullscreen`, `orientation: landscape`, theme color ink) and offline caching of all assets.
-- **Portrait handling:** in portrait, show a "rotate your phone" screen and pause the game.
+- **Portrait handling:** in portrait, show a "rotate your phone" screen and pause the game. (Done early, on 2026-09-30.)
 - **Layout:** respect safe areas (notches), and prevent scroll, pinch-zoom, and double-tap zoom on the canvas.
 - **Lifecycle:** pause and mute when the tab is hidden. Save on the `visibilitychange` event.
 - **Sound effects:** generate them with jsfxr-style tools or use CC0 packs. Add a mute toggle to the HUD.

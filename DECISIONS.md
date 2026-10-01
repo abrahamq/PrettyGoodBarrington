@@ -123,6 +123,17 @@ Choices that `docs/PLAN.md` does not cover. Each entry says what we chose and wh
 3. **The script never overwrites a file that exists**, so a re-run cannot erase your painting. `build:map` is different: it overwrites `tiles.png`. Painted art takes longer to make again than a Tiled edit.
 4. **One drawing path.** `drawPlayerSheet` and `drawNpc` moved into `people.ts`. The game draws with them on a Graphics object, and the export script draws with them on a pixel buffer, the same way the tileset works (Phase 2 decision 3).
 
+## Wide screens and phones (2026-09-30)
+
+1. **Landscape, fill the width.** You picked this over keeping 3:2 with side bars, and over a portrait handheld layout. The view stays 160 pixels tall and grows from 240 up to 384 pixels wide to match the screen (`viewWidthFor` in `src/layout.ts`). An iPhone 13 in Safari gets about 346-352. The width is always even, so the centered 240-wide stage starts on a whole pixel.
+2. **Screens keep their 240 layout.** Menus and minigames stay centered: `setStage` (`src/ui/stage.ts`) scrolls each scene's camera so the stage sits in the middle. No positions in the scenes changed.
+3. **Backgrounds reach past the stage.** The four backgrounds are now 384 wide. Layers marked `repeat` (sky bands, mountains, skyline, floors, tiles, audience) continue into the 72-pixel wings; one-off things (the sun, the theater marquee, the flavor board, the grill, the stage frame) stay in the middle. The skyline repeats, so the steeple shows again at the right edge.
+4. **HUD at the edges.** In the Overworld, the street name, clock, Passport button, d-pad, and A button stay at the screen edges, where thumbs are (`pinToEdges`). The dialogue box stays centered. The Overworld itself just shows more of the map.
+5. **Curtain Call.** The two outer tap lanes reach the real screen edges.
+6. **Turn your phone.** In portrait on a touch screen, a notice asks the player to turn the phone sideways (`index.html`, `style.css`), and `src/portrait.ts` pauses the game and suspends the audio clock, so Curtain Call stays in sync when the phone turns back. This was planned for Phase 7; it moved here because it is part of fitting the phone.
+7. **Rotating mid-game works.** When the screen size changes, the game changes its width and every centered screen and pinned HUD piece moves to match, with no restart.
+8. **Not done yet (Phase 7):** notch safe areas with `viewport-fit=cover`, and blocking pinch and double-tap zoom. Safari already keeps the page out of the notch area, so the notch shows the page's ink color.
+
 ## Jack and Trim the GB (2026-10-02)
 
 1. **A side game, not a ninth stamp.** Jack mows the lawn at the east end of the map, north of Main Street, beside the GB hedge with a flagpole between the letters. Talking to him ("Help me trim these bushes?") offers Trim the GB. It earns no stamp, so the passport stays at 8 and the leaderboard does not change. The save keeps the best score in a new `sideBests` field (`src/data/sideGames.ts` lists the side games). Older saves load with no side-game scores; the version stays at 1.
