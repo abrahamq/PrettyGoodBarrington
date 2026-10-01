@@ -93,3 +93,15 @@ Choices that `docs/PLAN.md` does not cover. Each entry says what we chose and wh
 8. **Audio unlock.** Phaser unlocks Web Audio on the first touch, click, or key press on the page, which is the Title screen's PRESS START. If Web Audio is not running when a song starts, Curtain Call plays silently on the page clock instead, so it never freezes.
 9. **HUD at 8px.** Changes from `Mahaiwe.dc.html`: the title panel reads CURTAIN / CALL with no subtitle; score and combo are stacked on four lines; the applause panel sits at the bottom left, next to [B] QUIT.
 10. **Placeholders removed.** All three minigames are real now, so the Phase 2 placeholder scene is gone.
+
+## Leaderboard (2026-09-30)
+
+1. **A Rails API in `server/`.** You asked for Ruby on Rails. It is API-only (`rails new --api --minimal`), with SQLite, in this repo so one commit can change both sides. The plan's "No server" rule now says the game must work fully without it. Design: `docs/superpowers/specs/2026-09-30-leaderboard-design.md`.
+2. **Names, no login.** The first SUBMIT asks for a name and the server returns a secret token, stored in `msq-leaderboard` apart from the save, so RESET SAVE keeps the name. Only the token's SHA-256 digest is stored on the server. If the server no longer knows the token (for example, after a database reset), the game forgets it and asks for a name again.
+3. **Ranking.** Most stamps, then most tips, then the earliest to reach that score. Scores only go up. SUBMIT is manual, so nothing is sent unless the player asks.
+4. **Self-reported scores.** A determined person can post fake numbers with `curl`. Value caps (8 stamps, $1000 in tips), a rate limit (10 per minute per IP), and removing rows by hand are the defense. That is enough for a hometown game.
+5. **Port 3030.** The game looks for the server on the page's host at port 3030, unless `VITE_LEADERBOARD_URL` is set. Port 3000 was already taken on this computer by another Rails app, which then got the game's requests.
+6. **5-second timeout.** On this Mac, a request to a LAN port with nothing on it hangs instead of failing (the firewall drops it), so without a timeout the screen would say LOADING forever.
+7. **Name picker keys.** Arrow keys and Enter work the letter grid. Typing a letter jumps the cursor to OK, so typing a name and pressing Enter sends it. Space types a space (it does not pick, unlike in menus); Backspace deletes; Escape goes back. Names are 3-10 characters; the game checks this before it sends, and the server checks again.
+8. **Layout.** The board shows 10 rows of 10 pixels (the stamp icon is 10 pixels tall). Status messages sit on a dark strip, because the title backdrop's road has yellow dashes behind them. The title menu moved up to y 88 to fit LEADERBOARD.
+9. **One gem added: `rack-cors`.** The game and the API run on different ports, so the browser needs CORS headers. The plan's dependency rule covers npm packages; this is a Ruby gem that the Rails template already lists, commented out.

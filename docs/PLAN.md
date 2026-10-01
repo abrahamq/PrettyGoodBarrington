@@ -9,7 +9,7 @@ This plan is written for Claude Code. Work through it one phase at a time. At th
 - **Mobile-first, no app stores.** The game runs in a phone browser and installs as a PWA ("Add to Home Screen"). It must also work on desktop with a keyboard.
 - **Engine:** Phaser 4, TypeScript, bundled with Vite. Scaffold with `npm create @phaserjs/game@latest` and pick Web Bundler → Vite → TypeScript. (Changed from JavaScript on 2026-09-27; see `DECISIONS.md`.)
 - **Allowed dependencies:** `phaser`, `vite`, `vitest`, `vite-plugin-pwa`, and `typescript`. Ask before adding anything else.
-- **No server.** All state lives in the browser (`localStorage`).
+- **No server needed.** All game state lives in the browser (`localStorage`). The optional leaderboard (added 2026-09-30) is a small Rails API in `server/`; the game works fully without it. See `DECISIONS.md`.
 - **I'm newer to JavaScript** (my background is Ruby). Keep code plain and readable, and prefer small, well-named functions over clever abstractions. Add a short comment at the top of each file explaining what it does.
 
 ## Visual spec
