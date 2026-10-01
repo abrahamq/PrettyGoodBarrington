@@ -24,6 +24,21 @@ You need [nvm](https://github.com/nvm-sh/nvm). This project uses Node 22.12.0, s
 | `npm run build` | Checks types, then builds the game into `dist/`. |
 | `npm run preview` | Serves `dist/`, so you can check the production build. |
 | `npm run build:map` | Makes `public/maps/downtown.json` and `public/maps/tiles.png` again from `src/map/`. This overwrites edits made in Tiled. |
+| `npm run wt -- <name>` | Makes a worktree at `.worktrees/<name>` on a new branch `<name>`, from your current commit. |
+| `npm run wt:rm -- <name>` | Removes that worktree. Git refuses if it has uncommitted changes. The branch is deleted only if it is merged. |
+| `npm run wt:ls` | Lists all worktrees. |
+
+## Work in a worktree
+
+A worktree is a second checkout of the repo on its own branch, so you can work on two things at once.
+
+1. `npm run wt -- my-feature`
+2. `cd .worktrees/my-feature`
+3. `npm run dev`. If port 8080 is in use, Vite takes the next free port and prints it.
+
+You do not run `npm install` in a worktree. Node looks for `node_modules` in each parent folder, so it finds the main one. If a branch adds a package, run `npm install` in that worktree; it then gets its own `node_modules`.
+
+Claude Code can make worktrees too: `claude -w my-feature` puts one in `.claude/worktrees/my-feature` on the branch `worktree-my-feature`. `.claude/settings.json` sets `worktree.baseRef` to `"head"`, so it starts from your local commit, not from `origin/main`.
 
 ## Controls
 
@@ -66,7 +81,7 @@ src/
 public/
   assets/         images, audio, fonts (README lists every texture key and size)
   maps/           downtown.json (Tiled format)
-scripts/          build-map.ts (run by Node; writes the map files)
+scripts/          build-map.ts (run by Node; writes the map files), worktree.sh (npm run wt)
 tests/            Vitest specs (*.test.ts)
 tsconfig.json     TypeScript settings (strict)
 docs/PLAN.md      the build plan, phase by phase

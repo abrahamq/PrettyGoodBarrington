@@ -6,7 +6,11 @@ export default defineConfig({
     // Relative asset paths, so the build also works from a GitHub Pages subfolder.
     base: './',
     server: {
-        port: 8080
+        port: 8080,
+        // Worktrees live inside this folder; each one runs its own dev server.
+        watch: {
+            ignored: ['**/.worktrees/**', '**/.claude/worktrees/**']
+        }
     },
     build: {
         // Phaser alone is about 1.4 MB minified. Keep it in its own file so the

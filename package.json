@@ -13,7 +13,10 @@
     "typecheck": "tsc",
     "test": "vitest run",
     "test:watch": "vitest",
-    "build:map": "node --experimental-strip-types --disable-warning=ExperimentalWarning scripts/build-map.ts"
+    "build:map": "node --experimental-strip-types --disable-warning=ExperimentalWarning scripts/build-map.ts",
+    "wt": "sh scripts/worktree.sh add",
+    "wt:rm": "sh scripts/worktree.sh remove",
+    "wt:ls": "sh scripts/worktree.sh list"
   },
   "dependencies": {
     "phaser": "4.2.1"

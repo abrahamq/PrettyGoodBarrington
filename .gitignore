@@ -84,3 +84,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Git worktrees (npm run wt, claude -w)
+.worktrees/
+.claude/worktrees/
