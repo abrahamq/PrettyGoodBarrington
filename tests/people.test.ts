@@ -1,5 +1,5 @@
 // Checks the three player boys: every frame fits the 12x16 character frame with feet on the bottom row,
-// and their sizes match the picks on Character Select (youngest shortest, 11-year-old widest).
+// and their heights and widths match the design (youngest shortest, 11-year-old widest).
 import { describe, expect, it } from 'vitest';
 import { CHARACTER_HEIGHT, CHARACTER_WIDTH, PLAYER_FRAMES_PER_ROW, PLAYER_ROWS, playerFrame } from '../src/art/people.ts';
 import { pathToSpans } from '../src/art/svgPath.ts';
@@ -49,11 +49,10 @@ describe('playerFrame', () => {
         expect(heights).toEqual([11, 14, 16]);
     });
 
-    it('makes the 11-year-old wider than the two skinny boys', () => {
-        const width = (character: CharacterId): number => standing(character).right - standing(character).left;
+    it('makes the 5-year-old 6 pixels wide, the 11-year-old 8, and the 15-year-old 6', () => {
+        const widths = CHARACTER_IDS.map((character) => standing(character).right - standing(character).left);
 
-        expect(width('eleven')).toBeGreaterThan(width('five'));
-        expect(width('eleven')).toBeGreaterThan(width('fifteen'));
+        expect(widths).toEqual([6, 8, 6]);
     });
 
     it('mirrors the left-facing art for the right-facing row', () => {
