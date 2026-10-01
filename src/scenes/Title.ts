@@ -1,10 +1,11 @@
 // Title screen, matching docs/mocks/Main.dc.html: the sunset backdrop, the logo, and the main menu
 // (New Game, Continue, Leaderboard, Options). It first shows a blinking PRESS START; the first key or tap opens the menu.
+// New Game opens Character Select; the old save stays until the player picks a boy there.
 import { Scene } from 'phaser';
 import { TEXTURES } from '../art/textures.ts';
 import { CENTER_X } from '../layout.ts';
-import { hasSave, loadSave, newSave, writeSave, type SaveData } from '../state/save.ts';
-import { startSession } from '../state/session.ts';
+import { hasSave, loadSave } from '../state/save.ts';
+import { startGame } from '../state/session.ts';
 import { onFirstInput } from '../ui/input.ts';
 import { Menu } from '../ui/Menu.ts';
 import { addPixelText, addShadowedText, centeredX } from '../ui/text.ts';
@@ -65,14 +66,14 @@ export class Title extends Scene {
 
     private newGame(): void {
         if (!hasSave()) {
-            this.beginGame(newSave());
+            this.chooseCharacter();
             return;
         }
 
         this.menu?.destroy();
         this.menu = new Menu(this, CENTER_X, CONFIRM_TOP, [
             { label: 'NO', onSelect: () => this.openMenu() },
-            { label: 'YES', onSelect: () => this.beginGame(newSave()) }
+            { label: 'YES', onSelect: () => this.chooseCharacter() }
         ], {
             heading: ['ERASE YOUR SAVE', 'AND START OVER?'],
             onCancel: () => this.openMenu()
@@ -83,14 +84,12 @@ export class Title extends Scene {
         const save = loadSave();
 
         if (save) {
-            this.beginGame(save);
+            startGame(this, save);
         }
     }
 
-    private beginGame(save: SaveData): void {
-        writeSave(save);
-        startSession(this, save);
-        this.scene.start('Overworld');
+    private chooseCharacter(): void {
+        this.scene.start('CharacterSelect');
     }
 }
 

@@ -1,6 +1,6 @@
 // The save that is in play right now. Scenes share it through Phaser's game-wide registry.
 import type { Scene } from 'phaser';
-import type { SaveData } from './save.ts';
+import { writeSave, type SaveData } from './save.ts';
 
 const SESSION_KEY = 'currentSave';
 
@@ -16,4 +16,10 @@ export function currentSave(scene: Scene): SaveData {
     }
 
     return save;
+}
+
+export function startGame(scene: Scene, save: SaveData): void {
+    writeSave(save);
+    startSession(scene, save);
+    scene.scene.start('Overworld');
 }
