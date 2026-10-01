@@ -3,7 +3,7 @@
 // NPCs, and signs. It also runs the clock and its time-of-day tint, and starts minigames.
 // The HUD and the dialogue box live in the UI scene, which runs on top of this one.
 import { Scene, type GameObjects, type Input } from 'phaser';
-import { PLAYER_FRAMES_PER_ROW, PLAYER_ROWS } from '../art/people.ts';
+import { PLAYER_FRAMES_PER_ROW, PLAYER_ROWS, playerTextureKey, walkAnimationKey } from '../art/people.ts';
 import { TEXTURES } from '../art/textures.ts';
 import { LINES, STOP_SCRIPTS, fillNames } from '../data/dialogue.ts';
 import { stopById, type StopId } from '../data/stops.ts';
@@ -80,10 +80,9 @@ export class Overworld extends Scene {
 
         this.tile = this.startTile();
         this.facing = (this.registry.get(FACING_KEY) as Direction | undefined) ?? 'down';
-        this.player = this.add.sprite(...pixelOf(this.tile), TEXTURES.player, idleFrame(this.facing))
+        this.player = this.add.sprite(...pixelOf(this.tile), playerTextureKey(this.save.character), idleFrame(this.facing))
             .setOrigin(0)
             .setDepth(DEPTH.player);
-        createWalkAnimations(this);
         this.setUpCamera();
 
         this.tint = this.add.rectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, 0, 0).setOrigin(0).setScrollFactor(0).setDepth(DEPTH.tint);
@@ -180,7 +179,7 @@ export class Overworld extends Scene {
         const [x, y] = pixelOf(next);
 
         this.moving = true;
-        this.player.anims.play(`walk-${this.facing}`, true);
+        this.player.anims.play(walkAnimationKey(this.save.character, this.facing), true);
         this.tweens.add({
             targets: this.player,
             x,
@@ -490,21 +489,4 @@ function standingSpots(item: Interactable): Tile[] {
     }
 
     return spots;
-}
-
-// Walk cycle: left foot, standing, right foot, standing.
-function createWalkAnimations(scene: Scene): void {
-    PLAYER_ROWS.forEach((row, index) => {
-        const key = `walk-${row}`;
-        const first = index * PLAYER_FRAMES_PER_ROW;
-
-        if (!scene.anims.exists(key)) {
-            scene.anims.create({
-                key,
-                frames: scene.anims.generateFrameNumbers(TEXTURES.player, { frames: [first + 1, first, first + 2, first] }),
-                frameRate: 8,
-                repeat: -1
-            });
-        }
-    });
 }

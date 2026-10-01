@@ -138,8 +138,15 @@ export const SCENERY = {
     skinDeep: '#8d5a3b',
     hairBrown: '#5a3a22',
     hairGray: '#a09aa6',
-    shirtOlive: '#6b8f3a',
-    mintLight: '#a8e0c8'
+    mintLight: '#a8e0c8',
+
+    // The three player boys
+    skinFair: '#f6d5b5',
+    skinMid: '#d9a56e',
+    hairMousey: '#8c7158',
+    hairBlonde: '#ecc663',
+    eyeLightBrown: '#a8743f',
+    eyeBlue: '#3f78c8'
 } as const;
 
 const COLORS = { ...PALETTE, ...SCENERY };

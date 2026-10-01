@@ -1,16 +1,20 @@
-// Placeholder art for the player and NPCs. Every character is 12x16 pixels.
-// The scooper, the local with the red cap, the dog, and the player's side view are copied from
-// docs/mocks/Overworld.dc.html; the other shopkeepers reuse one front-facing body with different colors.
+// Placeholder art for the player and NPCs. Every character frame is 12x16 pixels, feet on the bottom row.
+// The scooper, the local with the red cap, and the dog are copied from docs/mocks/Overworld.dc.html;
+// the other shopkeepers reuse one front-facing body with different colors.
+// The player is one of three boys (src/data/characters.ts). Each stands at his own height inside the frame:
+// the 5-year-old is 11 pixels tall, the 11-year-old 14, and the 15-year-old 16, as tall as the adults.
+import type { CharacterId } from '../data/characters.ts';
 import type { Layer } from './paint.ts';
 import type { ColorName } from '../palette.ts';
 
 export const CHARACTER_WIDTH = 12;
 export const CHARACTER_HEIGHT = 16;
 
-export const PLAYER_KEY = 'player';
-// Rows of the player spritesheet, top to bottom. Each row has 3 frames: standing, left foot, right foot.
+// Rows of each player spritesheet, top to bottom. Each row has 3 frames: standing, left foot, right foot.
 export const PLAYER_ROWS = ['down', 'left', 'right', 'up'] as const;
 export const PLAYER_FRAMES_PER_ROW = 3;
+
+export type PlayerRow = (typeof PLAYER_ROWS)[number];
 
 const SHADOW: Layer = { color: 'ink', path: 'M2 15h8v1h-8z', alpha: 0.25 };
 const LEGS = [
@@ -19,32 +23,103 @@ const LEGS = [
     'M3 13h2v3h-2z M7 13h2v2h-2z'
 ];
 
-const PLAYER_BODY: Layer[] = [
-    { color: 'shirtOlive', path: 'M2 7h8v6h-8z' },
-    { color: 'awning', path: 'M3 7h6v1h-6z' }
-];
+interface BoyArt {
+    // Everything above the legs. The right-facing row mirrors `left`.
+    views: Record<'down' | 'left' | 'up', Layer[]>;
+    // Standing, left foot forward, right foot forward. Drawn in ink.
+    legs: string[];
+}
 
-const PLAYER_HEAD: Record<'down' | 'left' | 'up', Layer[]> = {
-    down: [
-        { color: 'skinLight', path: 'M3 2h6v5h-6z M1 8h1v4h-1z M10 8h1v4h-1z' },
-        { color: 'ochre', path: 'M3 0h6v2h-6z M2 1h1v4h-1z M9 1h1v4h-1z' },
-        { color: 'ink', path: 'M4 4h1v1h-1z M7 4h1v1h-1z' }
-    ],
-    left: [
-        { color: 'ochre', path: 'M3 0h6v3h-6z M8 1h1v5h-1z' },
-        { color: 'skinLight', path: 'M3 3h5v4h-5z' },
-        { color: 'ink', path: 'M4 4h1v1h-1z' }
-    ],
-    up: [
-        { color: 'skinLight', path: 'M4 6h4v1h-4z M1 8h1v4h-1z M10 8h1v4h-1z' },
-        { color: 'ochre', path: 'M3 0h6v6h-6z M2 1h8v4h-8z' }
-    ]
+const BOYS: Record<CharacterId, BoyArt> = {
+    five: {
+        views: {
+            down: [
+                { color: 'skinFair', path: 'M3 7h6v2h-6z M4 9h4v1h-4z M2 11h1v2h-1z M9 11h1v2h-1z' },
+                { color: 'hairMousey', path: 'M4 5h4v1h-4z M3 6h6v1h-6z M3 7h1v1h-1z M8 7h1v1h-1z' },
+                { color: 'eyeLightBrown', path: 'M4 8h1v1h-1z M7 8h1v1h-1z' },
+                { color: 'awning', path: 'M3 10h6v3h-6z M2 10h1v1h-1z M9 10h1v1h-1z' },
+                { color: 'ink', path: 'M4 10h1v1h-1z M7 10h1v1h-1z M5 11h2v2h-2z' }
+            ],
+            left: [
+                { color: 'skinFair', path: 'M3 7h5v2h-5z M3 9h4v1h-4z M2 8h1v1h-1z' },
+                { color: 'hairMousey', path: 'M4 5h4v1h-4z M3 6h6v1h-6z M7 7h2v1h-2z M8 8h1v1h-1z' },
+                { color: 'eyeLightBrown', path: 'M4 8h1v1h-1z' },
+                { color: 'awning', path: 'M3 10h6v3h-6z' }
+            ],
+            up: [
+                { color: 'skinFair', path: 'M4 9h4v1h-4z M2 11h1v2h-1z M9 11h1v2h-1z' },
+                { color: 'hairMousey', path: 'M4 5h4v1h-4z M3 6h6v3h-6z' },
+                { color: 'awning', path: 'M3 10h6v3h-6z M2 10h1v1h-1z M9 10h1v1h-1z' }
+            ]
+        },
+        legs: [
+            'M4 13h1v3h-1z M7 13h1v3h-1z',
+            'M4 13h1v2h-1z M7 13h1v3h-1z',
+            'M4 13h1v3h-1z M7 13h1v2h-1z'
+        ]
+    },
+    eleven: {
+        views: {
+            down: [
+                { color: 'skinMid', path: 'M3 4h6v4h-6z M1 9h1v3h-1z M10 9h1v3h-1z' },
+                { color: 'hairBrown', path: 'M3 2h6v1h-6z M2 3h8v1h-8z M2 4h1v3h-1z M9 4h1v3h-1z M3 4h3v1h-3z' },
+                { color: 'hairBrown', path: 'M4 5h1v1h-1z M7 5h1v1h-1z' },
+                { color: 'teal', path: 'M2 8h8v5h-8z M1 8h1v1h-1z M10 8h1v1h-1z' }
+            ],
+            left: [
+                { color: 'skinMid', path: 'M3 4h5v4h-5z M2 6h1v1h-1z' },
+                { color: 'hairBrown', path: 'M3 2h6v2h-6z M7 4h2v2h-2z M8 6h1v1h-1z M3 4h2v1h-2z' },
+                { color: 'hairBrown', path: 'M4 5h1v1h-1z' },
+                { color: 'teal', path: 'M2 8h8v5h-8z' }
+            ],
+            up: [
+                { color: 'skinMid', path: 'M4 7h4v1h-4z M1 9h1v3h-1z M10 9h1v3h-1z' },
+                { color: 'hairBrown', path: 'M3 2h6v1h-6z M2 3h8v4h-8z' },
+                { color: 'teal', path: 'M2 8h8v5h-8z M1 8h1v1h-1z M10 8h1v1h-1z' }
+            ]
+        },
+        legs: LEGS
+    },
+    fifteen: {
+        views: {
+            down: [
+                { color: 'skinFair', path: 'M3 2h6v4h-6z M5 6h2v1h-2z M2 9h1v3h-1z M9 9h1v3h-1z' },
+                { color: 'hairBlonde', path: 'M3 0h6v1h-6z M2 1h8v1h-8z M2 2h1v2h-1z M9 2h1v2h-1z M3 2h3v1h-3z' },
+                { color: 'eyeBlue', path: 'M4 3h1v1h-1z M7 3h1v1h-1z' },
+                { color: 'facadeNavy', path: 'M3 7h6v5h-6z M2 7h1v2h-1z M9 7h1v2h-1z' }
+            ],
+            left: [
+                { color: 'skinFair', path: 'M3 2h5v4h-5z M2 4h1v1h-1z M5 6h2v1h-2z' },
+                { color: 'hairBlonde', path: 'M3 0h6v2h-6z M7 2h2v2h-2z M8 4h1v1h-1z M3 2h2v1h-2z' },
+                { color: 'eyeBlue', path: 'M4 3h1v1h-1z' },
+                { color: 'facadeNavy', path: 'M3 7h6v5h-6z' }
+            ],
+            up: [
+                { color: 'skinFair', path: 'M4 5h4v1h-4z M5 6h2v1h-2z M2 9h1v3h-1z M9 9h1v3h-1z' },
+                { color: 'hairBlonde', path: 'M3 0h6v1h-6z M2 1h8v3h-8z M3 4h6v1h-6z' },
+                { color: 'facadeNavy', path: 'M3 7h6v5h-6z M2 7h1v2h-1z M9 7h1v2h-1z' }
+            ]
+        },
+        legs: [
+            'M3 12h6v1h-6z M3 13h2v3h-2z M7 13h2v3h-2z',
+            'M3 12h6v1h-6z M3 13h2v2h-2z M7 13h2v3h-2z',
+            'M3 12h6v1h-6z M3 13h2v3h-2z M7 13h2v2h-2z'
+        ]
+    }
 };
 
-// The right-facing row is the left-facing art, mirrored.
-export function playerFrame(row: (typeof PLAYER_ROWS)[number], step: number): { layers: Layer[]; mirror: boolean } {
-    const head = PLAYER_HEAD[row === 'right' ? 'left' : row];
-    const layers = [SHADOW, ...PLAYER_BODY, ...head, { color: 'ink', path: LEGS[step] } satisfies Layer];
+export function playerTextureKey(character: CharacterId): string {
+    return `player-${character}`;
+}
+
+export function walkAnimationKey(character: CharacterId, row: PlayerRow): string {
+    return `${playerTextureKey(character)}-walk-${row}`;
+}
+
+export function playerFrame(character: CharacterId, row: PlayerRow, step: number): { layers: Layer[]; mirror: boolean } {
+    const boy = BOYS[character];
+    const view = boy.views[row === 'right' ? 'left' : row];
+    const layers = [SHADOW, ...view, { color: 'ink', path: boy.legs[step] } satisfies Layer];
 
     return { layers, mirror: row === 'right' };
 }

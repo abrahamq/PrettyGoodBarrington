@@ -1,7 +1,7 @@
-// Boot scene: loads the fonts and the overworld map, draws the placeholder textures, applies the saved sound setting,
-// then opens the Title screen. No text appears before the fonts finish loading here.
+// Boot scene: loads the fonts and the overworld map, draws the placeholder textures, makes the walk animations,
+// applies the saved sound setting, then opens the Title screen. No text appears before the fonts finish loading here.
 import { Scene } from 'phaser';
-import { generatePlaceholderTextures } from '../art/textures.ts';
+import { createWalkAnimations, generatePlaceholderTextures } from '../art/textures.ts';
 import { MAP_KEY, MAP_URL } from '../map/files.ts';
 import { loadSettings } from '../state/settings.ts';
 import { FONTS } from '../ui/text.ts';
@@ -19,6 +19,7 @@ export class Boot extends Scene {
 
     create(): void {
         generatePlaceholderTextures(this);
+        createWalkAnimations(this);
         this.sound.mute = !loadSettings().sound;
         this.scene.start('Title');
     }

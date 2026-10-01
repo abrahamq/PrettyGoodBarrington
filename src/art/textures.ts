@@ -5,8 +5,10 @@ import type { GameObjects, Scene } from 'phaser';
 import { TILESET_HEIGHT, TILESET_NAME, TILESET_WIDTH, drawTileset } from '../map/tileset.ts';
 import { drawLayers, graphicsTarget, type Layer } from './paint.ts';
 import {
-    CHARACTER_HEIGHT, CHARACTER_WIDTH, NPC_ART, NPC_KEYS, PLAYER_FRAMES_PER_ROW, PLAYER_KEY, PLAYER_ROWS, playerFrame
+    CHARACTER_HEIGHT, CHARACTER_WIDTH, NPC_ART, NPC_KEYS, PLAYER_FRAMES_PER_ROW, PLAYER_ROWS, playerFrame, playerTextureKey,
+    walkAnimationKey
 } from './people.ts';
+import { CHARACTER_IDS, type CharacterId } from '../data/characters.ts';
 import type { Doneness } from '../logic/orderUp.ts';
 import type { Flavor } from '../logic/scoopStack.ts';
 import { BURGER, EXTRA_ICONS, KITCHEN_BACKGROUND, PATTIES, SMOKE } from './diner.ts';
@@ -19,11 +21,11 @@ export const TEXTURES = {
     titleBackground: 'title-bg',
     panel: 'ui-panel',
     cursor: 'ui-cursor',
+    pickArrow: 'ui-pick-arrow',
     stamp: 'ui-stamp',
     arrow: 'ui-arrow',
     more: 'ui-more',
     tiles: TILESET_NAME,
-    player: PLAYER_KEY,
     socoBackground: 'soco-bg',
     cone: 'cone',
     emptyScoopIcon: 'icon-scoop-empty',
@@ -67,6 +69,7 @@ export function generatePlaceholderTextures(scene: Scene): void {
     makeTexture(scene, TEXTURES.titleBackground, 240, 160, (graphics) => drawLayers(graphicsTarget(graphics), TITLE_BACKGROUND));
     makeTexture(scene, TEXTURES.panel, 7, 7, paintPanel);
     makeTexture(scene, TEXTURES.cursor, 6, 7, (graphics) => paintArt(graphics, CURSOR));
+    makeTexture(scene, TEXTURES.pickArrow, 7, 4, (graphics) => paintArt(graphics, PICK_ARROW));
     makeTexture(scene, TEXTURES.stamp, 10, 10, (graphics) => paintArt(graphics, STAMP));
     makeTexture(scene, TEXTURES.arrow, 7, 4, (graphics) => paintArt(graphics, ARROW));
     makeTexture(scene, TEXTURES.more, 5, 3, (graphics) => paintArt(graphics, MORE));
@@ -102,13 +105,37 @@ export function generatePlaceholderTextures(scene: Scene): void {
         makeTexture(scene, NOTE_TEXTURES[lane], 12, 12, (graphics) => paintArt(graphics, arrow(color)));
     });
 
-    if (makeTexture(scene, TEXTURES.player, CHARACTER_WIDTH * PLAYER_FRAMES_PER_ROW, CHARACTER_HEIGHT * PLAYER_ROWS.length, paintPlayer)) {
-        addPlayerFrames(scene);
+    for (const character of CHARACTER_IDS) {
+        const key = playerTextureKey(character);
+        const width = CHARACTER_WIDTH * PLAYER_FRAMES_PER_ROW;
+        const height = CHARACTER_HEIGHT * PLAYER_ROWS.length;
+
+        if (makeTexture(scene, key, width, height, (graphics) => paintPlayer(graphics, character))) {
+            addPlayerFrames(scene, key);
+        }
+    }
+}
+
+// Walk cycle: left foot, standing, right foot, standing. Animations belong to the whole game, so Boot makes them once.
+export function createWalkAnimations(scene: Scene): void {
+    for (const character of CHARACTER_IDS) {
+        PLAYER_ROWS.forEach((row, index) => {
+            const first = index * PLAYER_FRAMES_PER_ROW;
+
+            scene.anims.create({
+                key: walkAnimationKey(character, row),
+                frames: scene.anims.generateFrameNumbers(playerTextureKey(character), { frames: [first + 1, first, first + 2, first] }),
+                frameRate: 8,
+                repeat: -1
+            });
+        });
     }
 }
 
 // The menu arrow from Main.dc.html, one mockup unit per game pixel.
 const CURSOR: Layer[] = [{ color: 'gold', path: 'M0 0h2v7h-2z M2 1h2v5h-2z M4 2h2v3h-2z' }];
+// Points down at the chosen boy on Character Select.
+const PICK_ARROW: Layer[] = [{ color: 'gold', path: 'M0 0h7v1h-7z M1 1h5v1h-5z M2 2h3v1h-3z M3 3h1v1h-1z' }];
 // The stamp icon from the clock box in Overworld.dc.html.
 const STAMP: Layer[] = [
     { color: 'red', path: 'M2 0h6v1h-6z M1 1h8v8h-8z M2 9h6v1h-6z' },
@@ -153,10 +180,10 @@ function paintPanel(graphics: GameObjects.Graphics): void {
 }
 
 // 3 columns (standing, left foot, right foot) by 4 rows (down, left, right, up).
-function paintPlayer(graphics: GameObjects.Graphics): void {
+function paintPlayer(graphics: GameObjects.Graphics, character: CharacterId): void {
     PLAYER_ROWS.forEach((row, rowIndex) => {
         for (let step = 0; step < PLAYER_FRAMES_PER_ROW; step++) {
-            const frame = playerFrame(row, step);
+            const frame = playerFrame(character, row, step);
             drawLayers(graphicsTarget(graphics), frame.layers, {
                 x: step * CHARACTER_WIDTH,
                 y: rowIndex * CHARACTER_HEIGHT,
@@ -169,8 +196,8 @@ function paintPlayer(graphics: GameObjects.Graphics): void {
 }
 
 // Numbers the frames 0-11, row by row, the same way load.spritesheet() numbers a real sheet.
-function addPlayerFrames(scene: Scene): void {
-    const texture = scene.textures.get(TEXTURES.player);
+function addPlayerFrames(scene: Scene, key: string): void {
+    const texture = scene.textures.get(key);
 
     for (let index = 0; index < PLAYER_FRAMES_PER_ROW * PLAYER_ROWS.length; index++) {
         const x = (index % PLAYER_FRAMES_PER_ROW) * CHARACTER_WIDTH;
