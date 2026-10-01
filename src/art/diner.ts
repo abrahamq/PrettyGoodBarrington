@@ -1,6 +1,7 @@
 // Art for Order Up!, copied from docs/mocks/GBEats.dc.html: the kitchen backdrop (240x160) with the grill,
 // the patty in each stage of doneness, smoke for burnt patties, the finished burger, and ticket icons.
 // Order tickets, the HUD, and the popups are drawn by the scene.
+import { GAME_WIDTH } from '../layout.ts';
 import type { Doneness } from '../logic/orderUp.ts';
 import type { Layer, Offset } from './paint.ts';
 import { rectPath } from './svgPath.ts';
@@ -17,12 +18,12 @@ function grid(stepX: number, stepY: number, fromX: number, toX: number, fromY: n
 
 export const KITCHEN_BACKGROUND: Layer[] = [
     // Tile wall, checker band, steel backsplash, ticket rail
-    { color: 'cream', path: rectPath(0, 0, 240, 56) },
-    { color: 'dinerGrout', path: 'M0 3h8v1h-8z M3 0h1v3h-1z', at: grid(8, 4, 0, 240, 0, 56) },
-    { color: 'cream', path: rectPath(0, 56, 240, 4) },
-    { color: 'ink', path: 'M0 0h2v2h-2z M4 0h2v2h-2z M2 2h2v2h-2z M6 2h2v2h-2z', at: grid(8, 4, 0, 240, 56, 60) },
-    { color: 'steel', path: rectPath(0, 60, 240, 60) },
-    { color: 'steelLight', path: 'M0 60h240v1h-240z' },
+    { color: 'cream', path: rectPath(0, 0, 240, 56), repeat: GAME_WIDTH },
+    { color: 'dinerGrout', path: 'M0 3h8v1h-8z M3 0h1v3h-1z', at: grid(8, 4, 0, 240, 0, 56), repeat: GAME_WIDTH },
+    { color: 'cream', path: rectPath(0, 56, 240, 4), repeat: GAME_WIDTH },
+    { color: 'ink', path: 'M0 0h2v2h-2z M4 0h2v2h-2z M2 2h2v2h-2z M6 2h2v2h-2z', at: grid(8, 4, 0, 240, 56, 60), repeat: GAME_WIDTH },
+    { color: 'steel', path: rectPath(0, 60, 240, 60), repeat: GAME_WIDTH },
+    { color: 'steelLight', path: 'M0 60h240v1h-240z', repeat: GAME_WIDTH },
     { color: 'curbStone', path: rectPath(90, 6, 148, 2) },
 
     // Grill: frame, cooking surface, worn lines, front panel with knobs
@@ -42,9 +43,9 @@ export const KITCHEN_BACKGROUND: Layer[] = [
     { color: 'cream', path: 'M216 88h10v1h-10z M216 91h10v1h-10z' },
 
     // Counter lip and green floor
-    { color: 'steelLight', path: rectPath(0, 120, 240, 3) },
-    { color: 'teal', path: rectPath(0, 123, 240, 37) },
-    { color: 'kitchenFloorLine', path: 'M0 130h240v1h-240z M0 150h240v1h-240z' }
+    { color: 'steelLight', path: rectPath(0, 120, 240, 3), repeat: GAME_WIDTH },
+    { color: 'teal', path: rectPath(0, 123, 240, 37), repeat: GAME_WIDTH },
+    { color: 'kitchenFloorLine', path: 'M0 130h240v1h-240z M0 150h240v1h-240z', repeat: GAME_WIDTH }
 ];
 
 // 16x10: a patty seen from above.

@@ -13,6 +13,9 @@ export interface Layer {
     // Paint the path once at each offset (for repeating patterns). Defaults to [[0, 0]].
     at?: Offset[];
     alpha?: number;
+    // For backgrounds: repeat the layer every this many pixels past the stage edges (see drawWide).
+    // A half-transparent layer must repeat by its own full width, or the copies overlap and darken.
+    repeat?: number;
 }
 
 export interface PixelTarget {
@@ -53,6 +56,35 @@ export function drawLayers(target: PixelTarget, layers: Layer[], options: DrawOp
             }
         }
     }
+}
+
+export interface WideOptions {
+    stageWidth: number;
+    // How far the picture reaches past each side of the stage. The target is stageWidth + 2 * wing wide.
+    wing: number;
+    height: number;
+}
+
+// Draws a background wider than the stage it was designed for. Each layer is drawn on the stage (shifted
+// right by the wing), and layers with a `repeat` also fill both wings with copies of themselves.
+export function drawWide(target: PixelTarget, layers: Layer[], options: WideOptions): void {
+    const { stageWidth, wing, height } = options;
+
+    for (const layer of layers) {
+        drawLayers(target, [layer], { x: wing, width: stageWidth, height });
+
+        if (!layer.repeat) {
+            continue;
+        }
+        for (let shift = layer.repeat; shift < stageWidth + wing; shift += layer.repeat) {
+            drawLayers(target, [moved(layer, wing - shift)], { x: 0, width: wing, height });
+            drawLayers(target, [moved(layer, shift - stageWidth)], { x: wing + stageWidth, width: wing, height });
+        }
+    }
+}
+
+function moved(layer: Layer, dx: number): Layer {
+    return { ...layer, at: (layer.at ?? [[0, 0]]).map(([x, y]): Offset => [x + dx, y]) };
 }
 
 export function graphicsTarget(graphics: GameObjects.Graphics): PixelTarget {
