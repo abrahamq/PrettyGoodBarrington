@@ -116,3 +116,9 @@ Choices that `docs/PLAN.md` does not cover. Each entry says what we chose and wh
 6. **Textures.** Three spritesheets (`player-five`, `player-eleven`, `player-fifteen`) replace `player`. Boot makes all twelve walk animations once, because animations belong to the whole game.
 7. **Controls.** Left/Right move the gold arrow, and the chosen boy walks in place. Space, Enter, Z, or A starts; Escape, Backspace, X, or B goes back to the Title menu, and the old save stays. On touch, the first tap on a card chooses that boy, and a second tap (or `[A] GO`) starts. Boys who are not chosen keep their real colors: a grey tint made their skin and hair look wrong.
 
+## Character sprites (2026-09-30)
+
+1. **Characters are PNGs you can paint.** `npm run export:sprites` (`scripts/export-sprites.ts`) saves the player sheets and NPC frames from `src/art/people.ts` as PNGs in `public/assets/sprites/`. Boot loads them, and a loaded image wins over the placeholder, so a pixel edit made in Aseprite, Piskel, or LibreSprite shows in the game. You asked to edit a character by painting it. Phaser Editor v5 cannot do that: it has no pixel-paint tool, and its Scene Editor shows only image files, not art drawn in code.
+2. **Trade-off.** The PNGs now replace `people.ts` for characters, so code edits to that art no longer show in the game. To go back to code art for one character, delete its PNG and run `npm run export:sprites`.
+3. **The script never overwrites a file that exists**, so a re-run cannot erase your painting. `build:map` is different: it overwrites `tiles.png`. Painted art takes longer to make again than a Tiled edit.
+4. **One drawing path.** `drawPlayerSheet` and `drawNpc` moved into `people.ts`. The game draws with them on a Graphics object, and the export script draws with them on a pixel buffer, the same way the tileset works (Phase 2 decision 3).
