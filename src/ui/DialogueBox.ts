@@ -4,7 +4,7 @@
 // After the last page the box closes, unless it has choices: then picking a choice closes it.
 import type { GameObjects, Scene, Types } from 'phaser';
 import { TEXTURES } from '../art/textures.ts';
-import { GAME_HEIGHT, GAME_WIDTH } from '../layout.ts';
+import { GAME_HEIGHT, MAX_VIEW_WIDTH, STAGE_WING } from '../layout.ts';
 import { pageLength, pagesFor, revealLines, visibleCharacters } from '../logic/pages.ts';
 import { colorNumber } from '../palette.ts';
 import { Menu, menuSize } from './Menu.ts';
@@ -52,7 +52,7 @@ export class DialogueBox {
 
         // Covers the whole screen while the box is open, so a tap anywhere advances the text
         // and never reaches the Overworld underneath.
-        this.blocker = scene.add.zone(0, 0, GAME_WIDTH, GAME_HEIGHT).setOrigin(0).setInteractive();
+        this.blocker = scene.add.zone(-STAGE_WING, 0, MAX_VIEW_WIDTH, GAME_HEIGHT).setOrigin(0).setInteractive();
         this.blocker.on('pointerdown', (pointer: { event: Event }, _x: number, _y: number, event: Types.Input.EventData) => {
             event.stopPropagation();
             this.advance(pointer.event.timeStamp);

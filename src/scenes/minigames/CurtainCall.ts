@@ -12,6 +12,7 @@ import { SongClock, performanceClockSource } from '../../audio/songClock.ts';
 import { SongPlayer, playOneShot } from '../../audio/synth.ts';
 import openingNight from '../../data/charts/openingNight.json';
 import type { StopId } from '../../data/stops.ts';
+import { GAME_WIDTH, STAGE_WING } from '../../layout.ts';
 import {
     CURTAIN_CALL, advanceCurtainCall, hitLane, newCurtainCall, parseChart, type CallEvent, type CurtainCallState, type Lane
 } from '../../logic/curtainCall.ts';
@@ -23,6 +24,7 @@ import { Button } from '../../ui/Button.ts';
 import { Panel } from '../../ui/Panel.ts';
 import { floatText } from '../../ui/Popup.ts';
 import { ProgressBar } from '../../ui/ProgressBar.ts';
+import { setStage } from '../../ui/stage.ts';
 import { addPixelText } from '../../ui/text.ts';
 
 interface CurtainCallData {
@@ -56,12 +58,13 @@ const SCORE = { x: 168, y: 4, width: 68, height: 52 };
 const APPLAUSE = { x: 4, y: 136, width: 150, height: 20 };
 const DEPTH = { notes: 1, targets: 2, hud: 10 };
 
-// Tap zones: each lane, with the outer two stretched to the screen edges for easier thumbs.
+// Tap zones: each lane, with the outer two stretched to the screen edges for easier thumbs (past the stage
+// edges too, for wide screens).
 const ZONES = [
-    { lane: 0 as Lane, left: 0, right: LANE_LEFT + LANE_WIDTH },
+    { lane: 0 as Lane, left: -STAGE_WING, right: LANE_LEFT + LANE_WIDTH },
     { lane: 1 as Lane, left: LANE_LEFT + LANE_WIDTH, right: LANE_LEFT + LANE_WIDTH * 2 },
     { lane: 2 as Lane, left: LANE_LEFT + LANE_WIDTH * 2, right: LANE_LEFT + LANE_WIDTH * 3 },
-    { lane: 3 as Lane, left: LANE_LEFT + LANE_WIDTH * 3, right: 240 }
+    { lane: 3 as Lane, left: LANE_LEFT + LANE_WIDTH * 3, right: GAME_WIDTH + STAGE_WING }
 ];
 
 function laneCenterX(lane: Lane): number {
@@ -96,7 +99,7 @@ export class CurtainCall extends Scene {
         this.litUntil = [0, 0, 0, 0];
         this.sparkleUntil = [0, 0, 0, 0];
 
-        this.add.image(0, 0, TEXTURES.stageBackground).setOrigin(0);
+        setStage(this, TEXTURES.stageBackground);
         this.targets = LANES.map((lane) =>
             this.add.image(laneCenterX(lane), HIT_Y, TEXTURES.targetOff).setAngle(ANGLES[lane]).setDepth(DEPTH.targets));
         this.sparkles = LANES.map((lane) =>

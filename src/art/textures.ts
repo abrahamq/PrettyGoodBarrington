@@ -3,7 +3,8 @@
 // Keys, sizes, and layouts are listed in public/assets/README.md.
 import type { GameObjects, Scene } from 'phaser';
 import { TILESET_HEIGHT, TILESET_NAME, TILESET_WIDTH, drawTileset } from '../map/tileset.ts';
-import { drawLayers, graphicsTarget, type Layer } from './paint.ts';
+import { GAME_HEIGHT, GAME_WIDTH, MAX_VIEW_WIDTH, STAGE_WING } from '../layout.ts';
+import { drawLayers, drawWide, graphicsTarget, type Layer } from './paint.ts';
 import {
     CHARACTER_HEIGHT, CHARACTER_WIDTH, NPC_KEYS, PLAYER_FRAMES_PER_ROW, PLAYER_ROWS, PLAYER_SHEET_HEIGHT, PLAYER_SHEET_WIDTH,
     drawNpc, drawPlayerSheet, playerTextureKey, walkAnimationKey
@@ -69,7 +70,7 @@ export const SCOOP_ICON_TEXTURES: Record<Flavor, string> = {
 };
 
 export function generatePlaceholderTextures(scene: Scene): void {
-    makeTexture(scene, TEXTURES.titleBackground, 240, 160, (graphics) => drawLayers(graphicsTarget(graphics), TITLE_BACKGROUND));
+    makeTexture(scene, TEXTURES.titleBackground, MAX_VIEW_WIDTH, GAME_HEIGHT, (graphics) => paintWide(graphics, TITLE_BACKGROUND));
     makeTexture(scene, TEXTURES.panel, 7, 7, paintPanel);
     makeTexture(scene, TEXTURES.cursor, 6, 7, (graphics) => paintArt(graphics, CURSOR));
     makeTexture(scene, TEXTURES.pickArrow, 7, 4, (graphics) => paintArt(graphics, PICK_ARROW));
@@ -82,7 +83,7 @@ export function generatePlaceholderTextures(scene: Scene): void {
         makeTexture(scene, key, CHARACTER_WIDTH, CHARACTER_HEIGHT, (graphics) => drawNpc(graphicsTarget(graphics), key));
     }
 
-    makeTexture(scene, TEXTURES.socoBackground, 240, 160, (graphics) => paintArt(graphics, SHOP_BACKGROUND));
+    makeTexture(scene, TEXTURES.socoBackground, MAX_VIEW_WIDTH, GAME_HEIGHT, (graphics) => paintWide(graphics, SHOP_BACKGROUND));
     makeTexture(scene, TEXTURES.cone, 16, 22, (graphics) => paintArt(graphics, CONE));
     makeTexture(scene, TEXTURES.emptyScoopIcon, 16, 12, (graphics) => paintArt(graphics, EMPTY_SCOOP_ICON));
     for (const flavor of Object.keys(SCOOPS) as Flavor[]) {
@@ -90,7 +91,7 @@ export function generatePlaceholderTextures(scene: Scene): void {
         makeTexture(scene, SCOOP_ICON_TEXTURES[flavor], 16, 12, (graphics) => paintArt(graphics, scoopIcon(flavor)));
     }
 
-    makeTexture(scene, TEXTURES.gbeatsBackground, 240, 160, (graphics) => paintArt(graphics, KITCHEN_BACKGROUND));
+    makeTexture(scene, TEXTURES.gbeatsBackground, MAX_VIEW_WIDTH, GAME_HEIGHT, (graphics) => paintWide(graphics, KITCHEN_BACKGROUND));
     makeTexture(scene, TEXTURES.smoke, 10, 11, (graphics) => paintArt(graphics, SMOKE));
     makeTexture(scene, TEXTURES.burger, 20, 16, (graphics) => paintArt(graphics, BURGER));
     makeTexture(scene, TEXTURES.cheeseIcon, 7, 6, (graphics) => paintArt(graphics, EXTRA_ICONS.cheese));
@@ -99,7 +100,7 @@ export function generatePlaceholderTextures(scene: Scene): void {
         makeTexture(scene, PATTY_TEXTURES[doneness], 16, 10, (graphics) => paintArt(graphics, PATTIES[doneness]));
     }
 
-    makeTexture(scene, TEXTURES.stageBackground, 240, 160, (graphics) => paintArt(graphics, STAGE_BACKGROUND));
+    makeTexture(scene, TEXTURES.stageBackground, MAX_VIEW_WIDTH, GAME_HEIGHT, (graphics) => paintWide(graphics, STAGE_BACKGROUND));
     makeTexture(scene, TEXTURES.targetOff, 12, 12, (graphics) => paintArt(graphics, arrow('receptorOff')));
     makeTexture(scene, TEXTURES.targetLit, 12, 12, (graphics) => paintArt(graphics, arrow('gold')));
     makeTexture(scene, TEXTURES.sparkle, 28, 26, (graphics) => paintArt(graphics, SPARKLE));
@@ -171,6 +172,11 @@ function makeTexture(
 
 function paintArt(graphics: GameObjects.Graphics, layers: Layer[]): void {
     drawLayers(graphicsTarget(graphics), layers);
+}
+
+// Backgrounds are as wide as the widest view, with the 240-wide art in the middle.
+function paintWide(graphics: GameObjects.Graphics, layers: Layer[]): void {
+    drawWide(graphicsTarget(graphics), layers, { stageWidth: GAME_WIDTH, wing: STAGE_WING, height: GAME_HEIGHT });
 }
 
 // 7x7: ink outer line, then parchment, then wood, then a cream center. The Panel 9-slice uses 3px corners.

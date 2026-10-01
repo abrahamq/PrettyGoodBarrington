@@ -11,6 +11,7 @@ import { newSave } from '../state/save.ts';
 import { startGame } from '../state/session.ts';
 import { Button } from '../ui/Button.ts';
 import { Panel } from '../ui/Panel.ts';
+import { setStage } from '../ui/stage.ts';
 import { addShadowedText, centeredX } from '../ui/text.ts';
 
 const HEADING = "WHO'S PLAYING?";
@@ -37,7 +38,7 @@ export class CharacterSelect extends Scene {
     }
 
     create(): void {
-        this.add.image(0, 0, TEXTURES.titleBackground).setOrigin(0);
+        setStage(this, TEXTURES.titleBackground);
         addShadowedText(this, centeredX(HEADING, CENTER_X, 16), 12, HEADING, 'cream', [
             { color: 'brick', offset: 2 },
             { color: 'ink', offset: 3 }
