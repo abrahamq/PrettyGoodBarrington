@@ -8,14 +8,15 @@ All sizes are in game pixels. The game draws at 240x160 and scales up with neare
 
 | Key | Size | Layout | Used by |
 |---|---|---|---|
-| `title-bg` | 240x160 | One image: sky, sun, mountains, skyline, street. No text. | Title, Options |
+| `title-bg` | 240x160 | One image: sky, sun, mountains, skyline, street. No text. | Title, Options, Character Select |
 | `ui-panel` | 7x7 | 9-slice with 3px corners. From the outside in: 1px ink, 1px parchment, 1px wood, then cream. The 1x1 center stretches. | `src/ui/Panel.ts` |
 | `ui-cursor` | 6x7 | Right-pointing gold menu arrow on a transparent background. | `src/ui/Menu.ts` |
+| `ui-pick-arrow` | 7x4 | Down-pointing gold arrow over the chosen boy. | Character Select |
 | `ui-stamp` | 10x10 | Red stamp icon for the HUD stamp count. | UI scene |
 | `ui-arrow` | 7x4 | Up-pointing arrow; the game rotates it for the other d-pad buttons. | `src/ui/TouchControls.ts` |
 | `ui-more` | 5x3 | Small down arrow: "tap for more" in the dialogue box. | `src/ui/DialogueBox.ts` |
 | `tiles` | 128x96 | The overworld tileset: 16x16 tiles, 8 per row, in the order of `TILE_ART` in `src/map/tileset.ts`. Must match `public/maps/tiles.png`. | Overworld |
-| `player` | 36x64 | Spritesheet of 12x16 frames. Rows, top to bottom: facing down, left, right, up. Columns: standing, left foot forward, right foot forward. Frames are numbered 0-11 row by row. Load a real one with `this.load.spritesheet('player', url, { frameWidth: 12, frameHeight: 16 })`. | Overworld |
+| `player-five`, `player-eleven`, `player-fifteen` | 36x64 each | One spritesheet per boy, of 12x16 frames. Rows, top to bottom: facing down, left, right, up. Columns: standing, left foot forward, right foot forward. Frames are numbered 0-11 row by row. Feet are on the bottom row of each frame; the boys are 11, 14, and 16 pixels tall. Load a real one with `this.load.spritesheet('player-five', url, { frameWidth: 12, frameHeight: 16 })`. | Character Select, Overworld |
 | `soco-bg` | 240x160 | The inside of SoCo Creamery: wall, wainscot, floor, lamp, flavor board (swatches only), counter, ice cream case, tip jar. | Scoop Stack |
 | `cone` | 16x22 | The waffle cone (rows 0-17) in its holder (rows 17-21). The first scoop sits on row 0. | Scoop Stack |
 | `scoop-vanilla`, `scoop-dark-choc`, `scoop-strawberry`, `scoop-mint-chip` | 16x11 each | One scoop. Rows 9-10 are drips that hang over the scoop below; scoops stack 9px apart. | Scoop Stack |

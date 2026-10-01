@@ -46,6 +46,7 @@ Claude Code can make worktrees too: `claude -w my-feature` puts one in `.claude/
 
 | Action | Keyboard | Touch |
 |---|---|---|
+| Pick a player (after New Game) | Left/Right, then Space, Enter, Z, or A. Escape, Backspace, X, or B goes back | Tap a boy, then tap him again or tap `[A] GO` |
 | Walk | Arrow keys or WASD | Tap a tile to walk there, or turn on the D-PAD in Options |
 | Talk, read a sign, next page | Space, Enter, or Z (face the person first) | Tap the person or sign; tap anywhere for the next page |
 | Enter a shop | Walk into its door | Tap the shopkeeper in the doorway |

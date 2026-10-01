@@ -105,3 +105,13 @@ Choices that `docs/PLAN.md` does not cover. Each entry says what we chose and wh
 7. **Name picker keys.** Arrow keys and Enter work the letter grid. Typing a letter jumps the cursor to OK, so typing a name and pressing Enter sends it. Space types a space (it does not pick, unlike in menus); Backspace deletes; Escape goes back. Names are 3-10 characters; the game checks this before it sends, and the server checks again.
 8. **Layout.** The board shows 10 rows of 10 pixels (the stamp icon is 10 pixels tall). Status messages sit on a dark strip, because the title backdrop's road has yellow dashes behind them. The title menu moved up to y 88 to fit LEADERBOARD.
 9. **One gem added: `rack-cors`.** The game and the API run on different ports, so the browser needs CORS headers. The plan's dependency rule covers npm packages; this is a Ruby gem that the Rails template already lists, commented out.
+
+## Character Select (2026-09-30)
+
+1. **Three boys, no names.** NEW GAME (after the erase confirm, if there is a save) opens Character Select. The player picks one of three boys: 5 years old, 11, or 15. The screen shows no names or ages, only the heading WHO'S PLAYING?. The pick changes only the walking sprite.
+2. **One frame size.** Each boy stands at his own height inside the same 12x16 frame: 11, 14, and 16 pixels. The map, collision, and tap targets did not change. The 15-year-old is as tall as the adult NPCs.
+3. **Looks.** 5: fair skin, light brown eyes, mousey brown hair, red Mickey Mouse tee (a 4x3 ink Mickey head), 1-pixel legs. 11: mid-tan skin, brown eyes, dark brown hair over the ears, 8-pixel-wide teal tee. 15: fair skin, blue eyes, blonde hair, narrow navy tee, long arms, hips and 4-pixel legs. The teal and navy shirts are placeholder choices. The side views have no arm: a 1-pixel arm read as a stripe on the shirt.
+4. **Save.** The save has a `character` field. A save from before this phase has no such field, so it loads as the 11-year-old. The version stays at 1, because the loader already fills in missing fields.
+5. **Textures.** Three spritesheets (`player-five`, `player-eleven`, `player-fifteen`) replace `player`. Boot makes all twelve walk animations once, because animations belong to the whole game.
+6. **Controls.** Left/Right move the gold arrow, and the chosen boy walks in place. Space, Enter, Z, or A starts; Escape, Backspace, X, or B goes back to the Title menu, and the old save stays. On touch, the first tap on a card chooses that boy, and a second tap (or `[A] GO`) starts. Boys who are not chosen keep their real colors: a grey tint made their skin and hair look wrong.
+
