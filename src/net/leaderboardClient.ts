@@ -5,7 +5,7 @@ import { isRecord } from '../state/storage.ts';
 export const NAME_MIN_LENGTH = 3;
 export const NAME_MAX_LENGTH = 10;
 export const REQUEST_TIMEOUT_MS = 5000;
-const SERVER_PORT = 3000;
+const SERVER_PORT = 3030;
 const NAME_FORMAT = /^[A-Z0-9]+( [A-Z0-9]+)*$/;
 
 export interface BoardEntry {

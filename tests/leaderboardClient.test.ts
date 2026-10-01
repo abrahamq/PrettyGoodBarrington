@@ -32,8 +32,8 @@ describe('leaderboardBaseUrl', () => {
         expect(leaderboardBaseUrl({ protocol: 'https:', hostname: 'game.example' }, 'https://api.example/')).toBe('https://api.example');
     });
 
-    it('otherwise uses port 3000 on the same host as the game, so phones on Wi-Fi work', () => {
-        expect(leaderboardBaseUrl({ protocol: 'http:', hostname: '192.168.18.44' }, undefined)).toBe('http://192.168.18.44:3000');
+    it('otherwise uses port 3030 on the same host as the game, so phones on Wi-Fi work', () => {
+        expect(leaderboardBaseUrl({ protocol: 'http:', hostname: '192.168.18.44' }, undefined)).toBe('http://192.168.18.44:3030');
     });
 });
 

@@ -30,7 +30,7 @@ Approved by Abe on 2026-09-30. This changes the plan's "No server" rule: the gam
 - Title menu gains LEADERBOARD, opening a new Leaderboard scene: top 10 (rank, name, stamp icon and count, tips), the player's own rank, a status line, and [SUBMIT] and [BACK].
 - SUBMIT sends the current save's stamp count and tips. The first time, a NameEntry scene asks for a name with an arcade-style letter grid (A-Z, 0-9; SPACE, DEL, OK buttons; typing on a keyboard works too), then creates the player.
 - The name and token live in localStorage under `msq-leaderboard`, apart from the save, so RESET SAVE keeps them.
-- The API address is `VITE_LEADERBOARD_URL` when set, otherwise the page's own host on port 3000.
+- The API address is `VITE_LEADERBOARD_URL` when set, otherwise the page's own host on port 3030 (3000 is often taken by another Rails app).
 - Requests time out after 5 seconds. When the server cannot be reached, the screen says CAN'T REACH THE BOARD; nothing else in the game changes.
 
 ## Known limit
