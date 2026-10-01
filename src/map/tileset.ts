@@ -29,8 +29,8 @@ const GRASS: Layer[] = [
     { color: 'grassLight', path: 'M8 1h2v1h-2z M1 11h2v1h-2z M13 5h1v1h-1z' }
 ];
 const PAVER: Layer[] = [
-    { color: 'paver', path: FULL },
-    { color: 'paverJoint', path: JOINTS, at: EVERY_8 }
+    { color: 'sidewalk', path: FULL },
+    { color: 'sidewalkJoint', path: JOINTS, at: EVERY_8 }
 ];
 const ROAD: Layer[] = [
     { color: 'road', path: FULL },

@@ -122,3 +122,7 @@ Choices that `docs/PLAN.md` does not cover. Each entry says what we chose and wh
 2. **Trade-off.** The PNGs now replace `people.ts` for characters, so code edits to that art no longer show in the game. To go back to code art for one character, delete its PNG and run `npm run export:sprites`.
 3. **The script never overwrites a file that exists**, so a re-run cannot erase your painting. `build:map` is different: it overwrites `tiles.png`. Painted art takes longer to make again than a Tiled edit.
 4. **One drawing path.** `drawPlayerSheet` and `drawNpc` moved into `people.ts`. The game draws with them on a Graphics object, and the export script draws with them on a pixel buffer, the same way the tileset works (Phase 2 decision 3).
+
+## Light grey sidewalk (2026-09-30)
+
+1. **Sidewalks are light grey.** The plan lists `paver` (#dcc9a0, tan) for sidewalks. A playtest preferred light grey concrete, so the sidewalk tiles use two new scenery colors: `sidewalk` (#cfccc6) and `sidewalkJoint` (#aeaba4) for the brick lines. `paver` stays in the palette, because other art still uses it.
