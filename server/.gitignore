@@ -1,0 +1,17 @@
+# Rails leaves these out of git. (`rails new --skip-git` did not write this file, so it is written by hand.)
+
+/.bundle
+
+# Logs, temporary files, and the SQLite databases
+/log/*
+!/log/.keep
+/tmp/*
+!/tmp/.keep
+/tmp/pids/*
+!/tmp/pids/.keep
+/storage/*
+!/storage/.keep
+
+# Secrets: never commit the key that decrypts config/credentials.yml.enc
+/config/master.key
+/config/credentials/*.key
