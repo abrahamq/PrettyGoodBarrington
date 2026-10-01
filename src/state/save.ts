@@ -1,5 +1,6 @@
 // Loads, writes, and resets the player's progress in localStorage (key "msq-save").
 // Each save has a version number, so a later phase can upgrade old saves instead of losing them.
+import { DEFAULT_CHARACTER, isCharacterId, type CharacterId } from '../data/characters.ts';
 import { STOPS, type StopId } from '../data/stops.ts';
 import { browserStore, isRecord, readJson, removeKey, writeJson, type KeyValueStore } from './storage.ts';
 
@@ -14,6 +15,7 @@ export interface Position {
 
 export interface SaveData {
     version: typeof SAVE_VERSION;
+    character: CharacterId;
     stamps: Record<StopId, boolean>;
     bestScores: Partial<Record<StopId, number>>;
     // Total tips earned in Order Up!, in cents.
@@ -23,9 +25,10 @@ export interface SaveData {
     lastPosition: Position | null;
 }
 
-export function newSave(): SaveData {
+export function newSave(character: CharacterId = DEFAULT_CHARACTER): SaveData {
     return {
         version: SAVE_VERSION,
+        character,
         stamps: emptyStamps(),
         bestScores: {},
         tips: 0,
@@ -68,7 +71,7 @@ function emptyStamps(): Record<StopId, boolean> {
 
 // Builds a clean save from stored data. Any missing or broken value gets its new-game default.
 function readVersion1(stored: Record<string, unknown>): SaveData {
-    const save = newSave();
+    const save = newSave(isCharacterId(stored.character) ? stored.character : DEFAULT_CHARACTER);
     const stamps = isRecord(stored.stamps) ? stored.stamps : {};
     const bestScores = isRecord(stored.bestScores) ? stored.bestScores : {};
 

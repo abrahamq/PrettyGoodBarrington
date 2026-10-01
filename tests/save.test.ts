@@ -5,9 +5,10 @@ import { SETTINGS_KEY } from '../src/state/settings.ts';
 import { memoryStore } from './helpers/memoryStore.ts';
 
 describe('newSave', () => {
-    it('starts with no stamps, no tips, at 2:00 PM, at the map start point', () => {
+    it('starts as the 11-year-old with no stamps, no tips, at 2:00 PM, at the map start point', () => {
         expect(newSave()).toEqual({
             version: 1,
+            character: 'eleven',
             stamps: {
                 soco: false, gbeats: false, mahaiwe: false, baba: false,
                 triplex: false, coop: false, townhall: false, riverwalk: false
@@ -17,6 +18,10 @@ describe('newSave', () => {
             dayMinutes: 840,
             lastPosition: null
         });
+    });
+
+    it('starts as the boy picked on Character Select', () => {
+        expect(newSave('five').character).toBe('five');
     });
 });
 
@@ -36,6 +41,7 @@ describe('writeSave and loadSave', () => {
         save.tips = 12;
         save.dayMinutes = 900;
         save.lastPosition = { x: 48, y: 96 };
+        save.character = 'fifteen';
 
         expect(writeSave(save, store)).toBe(true);
         expect(loadSave(store)).toEqual(save);
@@ -74,10 +80,18 @@ describe('writeSave and loadSave', () => {
         expect(save?.stamps).not.toHaveProperty('pizzaPlanet');
     });
 
+    it('loads a save from before Character Select as the 11-year-old', () => {
+        const store = memoryStore();
+        const { character: _character, ...oldSave } = newSave('five');
+        store.data.set(SAVE_KEY, JSON.stringify(oldSave));
+
+        expect(loadSave(store)?.character).toBe('eleven');
+    });
+
     it('replaces broken values with the new-game defaults', () => {
         const store = memoryStore();
         store.data.set(SAVE_KEY, JSON.stringify({
-            version: 1, tips: 'lots', dayMinutes: null, lastPosition: 'here', bestScores: { soco: 'high' }
+            version: 1, character: 'grandpa', tips: 'lots', dayMinutes: null, lastPosition: 'here', bestScores: { soco: 'high' }
         }));
 
         const save = loadSave(store);
