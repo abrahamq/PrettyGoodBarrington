@@ -2,14 +2,19 @@
 /// <reference types="vitest/config" />
 import { defineConfig } from 'vite';
 
+// Worktrees live inside this folder and run their own dev servers, so this one does not watch them.
+// The paths are absolute: a pattern like '**/.worktrees/**' also matches every file of a checkout that is
+// itself a worktree, and its dev server would then miss every edit.
+const nestedWorktrees = ['.worktrees/', '.claude/worktrees/']
+    .map((folder) => decodeURIComponent(new URL(folder, import.meta.url).pathname) + '**');
+
 export default defineConfig({
     // Relative asset paths, so the build also works from a GitHub Pages subfolder.
     base: './',
     server: {
         port: 8080,
-        // Worktrees live inside this folder; each one runs its own dev server.
         watch: {
-            ignored: ['**/.worktrees/**', '**/.claude/worktrees/**']
+            ignored: nestedWorktrees
         }
     },
     build: {
