@@ -4,6 +4,7 @@ import { AUTO, Game, Scale } from 'phaser';
 import './style.css';
 import { GAME_HEIGHT, viewWidthFor } from './layout.ts';
 import { PALETTE } from './palette.ts';
+import { pauseWhileUpright } from './portrait.ts';
 import { Boot } from './scenes/Boot.ts';
 import { Calibrate } from './scenes/Calibrate.ts';
 import { CharacterSelect } from './scenes/CharacterSelect.ts';
@@ -63,6 +64,7 @@ window.addEventListener('resize', () => {
         game.scale.setGameSize(width, GAME_HEIGHT);
     }
 });
+game.events.once('ready', () => pauseWhileUpright(game));
 
 // Dev builds only: lets you inspect the running game from the browser console as `game`.
 if (import.meta.env.DEV) {
