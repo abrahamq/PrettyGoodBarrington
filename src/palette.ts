@@ -46,6 +46,8 @@ export const SCENERY = {
     // Overworld ground, from docs/mocks/Overworld.dc.html
     grassLight: '#98cd6c',
     paverJoint: '#c2ab7f',
+    sidewalk: '#cfccc6',
+    sidewalkJoint: '#aeaba4',
     asphaltSpeck: '#615e6e',
     curbStone: '#8e8a7a',
     waterLight: '#a9c9ee',

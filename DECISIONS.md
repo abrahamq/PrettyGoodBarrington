@@ -134,6 +134,10 @@ Choices that `docs/PLAN.md` does not cover. Each entry says what we chose and wh
 7. **Rotating mid-game works.** When the screen size changes, the game changes its width and every centered screen and pinned HUD piece moves to match, with no restart.
 8. **Not done yet (Phase 7):** notch safe areas with `viewport-fit=cover`, and blocking pinch and double-tap zoom. Safari already keeps the page out of the notch area, so the notch shows the page's ink color.
 
+## Light grey sidewalk (2026-09-30)
+
+1. **Sidewalks are light grey.** The plan lists `paver` (#dcc9a0, tan) for sidewalks. A playtest preferred light grey concrete, so the sidewalk tiles use two new scenery colors: `sidewalk` (#cfccc6) and `sidewalkJoint` (#aeaba4) for the brick lines. `paver` stays in the palette, because other art still uses it.
+
 ## Jack and Trim the GB (2026-10-02)
 
 1. **A side game, not a ninth stamp.** Jack mows the lawn at the east end of the map, north of Main Street, beside the GB hedge with a flagpole between the letters. Talking to him ("Help me trim these bushes?") offers Trim the GB. It earns no stamp, so the passport stays at 8 and the leaderboard does not change. The save keeps the best score in a new `sideBests` field (`src/data/sideGames.ts` lists the side games). Older saves load with no side-game scores; the version stays at 1.
