@@ -1,10 +1,11 @@
 // Trim the GB rules (Jack's hedge on the town lawn). No Phaser here: each function takes a state and returns a new
 // one, and the scene only draws the state and passes on finger or mouse strokes.
 //
-// The hedge is shaped like the letters G and B. Each letter is a few strokes along its middle line, and guide points
-// sit every 2 pixels along them. Dragging the clippers trims every guide point within `cutRadius` of them.
-// Trim 95% of the guide points before the 60 seconds run out to win.
-// Aim measures how close the clippers stay to the middle line, over every pixel they travel:
+// The hedge is shaped like the letters G and B: every pixel within `hedgeRadius` of the letters' middle lines.
+// You trim its edges: guide points sit every 2 pixels around the outline of each letter (and around the two holes
+// in the B). Dragging the clippers trims every guide point within `cutRadius` of them.
+// Trim 95% of the guide points before the 30 seconds run out to win.
+// Aim measures how close the clippers stay to the edge, over every pixel they travel:
 // 100% within `exactDistance`, falling to 0% at `missDistance`. Lifting your finger between strokes costs nothing.
 // The clock starts at the first cut, so reading the screen is free.
 //
@@ -18,13 +19,14 @@ export interface Point {
 export type HedgeTrimStatus = 'ready' | 'playing' | 'won' | 'lost';
 
 export const HEDGE_TRIM = {
-    timeLimitMs: 60_000,
+    timeLimitMs: 30_000,
     sampleSpacing: 2,
     // Half the hedge's thickness.
     hedgeRadius: 7,
-    cutRadius: 6,
+    // Smaller than hedgeRadius, so cutting along one edge never trims the edge across the hedge.
+    cutRadius: 5,
     exactDistance: 3,
-    missDistance: 12,
+    missDistance: 10,
     goal: 0.95,
     aimPoints: 1000,
     pointsPerSecondLeft: 10
@@ -43,7 +45,24 @@ export const LETTER_STROKES: Point[][] = [
     [{ x: B.left, y: B.middle }, ...arc(160, 115, 19, 19, 90, -90), { x: B.left, y: B.bottom }]
 ];
 
-export const GUIDE_POINTS: Point[] = LETTER_STROKES.flatMap((stroke) => resample(stroke, HEDGE_TRIM.sampleSpacing));
+export const MIDDLE_POINTS: Point[] = LETTER_STROKES.flatMap((stroke) => resample(stroke, HEDGE_TRIM.sampleSpacing));
+
+// The part of the screen the hedge can cover, with room for its overgrowth.
+export const HEDGE_AREA = { x: 36, y: 40, width: 168, height: 116 };
+
+// For each pixel in HEDGE_AREA, row by row: the distance from its center to the nearest middle point.
+export const MIDDLE_DISTANCES: Float32Array = measureMiddleDistances();
+
+export function isHedgePixel(x: number, y: number): boolean {
+    const col = x - HEDGE_AREA.x;
+    const row = y - HEDGE_AREA.y;
+
+    return col >= 0 && row >= 0 && col < HEDGE_AREA.width && row < HEDGE_AREA.height
+        && MIDDLE_DISTANCES[row * HEDGE_AREA.width + col] <= HEDGE_TRIM.hedgeRadius;
+}
+
+// The centers of the hedge's edge pixels (hedge pixels next to a pixel outside it), thinned to about 2 pixels apart.
+export const GUIDE_POINTS: Point[] = spacedOut(edgePixels(), HEDGE_TRIM.sampleSpacing);
 
 export interface HedgeTrimState {
     status: HedgeTrimStatus;
@@ -180,6 +199,54 @@ function cutAround(point: Point, trimmed: boolean[]): number {
     });
 
     return nearest;
+}
+
+function measureMiddleDistances(): Float32Array {
+    const distances = new Float32Array(HEDGE_AREA.width * HEDGE_AREA.height);
+
+    for (let row = 0; row < HEDGE_AREA.height; row++) {
+        for (let col = 0; col < HEDGE_AREA.width; col++) {
+            const x = HEDGE_AREA.x + col + 0.5;
+            const y = HEDGE_AREA.y + row + 0.5;
+            let nearest = Infinity;
+
+            for (const point of MIDDLE_POINTS) {
+                nearest = Math.min(nearest, (point.x - x) ** 2 + (point.y - y) ** 2);
+            }
+            distances[row * HEDGE_AREA.width + col] = Math.sqrt(nearest);
+        }
+    }
+
+    return distances;
+}
+
+function edgePixels(): Point[] {
+    const points: Point[] = [];
+
+    for (let y = HEDGE_AREA.y; y < HEDGE_AREA.y + HEDGE_AREA.height; y++) {
+        for (let x = HEDGE_AREA.x; x < HEDGE_AREA.x + HEDGE_AREA.width; x++) {
+            const onEdge = isHedgePixel(x, y)
+                && (!isHedgePixel(x - 1, y) || !isHedgePixel(x + 1, y) || !isHedgePixel(x, y - 1) || !isHedgePixel(x, y + 1));
+            if (onEdge) {
+                points.push({ x: x + 0.5, y: y + 0.5 });
+            }
+        }
+    }
+
+    return points;
+}
+
+// Keeps each point unless an earlier kept point is closer than `spacing`.
+export function spacedOut(points: Point[], spacing: number): Point[] {
+    const kept: Point[] = [];
+
+    for (const point of points) {
+        if (kept.every((other) => Math.hypot(other.x - point.x, other.y - point.y) >= spacing)) {
+            kept.push(point);
+        }
+    }
+
+    return kept;
 }
 
 // Points around an ellipse, every 2 degrees. y grows downward, so a positive angle is above the center.

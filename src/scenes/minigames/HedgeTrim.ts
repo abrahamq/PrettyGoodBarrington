@@ -1,6 +1,6 @@
 // Trim the GB, Jack's side game on the town lawn. The rules live in src/logic/hedgeTrim.ts and the hedge art in
 // src/art/hedge.ts; this scene passes on strokes, repaints the hedge when it changes, and shows the score.
-// Trim: drag a finger or the mouse along the letters. Or, with a keyboard, steer the clippers with the arrow keys
+// Trim: drag a finger or the mouse along the edges of the letters. Or, with a keyboard, steer the clippers with the arrow keys
 // or WASD (they cut wherever they go).
 // Quit: tap [B] QUIT, or press Escape, Backspace, X, or B. Quitting scores nothing.
 import { Scene, type GameObjects, type Input, type Textures } from 'phaser';
@@ -23,7 +23,7 @@ import { addPixelText, centeredX, pixelTextWidth } from '../../ui/text.ts';
 const HEDGE_TEXTURE = 'hedge-live';
 const MAX_FRAME_MS = 100;
 const END_DELAY_MS = 3200;
-const LOW_TIME_MS = 10_000;
+const LOW_TIME_MS = 8000;
 // Keyboard clippers speed, in game pixels per second.
 const KEY_SPEED = 60;
 const MAX_LEAVES = 60;
@@ -247,13 +247,13 @@ export class HedgeTrim extends Scene {
         const aimShare = aim(state);
 
         if (state.status === 'ready') {
-            return 'TRACE THE LETTERS!';
+            return 'TRACE THE EDGES!';
         }
         if (timeLeftMs(state) < LOW_TIME_MS) {
             return 'HURRY!';
         }
         if (aimShare !== null && aimShare < 0.6) {
-            return 'STAY ON THE HEDGE!';
+            return 'STAY ON THE EDGE!';
         }
         if (neatness(state) > 0.75) {
             return 'ALMOST NEAT!';

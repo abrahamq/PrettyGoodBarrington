@@ -4,6 +4,7 @@
 // Tiles in the `buildings` layer draw on a clear background over the ground; `decor` tiles draw above the player.
 // A tile's position in TILE_ART is its id: Tiled numbers tiles from 1 (0 means "no tile").
 import type { Layer, Offset, PixelTarget } from '../art/paint.ts';
+import { MAP_HEDGE, MAP_HEDGE_POLE_X, mapHedgeLayers } from '../art/hedge.ts';
 import { drawLayers } from '../art/paint.ts';
 import { rectPath } from '../art/svgPath.ts';
 import type { TiledTileset } from './tiled.ts';
@@ -61,6 +62,31 @@ const CAR: Layer[] = [
 function shiftedTo(layers: Layer[], offset: Offset): Layer[] {
     return layers.map((layer) => ({ ...layer, at: [offset] }));
 }
+
+// The GB hedge is 6x3 tiles, each a 16x16 piece of one picture, named by column and row: hedge0x0 to hedge5x2.
+export const HEDGE_COLUMNS = MAP_HEDGE.width / SIZE;
+export const HEDGE_ROWS = MAP_HEDGE.height / SIZE;
+type HedgeTileName = `hedge${0 | 1 | 2 | 3 | 4 | 5}x${0 | 1 | 2}`;
+
+export function hedgeTileName(col: number, row: number): HedgeTileName {
+    return `hedge${col}x${row}` as HedgeTileName;
+}
+
+function hedgeTiles(): Record<HedgeTileName, TileArt> {
+    const layers = mapHedgeLayers();
+    const tiles = {} as Record<HedgeTileName, TileArt>;
+
+    for (let row = 0; row < HEDGE_ROWS; row++) {
+        for (let col = 0; col < HEDGE_COLUMNS; col++) {
+            tiles[hedgeTileName(col, row)] = { blocks: true, layers: shiftedTo(layers, [-col * SIZE, -row * SIZE]) };
+        }
+    }
+
+    return tiles;
+}
+
+// The flagpole and flag stand MAP_HEDGE_POLE_X pixels into the hedge, between the letters.
+const POLE = MAP_HEDGE_POLE_X % SIZE;
 
 function roof(shingle: Layer['color'], line: Layer['color'], edge: Layer['color']): TileArt {
     return {
@@ -238,44 +264,26 @@ export const TILE_ART = {
             { color: 'grassLight', path: 'M6 8h2v1h-2z M12 13h1v1h-1z' }
         ]
     },
-    // The GB hedge, one letter per tile, with a shadow on the grass below.
-    hedgeG: {
-        blocks: true,
-        layers: [
-            { color: 'ink', path: 'M2 15h12v1h-12z', alpha: 0.25 },
-            { color: 'leaf', path: 'M3 3h10v3h-10z M1 5h4v8h-4z M3 12h10v3h-10z M11 9h4v5h-4z M8 9h4v3h-4z M12 4h3v3h-3z' },
-            { color: 'leafLight', path: 'M3 3h10v1h-10z M12 4h3v1h-3z M1 5h2v1h-2z M8 9h7v1h-7z' },
-            { color: 'leafDark', path: 'M3 14h10v1h-10z M13 13h2v1h-2z M5 6h7v1h-7z M12 6h3v1h-3z' }
-        ]
-    },
-    hedgeB: {
-        blocks: true,
-        layers: [
-            { color: 'ink', path: 'M1 15h14v1h-14z', alpha: 0.25 },
-            { color: 'leaf', path: 'M1 3h11v3h-11z M1 3h4v12h-4z M1 8h11v2h-11z M1 12h12v3h-12z M11 4h3v5h-3z M12 9h3v5h-3z' },
-            { color: 'leafLight', path: 'M1 3h11v1h-11z M5 8h7v1h-7z M5 12h8v1h-8z' },
-            { color: 'leafDark', path: 'M1 14h12v1h-12z M13 13h2v1h-2z M5 6h6v1h-6z M5 10h7v1h-7z' }
-        ]
-    },
-    // The flagpole stands on the tile's left edge, so it rises between the G and the B below it.
+    // The flagpole rises from behind the hedge, between the G and the B.
     flagPole: {
         blocks: true,
         layers: [
-            { color: 'whiteCream', path: 'M0 0h1v15h-1z' },
-            { color: 'steel', path: 'M1 0h1v15h-1z M0 14h3v2h-3z' }
+            { color: 'whiteCream', path: rectPath(POLE, 0, 1, SIZE) },
+            { color: 'steel', path: rectPath(POLE + 1, 0, 1, SIZE) }
         ]
     },
     flagTop: {
         blocks: false,
         layers: [
-            { color: 'gold', path: 'M0 0h2v2h-2z' },
-            { color: 'whiteCream', path: 'M0 2h1v14h-1z M2 4h12v1h-12z M2 6h12v1h-12z M2 8h12v1h-12z' },
-            { color: 'steel', path: 'M1 2h1v14h-1z' },
-            { color: 'red', path: 'M2 3h12v1h-12z M2 5h12v1h-12z M2 7h12v1h-12z M2 9h12v1h-12z' },
-            { color: 'facadeNavy', path: 'M2 3h5v4h-5z' },
-            { color: 'whiteCream', path: 'M3 4h1v1h-1z M5 4h1v1h-1z M4 5h1v1h-1z' }
+            { color: 'gold', path: rectPath(POLE, 0, 2, 2) },
+            { color: 'whiteCream', path: `${rectPath(POLE, 2, 1, 14)} ${[4, 6, 8].map((y) => rectPath(POLE + 2, y, 8, 1)).join(' ')}` },
+            { color: 'steel', path: rectPath(POLE + 1, 2, 1, 14) },
+            { color: 'red', path: [3, 5, 7, 9].map((y) => rectPath(POLE + 2, y, 8, 1)).join(' ') },
+            { color: 'facadeNavy', path: rectPath(POLE + 2, 3, 4, 4) },
+            { color: 'whiteCream', path: `${rectPath(POLE + 3, 4, 1, 1)} ${rectPath(POLE + 5, 4, 1, 1)} ${rectPath(POLE + 4, 5, 1, 1)}` }
         ]
-    }
+    },
+    ...hedgeTiles()
 } satisfies Record<string, TileArt>;
 
 export type TileName = keyof typeof TILE_ART;

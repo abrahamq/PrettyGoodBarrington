@@ -67,19 +67,30 @@ export const STOP_SCRIPTS: Record<StopId, StopScript> = {
     riverwalk: { kind: 'stub', speaker: 'RANGER', text: ['The trail crew is still building this stop. Come back soon!'] }
 };
 
-export const SIDE_GAME_SCRIPTS: Record<SideGameId, PlayableScript> = {
+// A side game's lines. After a round, one ending is said: `lost` when the time ran out, `great` for a finished
+// round that scored at least the game's `greatScore` (src/data/sideGames.ts), and `finished` for any other.
+// {score} is replaced with the round's score.
+export interface SideGameScript {
+    speaker: string;
+    intro: string[];
+    again: string[];
+    accept: string;
+    decline: string;
+    endings: Record<'lost' | 'finished' | 'great', string>;
+}
+
+export const SIDE_GAME_SCRIPTS: Record<SideGameId, SideGameScript> = {
     hedgeTrim: {
-        kind: 'playable',
         speaker: 'JACK',
-        intro: [
-            "Whew! This lawn won't mow itself. And look at our GB hedge, it's gotten so shaggy.",
-            'Want to help me trim it? Trace the G and the B with my clippers. Quick and neat is best!'
-        ],
-        again: ['That hedge grows back fast! Want to trim it again?'],
+        intro: ['Help me trim these bushes?'],
+        again: ['Help me trim these bushes?'],
         accept: "LET'S TRIM",
         decline: 'NOT NOW',
-        win: ["Now that's a sharp-looking GB! Thanks for the help."],
-        lose: ["Still a little shaggy. Come back and we'll finish it!"]
+        endings: {
+            lost: 'Could be better... you only scored {score}.',
+            finished: 'Those look okay, you got {score} points.',
+            great: 'Not bad, you scored {score}.'
+        }
     }
 };
 

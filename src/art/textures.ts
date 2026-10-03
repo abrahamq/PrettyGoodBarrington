@@ -6,7 +6,7 @@ import { TILESET_HEIGHT, TILESET_NAME, TILESET_WIDTH, drawTileset } from '../map
 import { drawLayers, graphicsTarget, type Layer } from './paint.ts';
 import {
     CHARACTER_HEIGHT, CHARACTER_WIDTH, NPC_KEYS, PLAYER_FRAMES_PER_ROW, PLAYER_ROWS, PLAYER_SHEET_HEIGHT, PLAYER_SHEET_WIDTH,
-    JACK, drawNpc, drawPlayerSheet, playerTextureKey, walkAnimationKey
+    drawNpc, drawPlayerSheet, playerTextureKey, walkAnimationKey
 } from './people.ts';
 import { CHARACTER_IDS } from '../data/characters.ts';
 import type { Doneness } from '../logic/orderUp.ts';
@@ -132,19 +132,6 @@ export function createWalkAnimations(scene: Scene): void {
                 frameRate: 8,
                 repeat: -1
             });
-        });
-    }
-}
-
-// Jack's mower rumbles back and forth between his two frames. His art is only a PNG, so if it failed to load,
-// there is nothing to animate.
-export function createMowAnimation(scene: Scene): void {
-    if (scene.textures.exists(JACK.key)) {
-        scene.anims.create({
-            key: JACK.mowAnimation,
-            frames: scene.anims.generateFrameNumbers(JACK.key, { frames: [0, 1] }),
-            frameRate: 6,
-            repeat: -1
         });
     }
 }

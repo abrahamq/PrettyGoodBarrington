@@ -13,7 +13,7 @@ describe('STOP_SCRIPTS', () => {
 
     it('keeps choice labels short enough for the choice box', () => {
         for (const script of [...Object.values(STOP_SCRIPTS), ...Object.values(SIDE_GAME_SCRIPTS)]) {
-            if (script.kind === 'playable') {
+            if (!('kind' in script) || script.kind === 'playable') {
                 expect(script.accept.length).toBeLessThanOrEqual(11);
                 expect(script.decline.length).toBeLessThanOrEqual(11);
             }

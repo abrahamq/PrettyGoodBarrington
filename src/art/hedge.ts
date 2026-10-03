@@ -1,10 +1,12 @@
 // Art for Trim the GB: the lawn backdrop (treeline, flagpole, mowed stripes, mulch bed), the clippers,
 // and the hedge itself, which is painted pixel by pixel because it changes as the player trims it.
+// Also the neat GB hedge on the overworld map, made from the same letter shapes.
 //
-// Every hedge pixel belongs to its nearest guide point (src/logic/hedgeTrim.ts). While that point is untrimmed,
-// the pixel is drawn shaggy: mottled leaves that spill past the letter's edge in uneven clumps. Once it is trimmed,
-// the pixel is drawn neat: a flat boxwood face with a light top edge, a dark bottom edge, and a shadow below.
-import { GUIDE_POINTS, HEDGE_TRIM } from '../logic/hedgeTrim.ts';
+// Every hedge pixel belongs to its nearest guide point on the letters' edges (src/logic/hedgeTrim.ts). While that
+// point is untrimmed,
+// the pixel is drawn shaggy: mottled leaves that spill past the letter's edge in uneven clumps. Once it is
+// trimmed, the pixel is drawn neat: a flat boxwood face with a light top edge, a dark bottom edge, and a shadow below.
+import { GUIDE_POINTS, HEDGE_AREA, HEDGE_TRIM, MIDDLE_DISTANCES, spacedOut, type Point } from '../logic/hedgeTrim.ts';
 import { colorNumber, type ColorName } from '../palette.ts';
 import type { Layer } from './paint.ts';
 import { rectPath } from './svgPath.ts';
@@ -13,80 +15,77 @@ const WIDTH = 240;
 const HEIGHT = 160;
 // How far the shaggy leaves can reach past the hedge's edge.
 const OVERGROWTH = 7;
-const GUIDE_DOT_EVERY = 3;
-
-// The part of the screen the hedge can cover.
-const FIELD = { x: 36, y: 40, width: 168, height: 116 };
+// The dots that show where to trim, about 5 pixels apart around the edges.
+const GUIDE_DOT_SPACING = 5;
 
 const MULCH = { x: 40, y: 48, width: 160, height: 104 };
 const POLE_X = 128;
 
-interface HedgeField {
-    // Distance from each pixel's center to its nearest guide point, and that point's index.
-    distance: Float32Array;
-    nearest: Int16Array;
-}
+let nearestGuides: Int16Array | null = null;
+let guideDots: number[] | null = null;
 
-let field: HedgeField | null = null;
-
-// Measured once, the first time the hedge is painted.
-function hedgeField(): HedgeField {
-    if (field) {
-        return field;
+// For each pixel in HEDGE_AREA, the index of its nearest guide point. Measured once, the first time it is needed.
+function nearestGuide(): Int16Array {
+    if (nearestGuides) {
+        return nearestGuides;
     }
 
-    const size = FIELD.width * FIELD.height;
-    const distance = new Float32Array(size);
-    const nearest = new Int16Array(size);
-
-    for (let row = 0; row < FIELD.height; row++) {
-        for (let col = 0; col < FIELD.width; col++) {
-            const x = FIELD.x + col + 0.5;
-            const y = FIELD.y + row + 0.5;
+    const nearest = new Int16Array(HEDGE_AREA.width * HEDGE_AREA.height);
+    for (let row = 0; row < HEDGE_AREA.height; row++) {
+        for (let col = 0; col < HEDGE_AREA.width; col++) {
+            const x = HEDGE_AREA.x + col + 0.5;
+            const y = HEDGE_AREA.y + row + 0.5;
             let best = Infinity;
-            let bestIndex = 0;
 
             GUIDE_POINTS.forEach((point, i) => {
                 const d = (point.x - x) ** 2 + (point.y - y) ** 2;
                 if (d < best) {
                     best = d;
-                    bestIndex = i;
+                    nearest[row * HEDGE_AREA.width + col] = i;
                 }
             });
-
-            distance[row * FIELD.width + col] = Math.sqrt(best);
-            nearest[row * FIELD.width + col] = bestIndex;
         }
     }
 
-    field = { distance, nearest };
-    return field;
+    nearestGuides = nearest;
+    return nearest;
 }
 
-function distanceAt(x: number, y: number): number {
-    const col = x - FIELD.x;
-    const row = y - FIELD.y;
+function dotIndexes(): number[] {
+    if (!guideDots) {
+        const dots = new Set<Point>(spacedOut(GUIDE_POINTS, GUIDE_DOT_SPACING));
+        guideDots = GUIDE_POINTS.flatMap((point, i) => (dots.has(point) ? [i] : []));
+    }
 
-    if (col < 0 || row < 0 || col >= FIELD.width || row >= FIELD.height) {
+    return guideDots;
+}
+
+// Distance from a pixel's center to the letters' middle lines; Infinity outside HEDGE_AREA.
+function distanceAt(x: number, y: number): number {
+    const col = x - HEDGE_AREA.x;
+    const row = y - HEDGE_AREA.y;
+
+    if (col < 0 || row < 0 || col >= HEDGE_AREA.width || row >= HEDGE_AREA.height) {
         return Infinity;
     }
 
-    return hedgeField().distance[row * FIELD.width + col];
+    return MIDDLE_DISTANCES[row * HEDGE_AREA.width + col];
 }
 
 // Paints the hedge into a 240x160 RGBA pixel array (for example, a canvas's ImageData). Everything else is clear.
 export function paintHedge(pixels: Uint8ClampedArray, trimmed: readonly boolean[]): void {
-    const { distance, nearest } = hedgeField();
+    const nearest = nearestGuide();
     const radius = HEDGE_TRIM.hedgeRadius;
 
     pixels.fill(0);
 
-    for (let row = 0; row < FIELD.height; row++) {
-        for (let col = 0; col < FIELD.width; col++) {
-            const x = FIELD.x + col;
-            const y = FIELD.y + row;
-            const d = distance[row * FIELD.width + col];
-            const color = trimmed[nearest[row * FIELD.width + col]] ? neatPixel(x, y, d, radius) : shaggyPixel(x, y, d, radius);
+    for (let row = 0; row < HEDGE_AREA.height; row++) {
+        for (let col = 0; col < HEDGE_AREA.width; col++) {
+            const x = HEDGE_AREA.x + col;
+            const y = HEDGE_AREA.y + row;
+            const index = row * HEDGE_AREA.width + col;
+            const d = MIDDLE_DISTANCES[index];
+            const color = trimmed[nearest[index]] ? neatPixel(x, y, d, radius) : shaggyPixel(x, y, d, radius);
 
             if (color) {
                 setPixel(pixels, x, y, color.name, color.alpha);
@@ -94,11 +93,11 @@ export function paintHedge(pixels: Uint8ClampedArray, trimmed: readonly boolean[
         }
     }
 
-    GUIDE_POINTS.forEach((point, i) => {
-        if (i % GUIDE_DOT_EVERY === 0 && !trimmed[i]) {
-            setPixel(pixels, Math.floor(point.x), Math.floor(point.y), 'whiteCream', 0.85);
+    for (const i of dotIndexes()) {
+        if (!trimmed[i]) {
+            setPixel(pixels, Math.floor(GUIDE_POINTS[i].x), Math.floor(GUIDE_POINTS[i].y), 'whiteCream', 0.85);
         }
-    });
+    }
 }
 
 interface PixelColor {
@@ -174,6 +173,58 @@ function clumps(x: number, y: number): number {
 
 function smooth(t: number): number {
     return t * t * (3 - 2 * t);
+}
+
+// The overworld's GB hedge: the minigame's letters squeezed into 6x3 tiles (96x48 pixels), neatly trimmed.
+// Each map pixel looks up the minigame pixel it stands for.
+export const MAP_HEDGE = { width: 96, height: 48 };
+const MAP_SCALE = { x: 0.65, y: 0.5 };
+// The minigame point that the map hedge's top-left corner stands for.
+const MAP_ORIGIN = { x: 45.6, y: 52 };
+// Where the flagpole stands in the map hedge, between the letters, as on the minigame screen.
+export const MAP_HEDGE_POLE_X = Math.round((POLE_X - MAP_ORIGIN.x) * MAP_SCALE.x);
+
+export function mapHedgeLayers(): Layer[] {
+    const inside = (x: number, y: number) => x >= 0 && y >= 0 && x < MAP_HEDGE.width && y < MAP_HEDGE.height
+        && distanceAt(
+            Math.floor(MAP_ORIGIN.x + (x + 0.5) / MAP_SCALE.x),
+            Math.floor(MAP_ORIGIN.y + (y + 0.5) / MAP_SCALE.y)
+        ) <= HEDGE_TRIM.hedgeRadius;
+    const runs = new Map<string, string[]>();
+
+    for (let y = 0; y < MAP_HEDGE.height; y++) {
+        let start = 0;
+        let current: string | null = null;
+
+        for (let x = 0; x <= MAP_HEDGE.width; x++) {
+            const color = x < MAP_HEDGE.width ? mapHedgeColor(x, y, inside) : null;
+            if (color !== current) {
+                if (current) {
+                    runs.set(current, [...(runs.get(current) ?? []), rectPath(start, y, x - start, 1)]);
+                }
+                start = x;
+                current = color;
+            }
+        }
+    }
+
+    return [...runs].map(([color, rects]) => (color === 'shadow'
+        ? { color: 'ink', path: rects.join(' '), alpha: 0.25 }
+        : { color: color as ColorName, path: rects.join(' ') }));
+}
+
+// The same look as a trimmed hedge in the minigame. 'shadow' is ink at 25%.
+function mapHedgeColor(x: number, y: number, inside: (x: number, y: number) => boolean): ColorName | 'shadow' | null {
+    if (!inside(x, y)) {
+        return inside(x, y - 1) || inside(x, y - 2) ? 'shadow' : null;
+    }
+    if (!inside(x, y - 1)) {
+        return 'leafLight';
+    }
+    if (!inside(x, y + 1) || !inside(x - 1, y) || !inside(x + 1, y)) {
+        return 'leafDark';
+    }
+    return noise(x, y, 4) < 0.1 ? 'leafLight' : 'leaf';
 }
 
 // The backdrop: sky, a treeline like the woods behind the real hedge, the flagpole, the lawn, and the mulch bed.

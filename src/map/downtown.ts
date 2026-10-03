@@ -4,11 +4,12 @@
 // Bridge Street goes south to the river, and the River Walk boardwalk runs along the water.
 // At the east end, north of Main Street, Jack mows the town lawn next to the GB hedge.
 // Positions below are (column, row) in tiles; row 0 is the top of the map.
+import { MAP_HEDGE_POLE_X } from '../art/hedge.ts';
 import { JACK } from '../art/people.ts';
 import { stopById, type StopId } from '../data/stops.ts';
 import { TILE_SIZE } from '../layout.ts';
 import type { TiledMap, TiledObject, TiledObjectLayer, TiledTileLayer } from './tiled.ts';
-import { tileGid, tilesetForMap, type TileName } from './tileset.ts';
+import { HEDGE_COLUMNS, HEDGE_ROWS, hedgeTileName, tileGid, tilesetForMap, type TileName } from './tileset.ts';
 
 export const MAP_WIDTH = 60;
 export const MAP_HEIGHT = 24;
@@ -285,11 +286,17 @@ function layJacksLawn(map: MapBuilder): void {
         map.fill('ground', 51, row, MAP_WIDTH - 51, 1, 'grassMowed');
     }
 
-    map.set('buildings', 54, 11, 'hedgeG');
-    map.set('buildings', 55, 11, 'hedgeB');
-    map.set('buildings', 55, 10, 'flagPole');
-    map.set('decor', 55, 9, 'flagTop');
-    map.addObject('interactables', 'sign', 'gb-hedge', tileArea(54, 11, 2, 1), { dialogueId: 'gb-hedge' });
+    const hedge = { col: 51, row: 10 };
+    for (let row = 0; row < HEDGE_ROWS; row++) {
+        for (let col = 0; col < HEDGE_COLUMNS; col++) {
+            map.set('buildings', hedge.col + col, hedge.row + row, hedgeTileName(col, row));
+        }
+    }
+    const poleCol = hedge.col + Math.floor(MAP_HEDGE_POLE_X / TILE_SIZE);
+    map.set('buildings', poleCol, hedge.row - 1, 'flagPole');
+    map.set('buildings', poleCol, hedge.row - 2, 'flagPole');
+    map.set('decor', poleCol, hedge.row - 3, 'flagTop');
+    map.addObject('interactables', 'sign', 'gb-hedge', tileArea(hedge.col, hedge.row, HEDGE_COLUMNS, HEDGE_ROWS), { dialogueId: 'gb-hedge' });
 
     addNpc(map, JACK.key, 58, 11, { sideGameId: 'hedgeTrim' });
 }

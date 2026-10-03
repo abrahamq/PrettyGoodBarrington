@@ -6,7 +6,7 @@
 import { Scene, type GameObjects, type Input } from 'phaser';
 import { JACK, PLAYER_FRAMES_PER_ROW, PLAYER_ROWS, playerTextureKey, walkAnimationKey } from '../art/people.ts';
 import { TEXTURES } from '../art/textures.ts';
-import { LINES, SIDE_GAME_SCRIPTS, STOP_SCRIPTS, fillNames, type PlayableScript } from '../data/dialogue.ts';
+import { LINES, SIDE_GAME_SCRIPTS, STOP_SCRIPTS, fillNames, type SideGameScript } from '../data/dialogue.ts';
 import { SIDE_GAMES, type SideGameId } from '../data/sideGames.ts';
 import { stopById, type StopId } from '../data/stops.ts';
 import { GAME_HEIGHT, GAME_WIDTH, TILE_SIZE } from '../layout.ts';
@@ -324,7 +324,7 @@ export class Overworld extends Scene {
         });
     }
 
-    private offerGame(script: PlayableScript, playedBefore: boolean, start: () => void): void {
+    private offerGame(script: Omit<SideGameScript, 'endings'>, playedBefore: boolean, start: () => void): void {
         const lines = playedBefore ? script.again : script.intro;
 
         this.ui.showDialogue({
@@ -352,10 +352,10 @@ export class Overworld extends Scene {
         }
 
         const script = SIDE_GAME_SCRIPTS[result.sideGameId];
-        const best = this.save.sideBests[result.sideGameId] ?? result.score;
-        const tally = result.score >= best ? `${result.score} points. That's your best yet!` : `${result.score} points. Your best is ${best}.`;
+        const great = result.passed && result.score >= SIDE_GAMES[result.sideGameId].greatScore;
+        const ending = great ? script.endings.great : result.passed ? script.endings.finished : script.endings.lost;
 
-        this.ui.showDialogue({ speaker: script.speaker, paragraphs: [...(result.passed ? script.win : script.lose), tally] });
+        this.ui.showDialogue({ speaker: script.speaker, paragraphs: [ending.replace('{score}', String(result.score))] });
     }
 
     // Leaving the street
@@ -465,13 +465,11 @@ export class Overworld extends Scene {
             }
 
             const tile = { col: item.col + Math.floor((item.width - 1) / 2), row: item.row + item.height - 1 };
-            const npc = this.add.sprite((tile.col + 0.5) * TILE_SIZE, (tile.row + 1) * TILE_SIZE, item.npc)
+            // Jack's PNG holds two frames; he shows the first.
+            const frame = item.npc === JACK.key ? 0 : undefined;
+            this.add.image((tile.col + 0.5) * TILE_SIZE, (tile.row + 1) * TILE_SIZE, item.npc, frame)
                 .setOrigin(0.5, 1)
                 .setDepth(DEPTH.npcs);
-
-            if (item.npc === JACK.key && this.anims.exists(JACK.mowAnimation)) {
-                npc.play(JACK.mowAnimation);
-            }
         }
     }
 

@@ -1,23 +1,28 @@
-// Checks the Trim the GB rules: the guide points along the letters, trimming, aim, the clock, and the score.
+// Checks the Trim the GB rules: the guide points around the letters' edges, trimming, aim, the clock, and the score.
 // Also checks that the hedge art shrinks from shaggy to neat when it is trimmed.
 import { describe, expect, it } from 'vitest';
 import { paintHedge } from '../src/art/hedge.ts';
 import {
-    GUIDE_POINTS, HEDGE_TRIM, LETTER_STROKES, aim, closeness, neatness, newHedgeTrim, resample, scoreFor, timeLeftMs,
-    traceStroke, updateHedgeTrim, type HedgeTrimState
+    GUIDE_POINTS, HEDGE_TRIM, LETTER_STROKES, aim, closeness, isHedgePixel, neatness, newHedgeTrim, resample, scoreFor,
+    spacedOut, timeLeftMs, traceStroke, updateHedgeTrim, type HedgeTrimState, type Point
 } from '../src/logic/hedgeTrim.ts';
 
-// Drags the clippers along every letter stroke, exactly on the line.
+// Drags the clippers from every guide point to its nearest neighbor, so they never leave the edge.
 function traceEverything(state: HedgeTrimState): HedgeTrimState {
     let next = state;
 
-    for (const stroke of LETTER_STROKES) {
-        for (let i = 1; i < stroke.length; i++) {
-            next = traceStroke(next, stroke[i - 1], stroke[i]);
-        }
+    for (const point of GUIDE_POINTS) {
+        next = traceStroke(next, point, nearestOther(point));
     }
 
     return next;
+}
+
+function nearestOther(point: Point): Point {
+    const others = GUIDE_POINTS.filter((other) => other !== point);
+    const distance = (other: Point) => Math.hypot(other.x - point.x, other.y - point.y);
+
+    return others.reduce((best, other) => (distance(other) < distance(best) ? other : best));
 }
 
 function started(): HedgeTrimState {
@@ -32,15 +37,41 @@ describe('GUIDE_POINTS', () => {
             expect(point.y).toBeGreaterThan(40);
             expect(point.y).toBeLessThan(160);
         }
-        expect(GUIDE_POINTS.length).toBeGreaterThan(150);
+        expect(GUIDE_POINTS.length).toBeGreaterThan(300);
+    });
+
+    it('sit on the edge of the hedge, next to a pixel outside it', () => {
+        for (const { x, y } of GUIDE_POINTS) {
+            const [col, row] = [Math.floor(x), Math.floor(y)];
+
+            expect(isHedgePixel(col, row)).toBe(true);
+            expect([[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => !isHedgePixel(col + dx, row + dy))).toBe(true);
+        }
     });
 
     it('keep the G and the B apart, so tracing one never trims the other', () => {
-        const [g, ...b] = LETTER_STROKES.map((stroke) => resample(stroke, HEDGE_TRIM.sampleSpacing));
-        const gRight = Math.max(...g.map((point) => point.x));
-        const bLeft = Math.min(...b.flat().map((point) => point.x));
+        const gRight = Math.max(...GUIDE_POINTS.filter((point) => point.x < 128).map((point) => point.x));
+        const bLeft = Math.min(...GUIDE_POINTS.filter((point) => point.x > 128).map((point) => point.x));
 
         expect(bLeft - gRight).toBeGreaterThan(HEDGE_TRIM.cutRadius * 2);
+    });
+
+    it('cannot be trimmed from the middle of a letter', () => {
+        const [g] = LETTER_STROKES.map((stroke) => resample(stroke, HEDGE_TRIM.sampleSpacing));
+        let state = newHedgeTrim();
+        for (let i = 11; i <= 30; i++) {
+            state = traceStroke(state, g[i - 1], g[i]);
+        }
+
+        expect(state.trimmedCount).toBe(0);
+    });
+});
+
+describe('spacedOut', () => {
+    it('drops points closer than the spacing to one already kept', () => {
+        const points = [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 3, y: 0 }];
+
+        expect(spacedOut(points, 2)).toEqual([{ x: 0, y: 0 }, { x: 2, y: 0 }]);
     });
 });
 
@@ -115,7 +146,7 @@ describe('scoreFor', () => {
     it('gives a win its aim points plus 10 per whole second left', () => {
         const state = traceEverything(updateHedgeTrim(started(), 20_500));
 
-        expect(scoreFor(state)).toBe(1000 + 10 * 39);
+        expect(scoreFor(state)).toBe(1000 + 10 * 9);
     });
 
     it('scales a loss by how much was trimmed, with no time bonus', () => {
