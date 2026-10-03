@@ -6,12 +6,13 @@ import { TILESET_HEIGHT, TILESET_NAME, TILESET_WIDTH, drawTileset } from '../map
 import { drawLayers, graphicsTarget, type Layer } from './paint.ts';
 import {
     CHARACTER_HEIGHT, CHARACTER_WIDTH, NPC_KEYS, PLAYER_FRAMES_PER_ROW, PLAYER_ROWS, PLAYER_SHEET_HEIGHT, PLAYER_SHEET_WIDTH,
-    drawNpc, drawPlayerSheet, playerTextureKey, walkAnimationKey
+    JACK, drawNpc, drawPlayerSheet, playerTextureKey, walkAnimationKey
 } from './people.ts';
 import { CHARACTER_IDS } from '../data/characters.ts';
 import type { Doneness } from '../logic/orderUp.ts';
 import type { Flavor } from '../logic/scoopStack.ts';
 import { BURGER, EXTRA_ICONS, KITCHEN_BACKGROUND, PATTIES, SMOKE } from './diner.ts';
+import { CLIPPERS, LAWN_BACKGROUND } from './hedge.ts';
 import { LANE_COLORS, SPARKLE, STAGE_BACKGROUND, arrow } from './stage.ts';
 import { CONE, EMPTY_SCOOP_ICON, SCOOPS, SHOP_BACKGROUND, scoopIcon } from './scoopShop.ts';
 import { rectPath } from './svgPath.ts';
@@ -37,7 +38,9 @@ export const TEXTURES = {
     stageBackground: 'stage-bg',
     targetOff: 'arrow-off',
     targetLit: 'arrow-lit',
-    sparkle: 'sparkle'
+    sparkle: 'sparkle',
+    lawnBackground: 'lawn-bg',
+    clippers: 'clippers'
 } as const;
 
 // One note color per lane: left, down, up, right.
@@ -104,6 +107,9 @@ export function generatePlaceholderTextures(scene: Scene): void {
         makeTexture(scene, NOTE_TEXTURES[lane], 12, 12, (graphics) => paintArt(graphics, arrow(color)));
     });
 
+    makeTexture(scene, TEXTURES.lawnBackground, 240, 160, (graphics) => paintArt(graphics, LAWN_BACKGROUND));
+    makeTexture(scene, TEXTURES.clippers, 9, 9, (graphics) => paintArt(graphics, CLIPPERS));
+
     for (const character of CHARACTER_IDS) {
         const key = playerTextureKey(character);
         const paint = (graphics: GameObjects.Graphics) => drawPlayerSheet(graphicsTarget(graphics), character);
@@ -126,6 +132,19 @@ export function createWalkAnimations(scene: Scene): void {
                 frameRate: 8,
                 repeat: -1
             });
+        });
+    }
+}
+
+// Jack's mower rumbles back and forth between his two frames. His art is only a PNG, so if it failed to load,
+// there is nothing to animate.
+export function createMowAnimation(scene: Scene): void {
+    if (scene.textures.exists(JACK.key)) {
+        scene.anims.create({
+            key: JACK.mowAnimation,
+            frames: scene.anims.generateFrameNumbers(JACK.key, { frames: [0, 1] }),
+            frameRate: 6,
+            repeat: -1
         });
     }
 }

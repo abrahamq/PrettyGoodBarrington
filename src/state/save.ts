@@ -1,6 +1,7 @@
 // Loads, writes, and resets the player's progress in localStorage (key "msq-save").
 // Each save has a version number, so a later phase can upgrade old saves instead of losing them.
 import { DEFAULT_CHARACTER, isCharacterId, type CharacterId } from '../data/characters.ts';
+import { SIDE_GAME_IDS, type SideGameId } from '../data/sideGames.ts';
 import { STOPS, type StopId } from '../data/stops.ts';
 import { browserStore, isRecord, readJson, removeKey, writeJson, type KeyValueStore } from './storage.ts';
 
@@ -18,6 +19,8 @@ export interface SaveData {
     character: CharacterId;
     stamps: Record<StopId, boolean>;
     bestScores: Partial<Record<StopId, number>>;
+    // Best scores in the side games, which earn no stamps (src/data/sideGames.ts).
+    sideBests: Partial<Record<SideGameId, number>>;
     // Total tips earned in Order Up!, in cents.
     tips: number;
     dayMinutes: number;
@@ -31,6 +34,7 @@ export function newSave(character: CharacterId = DEFAULT_CHARACTER): SaveData {
         character,
         stamps: emptyStamps(),
         bestScores: {},
+        sideBests: {},
         tips: 0,
         dayMinutes: START_DAY_MINUTES,
         lastPosition: null
@@ -81,6 +85,14 @@ function readVersion1(stored: Record<string, unknown>): SaveData {
         const score = bestScores[stop.id];
         if (typeof score === 'number') {
             save.bestScores[stop.id] = score;
+        }
+    }
+
+    const sideBests = isRecord(stored.sideBests) ? stored.sideBests : {};
+    for (const id of SIDE_GAME_IDS) {
+        const score = sideBests[id];
+        if (typeof score === 'number') {
+            save.sideBests[id] = score;
         }
     }
 

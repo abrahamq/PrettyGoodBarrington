@@ -54,6 +54,7 @@ Claude Code can make worktrees too: `claude -w my-feature` puts one in `.claude/
 | Drop a scoop (Scoop Stack) | Space, Enter, Z, or A | Tap anywhere, or tap `[A] DROP` |
 | Grill a patty (Order Up!) | Left/Right to pick a spot, then Space, Enter, Z, or A; or 1-4 | Tap a grill spot: add, flip, serve, or toss |
 | Hit a note (Curtain Call) | Left, Down, Up, Right, or D, F, J, K | Tap the lane (outer lanes reach the screen edges) |
+| Trim the hedge (Trim the GB, from Jack) | Drag the mouse along the letters; or steer the clippers with Arrow keys or WASD | Drag a finger along the letters |
 | Calibrate rhythm timing | Options > CALIBRATE: tap Space on each click, Left/Right to nudge | Tap on each click, then USE; or -10 / +10 |
 | Leave a minigame | Escape, Backspace, X, or B | Tap `[B] QUIT` |
 | Pick a leaderboard name | Type it, then Enter; or Arrow keys and Enter on the letters; Backspace deletes | Tap the letters, then OK |

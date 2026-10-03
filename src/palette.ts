@@ -132,6 +132,12 @@ export const SCENERY = {
     audienceBack: '#3a3050',
     audienceFloor: '#2a1f38',
 
+    // Jack's lawn and the GB hedge (Trim the GB)
+    lawnMowed: '#8cc35f',
+    mulch: '#7a5234',
+    mulchDark: '#5c3b22',
+    mulchLight: '#9a6c45',
+
     // People
     skinLight: '#f1c27d',
     skinTan: '#c68642',

@@ -14,6 +14,7 @@ describe('newSave', () => {
                 triplex: false, coop: false, townhall: false, riverwalk: false
             },
             bestScores: {},
+            sideBests: {},
             tips: 0,
             dayMinutes: 840,
             lastPosition: null
@@ -38,6 +39,7 @@ describe('writeSave and loadSave', () => {
         const save = newSave();
         save.stamps.soco = true;
         save.bestScores.soco = 5;
+        save.sideBests.hedgeTrim = 1234;
         save.tips = 12;
         save.dayMinutes = 900;
         save.lastPosition = { x: 48, y: 96 };
@@ -88,10 +90,19 @@ describe('writeSave and loadSave', () => {
         expect(loadSave(store)?.character).toBe('eleven');
     });
 
+    it('loads a save from before side games with no side-game scores', () => {
+        const store = memoryStore();
+        const { sideBests: _sideBests, ...oldSave } = newSave();
+        store.data.set(SAVE_KEY, JSON.stringify(oldSave));
+
+        expect(loadSave(store)?.sideBests).toEqual({});
+    });
+
     it('replaces broken values with the new-game defaults', () => {
         const store = memoryStore();
         store.data.set(SAVE_KEY, JSON.stringify({
-            version: 1, character: 'grandpa', tips: 'lots', dayMinutes: null, lastPosition: 'here', bestScores: { soco: 'high' }
+            version: 1, character: 'grandpa', tips: 'lots', dayMinutes: null, lastPosition: 'here', bestScores: { soco: 'high' },
+            sideBests: { hedgeTrim: 'great', croquet: 50 }
         }));
 
         const save = loadSave(store);

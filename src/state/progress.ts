@@ -2,6 +2,7 @@
 // A score of 0 (for example, from quitting) is not recorded, so the passport shows no score instead of 0.
 // Minigames hand their result back to the Overworld as { stopId, passed, score }, plus `tips` (in cents)
 // from Order Up!, which add to the saved total whether the round was won or not.
+import { isSideGameId, type SideGameId } from '../data/sideGames.ts';
 import { STOPS, type StopId } from '../data/stops.ts';
 import type { Progress } from '../net/leaderboardClient.ts';
 import type { SaveData } from './save.ts';
@@ -24,6 +25,27 @@ export function applyResult(save: SaveData, result: MinigameResult): SaveData {
         bestScores,
         tips: save.tips + (result.tips ?? 0)
     };
+}
+
+// A side game (src/data/sideGames.ts) hands back { sideGameId, passed, score }. It never stamps the passport;
+// only its best score is kept, and a 0 is not recorded.
+export interface SideGameResult {
+    sideGameId: SideGameId;
+    passed: boolean;
+    score: number;
+}
+
+export function applySideGameResult(save: SaveData, result: SideGameResult): SaveData {
+    const best = save.sideBests[result.sideGameId] ?? 0;
+
+    return result.score > best ? { ...save, sideBests: { ...save.sideBests, [result.sideGameId]: result.score } } : save;
+}
+
+export function isSideGameResult(value: unknown): value is SideGameResult {
+    return isRecord(value)
+        && isSideGameId(value.sideGameId)
+        && typeof value.passed === 'boolean'
+        && typeof value.score === 'number';
 }
 
 export function stampCount(save: SaveData): number {

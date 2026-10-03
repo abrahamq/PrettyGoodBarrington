@@ -1,9 +1,9 @@
 // Boot scene: loads the fonts, the overworld map, and the character PNGs, draws the placeholder textures, makes the
-// walk animations, applies the saved sound setting, then opens the Title screen. No text appears before the fonts
+// walk and mowing animations, applies the saved sound setting, then opens the Title screen. No text appears before the fonts
 // finish loading here.
 import { Scene } from 'phaser';
-import { CHARACTER_HEIGHT, CHARACTER_WIDTH, NPC_KEYS, playerTextureKey, spriteUrl } from '../art/people.ts';
-import { createWalkAnimations, generatePlaceholderTextures } from '../art/textures.ts';
+import { CHARACTER_HEIGHT, CHARACTER_WIDTH, JACK, NPC_KEYS, playerTextureKey, spriteUrl } from '../art/people.ts';
+import { createMowAnimation, createWalkAnimations, generatePlaceholderTextures } from '../art/textures.ts';
 import { CHARACTER_IDS } from '../data/characters.ts';
 import { MAP_KEY, MAP_URL } from '../map/files.ts';
 import { loadSettings } from '../state/settings.ts';
@@ -26,11 +26,13 @@ export class Boot extends Scene {
         for (const key of NPC_KEYS) {
             this.load.image(key, spriteUrl(key));
         }
+        this.load.spritesheet(JACK.key, JACK.url, { frameWidth: JACK.frameWidth, frameHeight: JACK.frameHeight });
     }
 
     create(): void {
         generatePlaceholderTextures(this);
         createWalkAnimations(this);
+        createMowAnimation(this);
         this.sound.mute = !loadSettings().sound;
         this.scene.start('Title');
     }

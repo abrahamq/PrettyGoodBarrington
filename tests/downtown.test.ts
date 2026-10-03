@@ -1,7 +1,7 @@
 // Checks the generated downtown map: its size and layers, that every stop can be reached on foot
 // from the start point, and that every place the player can stand has a street name.
 import { describe, expect, it } from 'vitest';
-import { NPC_KEYS } from '../src/art/people.ts';
+import { JACK, NPC_KEYS } from '../src/art/people.ts';
 import { LINES } from '../src/data/dialogue.ts';
 import { STOPS } from '../src/data/stops.ts';
 import { DIRECTIONS, findPath, isWalkable, neighbor, type Tile } from '../src/logic/grid.ts';
@@ -71,12 +71,19 @@ describe('buildDowntownMap', () => {
     it('only uses NPC textures and dialogue lines that exist', () => {
         for (const item of info.interactables) {
             if (item.npc) {
-                expect(NPC_KEYS).toContain(item.npc);
+                expect([...NPC_KEYS, JACK.key]).toContain(item.npc);
             }
             if (item.dialogueId) {
                 expect(Object.keys(LINES)).toContain(item.dialogueId);
             }
         }
+    });
+
+    it('puts Jack and his side game at the east edge of the map', () => {
+        const jack = info.interactables.find((item) => item.npc === JACK.key);
+
+        expect(jack?.sideGameId).toBe('hedgeTrim');
+        expect(jack?.col).toBeGreaterThanOrEqual(info.width - 2);
     });
 
     it('puts a name board on every building stop', () => {

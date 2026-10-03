@@ -227,7 +227,55 @@ export const TILE_ART = {
         ]
     },
     awningRed: awning('awning', 'cream'),
-    awningMint: awning('mint', 'whiteCream')
+    awningMint: awning('mint', 'whiteCream'),
+
+    // Jack's lawn. These come last, so the tiles above keep their ids.
+    grassMowed: {
+        blocks: false,
+        layers: [
+            { color: 'lawnMowed', path: FULL },
+            { color: 'grass', path: 'M2 5h1v1h-1z M9 11h1v1h-1z M13 2h1v1h-1z' },
+            { color: 'grassLight', path: 'M6 8h2v1h-2z M12 13h1v1h-1z' }
+        ]
+    },
+    // The GB hedge, one letter per tile, with a shadow on the grass below.
+    hedgeG: {
+        blocks: true,
+        layers: [
+            { color: 'ink', path: 'M2 15h12v1h-12z', alpha: 0.25 },
+            { color: 'leaf', path: 'M3 3h10v3h-10z M1 5h4v8h-4z M3 12h10v3h-10z M11 9h4v5h-4z M8 9h4v3h-4z M12 4h3v3h-3z' },
+            { color: 'leafLight', path: 'M3 3h10v1h-10z M12 4h3v1h-3z M1 5h2v1h-2z M8 9h7v1h-7z' },
+            { color: 'leafDark', path: 'M3 14h10v1h-10z M13 13h2v1h-2z M5 6h7v1h-7z M12 6h3v1h-3z' }
+        ]
+    },
+    hedgeB: {
+        blocks: true,
+        layers: [
+            { color: 'ink', path: 'M1 15h14v1h-14z', alpha: 0.25 },
+            { color: 'leaf', path: 'M1 3h11v3h-11z M1 3h4v12h-4z M1 8h11v2h-11z M1 12h12v3h-12z M11 4h3v5h-3z M12 9h3v5h-3z' },
+            { color: 'leafLight', path: 'M1 3h11v1h-11z M5 8h7v1h-7z M5 12h8v1h-8z' },
+            { color: 'leafDark', path: 'M1 14h12v1h-12z M13 13h2v1h-2z M5 6h6v1h-6z M5 10h7v1h-7z' }
+        ]
+    },
+    // The flagpole stands on the tile's left edge, so it rises between the G and the B below it.
+    flagPole: {
+        blocks: true,
+        layers: [
+            { color: 'whiteCream', path: 'M0 0h1v15h-1z' },
+            { color: 'steel', path: 'M1 0h1v15h-1z M0 14h3v2h-3z' }
+        ]
+    },
+    flagTop: {
+        blocks: false,
+        layers: [
+            { color: 'gold', path: 'M0 0h2v2h-2z' },
+            { color: 'whiteCream', path: 'M0 2h1v14h-1z M2 4h12v1h-12z M2 6h12v1h-12z M2 8h12v1h-12z' },
+            { color: 'steel', path: 'M1 2h1v14h-1z' },
+            { color: 'red', path: 'M2 3h12v1h-12z M2 5h12v1h-12z M2 7h12v1h-12z M2 9h12v1h-12z' },
+            { color: 'facadeNavy', path: 'M2 3h5v4h-5z' },
+            { color: 'whiteCream', path: 'M3 4h1v1h-1z M5 4h1v1h-1z M4 5h1v1h-1z' }
+        ]
+    }
 } satisfies Record<string, TileArt>;
 
 export type TileName = keyof typeof TILE_ART;

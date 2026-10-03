@@ -1,6 +1,8 @@
 // Checks how a finished minigame changes the save: stamps, best scores, and the stamp count.
 import { describe, expect, it } from 'vitest';
-import { applyResult, isMinigameResult, leaderboardProgress, stampCount } from '../src/state/progress.ts';
+import {
+    applyResult, applySideGameResult, isMinigameResult, isSideGameResult, leaderboardProgress, stampCount
+} from '../src/state/progress.ts';
 import { newSave } from '../src/state/save.ts';
 
 describe('applyResult', () => {
@@ -79,5 +81,30 @@ describe('isMinigameResult', () => {
         expect(isMinigameResult(undefined)).toBe(false);
         expect(isMinigameResult({ stopId: 'pizzaPlanet', passed: true, score: 5 })).toBe(false);
         expect(isMinigameResult({ stopId: 'soco', passed: 'yes', score: 5 })).toBe(false);
+    });
+});
+
+describe('applySideGameResult', () => {
+    it('keeps the best score and never stamps the passport', () => {
+        const first = applySideGameResult(newSave(), { sideGameId: 'hedgeTrim', passed: true, score: 1200 });
+        const later = applySideGameResult(first, { sideGameId: 'hedgeTrim', passed: false, score: 300 });
+
+        expect(later.sideBests.hedgeTrim).toBe(1200);
+        expect(stampCount(later)).toBe(0);
+    });
+
+    it('does not record a score of 0, so quitting leaves no score behind', () => {
+        const save = applySideGameResult(newSave(), { sideGameId: 'hedgeTrim', passed: false, score: 0 });
+
+        expect(save.sideBests).toEqual({});
+    });
+});
+
+describe('isSideGameResult', () => {
+    it('accepts a well-formed result and rejects anything else', () => {
+        expect(isSideGameResult({ sideGameId: 'hedgeTrim', passed: true, score: 900 })).toBe(true);
+        expect(isSideGameResult({ sideGameId: 'croquet', passed: true, score: 900 })).toBe(false);
+        expect(isSideGameResult({ stopId: 'soco', passed: true, score: 5 })).toBe(false);
+        expect(isSideGameResult(undefined)).toBe(false);
     });
 });

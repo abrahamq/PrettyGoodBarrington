@@ -19,7 +19,7 @@ All sizes are in game pixels. The game draws at 240x160 and scales up with neare
 | `ui-stamp` | 10x10 | Red stamp icon for the HUD stamp count. | UI scene |
 | `ui-arrow` | 7x4 | Up-pointing arrow; the game rotates it for the other d-pad buttons. | `src/ui/TouchControls.ts` |
 | `ui-more` | 5x3 | Small down arrow: "tap for more" in the dialogue box. | `src/ui/DialogueBox.ts` |
-| `tiles` | 128x96 | The overworld tileset: 16x16 tiles, 8 per row, in the order of `TILE_ART` in `src/map/tileset.ts`. Must match `public/maps/tiles.png`. | Overworld |
+| `tiles` | 128x112 | The overworld tileset: 16x16 tiles, 8 per row, in the order of `TILE_ART` in `src/map/tileset.ts`. Must match `public/maps/tiles.png`. | Overworld |
 | `player-five`, `player-eleven`, `player-fifteen` | 36x64 each | One spritesheet per boy, of 12x16 frames. Rows, top to bottom: facing down, left, right, up. Columns: standing, left foot forward, right foot forward. Frames are numbered 0-11 row by row. Feet are on the bottom row of each frame; the boys are 11, 14, and 16 pixels tall. Load a real one with `this.load.spritesheet('player-five', url, { frameWidth: 12, frameHeight: 16 })`. | Character Select, Overworld |
 | `soco-bg` | 240x160 | The inside of SoCo Creamery: wall, wainscot, floor, lamp, flavor board (swatches only), counter, ice cream case, tip jar. | Scoop Stack |
 | `cone` | 16x22 | The waffle cone (rows 0-17) in its holder (rows 17-21). The first scoop sits on row 0. | Scoop Stack |
@@ -34,6 +34,9 @@ All sizes are in game pixels. The game draws at 240x160 and scales up with neare
 | `note-left`, `note-down`, `note-up`, `note-right` | 12x12 each | A note arrow, pointing up (the game turns it per lane). Pink, blue, amber, mint. | Curtain Call |
 | `arrow-off`, `arrow-lit` | 12x12 each | The targets on the hit line, dark and lit gold. | Curtain Call, Calibrate |
 | `sparkle` | 28x26 | Bright bits around a target on a Great hit, centered on (14, 14). | Curtain Call |
+| `lawn-bg` | 240x160 | Jack's lawn: sky, treeline, flagpole and flag, mowed stripes, the mulch bed. The hedge is drawn over it at run time. | Trim the GB |
+| `clippers` | 9x9 | The hedge clippers; the blades meet at (4, 4), the cutting point. | Trim the GB |
+| `npc-jack` | 20x44 | `sprites/jack_sprite.png`, painted only (no code placeholder): two 20x22 frames stacked top to bottom, for his mowing animation. Feet on the bottom row of each frame. | Overworld |
 | `npc-scooper`, `npc-grillcook`, `npc-usher`, `npc-pizzaiolo`, `npc-projectionist`, `npc-grocer`, `npc-clerk`, `npc-ranger`, `npc-local`, `npc-dog` | 12x16 each | One standing frame, facing down (the local faces up). Feet on the bottom row. | Overworld |
 
 ## Map

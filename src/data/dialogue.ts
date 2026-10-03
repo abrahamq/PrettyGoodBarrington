@@ -2,6 +2,7 @@
 // Business names never appear here: write {stopId} (for example {soco}) and fillNames() swaps in
 // the name from src/data/stops.ts, so renaming a business there renames it everywhere.
 // Each string in a list starts a new page of the dialogue box.
+import type { SideGameId } from './sideGames.ts';
 import { STOPS, type StopId } from './stops.ts';
 
 export interface Line {
@@ -66,12 +67,29 @@ export const STOP_SCRIPTS: Record<StopId, StopScript> = {
     riverwalk: { kind: 'stub', speaker: 'RANGER', text: ['The trail crew is still building this stop. Come back soon!'] }
 };
 
+export const SIDE_GAME_SCRIPTS: Record<SideGameId, PlayableScript> = {
+    hedgeTrim: {
+        kind: 'playable',
+        speaker: 'JACK',
+        intro: [
+            "Whew! This lawn won't mow itself. And look at our GB hedge, it's gotten so shaggy.",
+            'Want to help me trim it? Trace the G and the B with my clippers. Quick and neat is best!'
+        ],
+        again: ['That hedge grows back fast! Want to trim it again?'],
+        accept: "LET'S TRIM",
+        decline: 'NOT NOW',
+        win: ["Now that's a sharp-looking GB! Thanks for the help."],
+        lose: ["Still a little shaggy. Come back and we'll finish it!"]
+    }
+};
+
 export const LINES: Record<string, Line> = {
     local: { speaker: 'LOCAL', text: ['I walk up Railroad Street every day. The ice cream is worth the trip.'] },
     dog: { speaker: 'DOG', text: ['Woof! It looks like it wants you to collect all eight stamps.'] },
     'sign-railroad': { speaker: 'SIGN', text: ['RAILROAD ST. Shops, a cinema, and ice cream to the north.'] },
     'sign-river': { speaker: 'SIGN', text: ['{riverwalk}. Please stay on the path.'] },
-    'sign-bridge': { speaker: 'SIGN', text: ['BRIDGE ST. The {coop} is down by the river.'] }
+    'sign-bridge': { speaker: 'SIGN', text: ['BRIDGE ST. The {coop} is down by the river.'] },
+    'gb-hedge': { speaker: 'HEDGE', text: ['The town hedge, shaped like a G and a B. Jack keeps it trimmed.'] }
 };
 
 export function fillNames(text: string): string {

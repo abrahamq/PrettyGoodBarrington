@@ -126,6 +126,16 @@ export function playerFrame(character: CharacterId, row: PlayerRow, step: number
     return { layers, mirror: row === 'right' };
 }
 
+// Jack mows the town lawn and runs Trim the GB. His art exists only as a painted PNG: two 20x22 frames stacked
+// top to bottom, of him behind his mower. He stands on one tile, and his art hangs over its edges.
+export const JACK = {
+    key: 'npc-jack',
+    url: 'assets/sprites/jack_sprite.png',
+    frameWidth: 20,
+    frameHeight: 22,
+    mowAnimation: 'npc-jack-mow'
+} as const;
+
 export function spriteUrl(key: string): string {
     return `assets/sprites/${key}.png`;
 }

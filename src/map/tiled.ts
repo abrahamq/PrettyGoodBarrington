@@ -1,6 +1,7 @@
 // Types for Tiled's JSON map format, and `readMap`, which turns a map into what the game needs:
 // a walk grid (which tiles block), the doors, NPCs, and signs, the street-name zones, and the start point.
 // It reads only the JSON, so a map edited in Tiled works as long as the layer and property names stay the same.
+import { isSideGameId, type SideGameId } from '../data/sideGames.ts';
 import type { StopId } from '../data/stops.ts';
 import { makeGrid, setBlocked, type Grid, type Tile } from '../logic/grid.ts';
 import { isStopId } from '../state/progress.ts';
@@ -94,6 +95,7 @@ export interface Interactable {
     width: number;
     height: number;
     stopId?: StopId;
+    sideGameId?: SideGameId;
     dialogueId?: string;
     npc?: string;
     facing?: string;
@@ -214,6 +216,10 @@ function toInteractable(object: TiledObject, tileSize: number): Interactable {
 
     if (isStopId(stopId)) {
         item.stopId = stopId;
+    }
+    const sideGameId = propertyOf(object, 'sideGameId');
+    if (isSideGameId(sideGameId)) {
+        item.sideGameId = sideGameId;
     }
     for (const key of ['dialogueId', 'npc', 'facing'] as const) {
         const value = propertyOf(object, key);

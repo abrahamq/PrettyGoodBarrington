@@ -2,7 +2,9 @@
 // public/maps/downtown.json. Stylized, not exact: Main Street runs east-west across rows 13-16,
 // Railroad Street goes north from it at columns 30-33, Castle Street is a lane at the west end,
 // Bridge Street goes south to the river, and the River Walk boardwalk runs along the water.
+// At the east end, north of Main Street, Jack mows the town lawn next to the GB hedge.
 // Positions below are (column, row) in tiles; row 0 is the top of the map.
+import { JACK } from '../art/people.ts';
 import { stopById, type StopId } from '../data/stops.ts';
 import { TILE_SIZE } from '../layout.ts';
 import type { TiledMap, TiledObject, TiledObjectLayer, TiledTileLayer } from './tiled.ts';
@@ -250,7 +252,7 @@ function layBuildings(map: MapBuilder): void {
 function layStreetLife(map: MapBuilder): void {
     const trees = [
         [1, 6], [4, 3], [8, 2], [9, 6], [14, 4], [17, 6], [20, 3], [0, 12],
-        [44, 4], [47, 7], [50, 2], [53, 6], [56, 3], [58, 8], [46, 12], [50, 11], [54, 12], [57, 11],
+        [44, 4], [47, 7], [50, 2], [53, 6], [56, 3], [46, 12], [50, 11],
         [2, 19], [6, 18], [10, 19], [14, 18], [18, 19], [28, 19], [32, 18], [36, 19], [40, 18], [44, 19]
     ];
     for (const [col, row] of trees) {
@@ -273,6 +275,23 @@ function layStreetLife(map: MapBuilder): void {
     addNpc(map, 'npc-dog', 27, 16, { dialogueId: 'dog' });
 
     map.addObject('interactables', 'spawn', 'start', tileArea(28, 13));
+
+    layJacksLawn(map);
+}
+
+// Mowed stripes, the GB hedge with the flagpole between its letters, and Jack at the far east edge with his mower.
+function layJacksLawn(map: MapBuilder): void {
+    for (const row of [8, 10, 12]) {
+        map.fill('ground', 51, row, MAP_WIDTH - 51, 1, 'grassMowed');
+    }
+
+    map.set('buildings', 54, 11, 'hedgeG');
+    map.set('buildings', 55, 11, 'hedgeB');
+    map.set('buildings', 55, 10, 'flagPole');
+    map.set('decor', 55, 9, 'flagTop');
+    map.addObject('interactables', 'sign', 'gb-hedge', tileArea(54, 11, 2, 1), { dialogueId: 'gb-hedge' });
+
+    addNpc(map, JACK.key, 58, 11, { sideGameId: 'hedgeTrim' });
 }
 
 // Checked in order: the first zone that contains the player names the street. MAIN ST catches the rest.

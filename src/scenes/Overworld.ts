@@ -1,11 +1,13 @@
 // Overworld scene: downtown Great Barrington. It draws the Tiled map, moves the player one tile at a time
 // (arrow keys or WASD, the on-screen d-pad, or tap-to-walk along a path), and handles talking to shopkeepers,
-// NPCs, and signs. It also runs the clock and its time-of-day tint, and starts minigames.
+// NPCs, and signs. It also runs the clock and its time-of-day tint, and starts minigames, including side games
+// like Jack's Trim the GB, which earn no stamp.
 // The HUD and the dialogue box live in the UI scene, which runs on top of this one.
 import { Scene, type GameObjects, type Input } from 'phaser';
-import { PLAYER_FRAMES_PER_ROW, PLAYER_ROWS, playerTextureKey, walkAnimationKey } from '../art/people.ts';
+import { JACK, PLAYER_FRAMES_PER_ROW, PLAYER_ROWS, playerTextureKey, walkAnimationKey } from '../art/people.ts';
 import { TEXTURES } from '../art/textures.ts';
-import { LINES, STOP_SCRIPTS, fillNames } from '../data/dialogue.ts';
+import { LINES, SIDE_GAME_SCRIPTS, STOP_SCRIPTS, fillNames, type PlayableScript } from '../data/dialogue.ts';
+import { SIDE_GAMES, type SideGameId } from '../data/sideGames.ts';
 import { stopById, type StopId } from '../data/stops.ts';
 import { GAME_HEIGHT, GAME_WIDTH, TILE_SIZE } from '../layout.ts';
 import { advanceClock, tintAt, type ClockState } from '../logic/clock.ts';
@@ -16,7 +18,9 @@ import { MAP_KEY } from '../map/files.ts';
 import { interactableAt, readMap, zoneLabelAt, type Interactable, type MapInfo, type TiledMap } from '../map/tiled.ts';
 import { TILESET_NAME } from '../map/tileset.ts';
 import { colorHex, colorNumber, type ColorName } from '../palette.ts';
-import { applyResult, isMinigameResult, type MinigameResult } from '../state/progress.ts';
+import {
+    applyResult, applySideGameResult, isMinigameResult, isSideGameResult, type MinigameResult, type SideGameResult
+} from '../state/progress.ts';
 import { writeSave, type SaveData } from '../state/save.ts';
 import { currentSave, startSession } from '../state/session.ts';
 import { addPixelText } from '../ui/text.ts';
@@ -24,6 +28,7 @@ import type { UI } from './UI.ts';
 
 interface OverworldData {
     result?: unknown;
+    sideGameResult?: unknown;
 }
 
 const STEP_MS = 200;
@@ -67,8 +72,14 @@ export class Overworld extends Scene {
         this.save = currentSave(this);
 
         const result = isMinigameResult(data?.result) ? data.result : undefined;
+        const sideGameResult = isSideGameResult(data?.sideGameResult) ? data.sideGameResult : undefined;
         if (result) {
             this.save = applyResult(this.save, result);
+        }
+        if (sideGameResult) {
+            this.save = applySideGameResult(this.save, sideGameResult);
+        }
+        if (result || sideGameResult) {
             startSession(this, this.save);
             writeSave(this.save);
         }
@@ -94,6 +105,9 @@ export class Overworld extends Scene {
             this.updateZone(true);
             if (result) {
                 this.showResultLine(result);
+            }
+            if (sideGameResult) {
+                this.showSideGameResultLine(sideGameResult);
             }
         });
     }
@@ -280,6 +294,10 @@ export class Overworld extends Scene {
             this.talkToStop(item.stopId);
             return;
         }
+        if (item.sideGameId) {
+            this.talkToSideGame(item.sideGameId);
+            return;
+        }
 
         const line = item.dialogueId ? LINES[item.dialogueId] : undefined;
         if (line) {
@@ -295,12 +313,25 @@ export class Overworld extends Scene {
             return;
         }
 
-        const lines = this.save.stamps[stopId] ? script.again : script.intro;
+        this.offerGame(script, this.save.stamps[stopId], () => this.startMinigame(stopId));
+    }
+
+    // "again" once the player has a stamp, or for a side game, a best score.
+    private talkToSideGame(sideGameId: SideGameId): void {
+        this.offerGame(SIDE_GAME_SCRIPTS[sideGameId], this.save.sideBests[sideGameId] !== undefined, () => {
+            this.leave();
+            this.scene.start(SIDE_GAMES[sideGameId].scene);
+        });
+    }
+
+    private offerGame(script: PlayableScript, playedBefore: boolean, start: () => void): void {
+        const lines = playedBefore ? script.again : script.intro;
+
         this.ui.showDialogue({
             speaker: script.speaker,
             paragraphs: lines.map(fillNames),
             choices: [
-                { label: script.accept, onSelect: () => this.startMinigame(stopId) },
+                { label: script.accept, onSelect: start },
                 { label: script.decline, onSelect: () => undefined }
             ]
         });
@@ -312,6 +343,19 @@ export class Overworld extends Scene {
         if (script.kind === 'playable') {
             this.ui.showDialogue({ speaker: script.speaker, paragraphs: (result.passed ? script.win : script.lose).map(fillNames) });
         }
+    }
+
+    // Quitting (a score of 0) gets no line.
+    private showSideGameResultLine(result: SideGameResult): void {
+        if (result.score === 0) {
+            return;
+        }
+
+        const script = SIDE_GAME_SCRIPTS[result.sideGameId];
+        const best = this.save.sideBests[result.sideGameId] ?? result.score;
+        const tally = result.score >= best ? `${result.score} points. That's your best yet!` : `${result.score} points. Your best is ${best}.`;
+
+        this.ui.showDialogue({ speaker: script.speaker, paragraphs: [...(result.passed ? script.win : script.lose), tally] });
     }
 
     // Leaving the street
@@ -413,6 +457,7 @@ export class Overworld extends Scene {
     }
 
     // Shopkeepers stand in the middle of their doorway; other NPCs stand on their own tile.
+    // Each one is centered on the tile with its feet on the tile's bottom row, so Jack, who is bigger, hangs over.
     private drawNpcs(): void {
         for (const item of this.info.interactables) {
             if (!item.npc || !this.textures.exists(item.npc)) {
@@ -420,7 +465,13 @@ export class Overworld extends Scene {
             }
 
             const tile = { col: item.col + Math.floor((item.width - 1) / 2), row: item.row + item.height - 1 };
-            this.add.image(...pixelOf(tile), item.npc).setOrigin(0).setDepth(DEPTH.npcs);
+            const npc = this.add.sprite((tile.col + 0.5) * TILE_SIZE, (tile.row + 1) * TILE_SIZE, item.npc)
+                .setOrigin(0.5, 1)
+                .setDepth(DEPTH.npcs);
+
+            if (item.npc === JACK.key && this.anims.exists(JACK.mowAnimation)) {
+                npc.play(JACK.mowAnimation);
+            }
         }
     }
 

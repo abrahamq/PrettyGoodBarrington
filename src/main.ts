@@ -8,6 +8,7 @@ import { Calibrate } from './scenes/Calibrate.ts';
 import { CharacterSelect } from './scenes/CharacterSelect.ts';
 import { Leaderboard } from './scenes/Leaderboard.ts';
 import { CurtainCall } from './scenes/minigames/CurtainCall.ts';
+import { HedgeTrim } from './scenes/minigames/HedgeTrim.ts';
 import { OrderUp } from './scenes/minigames/OrderUp.ts';
 import { ScoopStack } from './scenes/minigames/ScoopStack.ts';
 import { NameEntry } from './scenes/NameEntry.ts';
@@ -40,7 +41,8 @@ const config: Phaser.Types.Core.GameConfig = {
         UI,
         ScoopStack,
         OrderUp,
-        CurtainCall
+        CurtainCall,
+        HedgeTrim
     ]
 };
 
