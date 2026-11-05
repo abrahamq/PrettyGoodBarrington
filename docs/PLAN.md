@@ -157,7 +157,7 @@ Scaffold the Vite + TypeScript template, then:
 ### Phase 2 — Overworld and dialogue
 
 - Load the tilemap. The camera follows the player and is clamped to the map bounds.
-- **Movement.** Keyboard uses arrows/WASD. Touch uses tap-to-walk: the player walks toward the tapped tile along a simple grid path, avoiding blocked tiles. Also add an optional on-screen d-pad, toggled in Options.
+- **Movement.** Keyboard uses arrows/WASD. Touch uses tap-to-walk: the player walks toward the tapped tile along a simple grid path, avoiding blocked tiles. Also add an optional on-screen d-pad, toggled in Options. (Replaced on 2026-11-05 by an always-on joystick on touch screens.)
 - **Interacting.** Face a door or NPC and press action (Space/Enter, or tap the NPC) to open dialogue.
 - **UI scene** runs on top of Overworld and holds:
   - a location label (top-left) that updates by street zone

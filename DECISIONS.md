@@ -54,7 +54,7 @@ Choices that `docs/PLAN.md` does not cover. Each entry says what we chose and wh
 10. **Clock.** `dayMinutes` counts game minutes since midnight of day one (a Saturday); the game starts at 2:00 PM. The tint fades over 30 game minutes at 6:00 AM (night to day), 5:00 PM (day to golden hour), and 7:30 PM (golden hour to night). The save is written after every step and every 5 game minutes.
 11. **Minigame placeholders.** Until phases 3-5, the Scoop Stack, Order Up!, and Curtain Call scene keys run a placeholder with WIN, LOSE, and QUIT. A loss still records the best score; a stamp is never taken away.
 12. **Passport button.** Until Phase 6, `[P] PASSPORT` shows a dialogue with the stamp count.
-13. **On-screen d-pad.** Off by default, turned on in Options, stored as `dpad` in `msq-settings`. It adds an A button for talking. It hides while dialogue is open.
+13. **On-screen d-pad.** Off by default, turned on in Options, stored as `dpad` in `msq-settings`. It adds an A button for talking. It hides while dialogue is open. Replaced by the joystick (2026-11-05).
 14. **Small choices.** Escape goes back to the Title menu (a desktop shortcut). The player's facing is kept in memory across a minigame, not in the save. NPCs draw above decor, so shopkeepers show in front of their door art.
 
 ## Phase 3: Scoop Stack (2026-09-28)
@@ -134,3 +134,11 @@ Choices that `docs/PLAN.md` does not cover. Each entry says what we chose and wh
 7. **Keyboard.** The plan asks for every game to work with a keyboard. Arrow keys or WASD steer the clippers from the top of the G at 60 pixels per second, and they cut wherever they go. Escape, Backspace, X, or B quit, as in the other minigames.
 8. **Results.** At the end, the HUD hides and a card above the hedge shows the time, the aim, and the score (with BEST! for a new best), so the finished GB stays in view. After 3.2 seconds you are back next to Jack.
 9. **Jack's verdict.** He says one of three lines with your score, picked by how the round went: "Could be better... you only scored X." when the time ran out, "Not bad, you scored X." for a finished round scoring 1000 or more (`greatScore` in `src/data/sideGames.ts`), and "Those look okay, you got X points." for any other finished round. The results card still shows your best.
+
+## Joystick (2026-11-05)
+
+1. **A joystick replaces the d-pad.** A 36-pixel ring sits at the bottom left, where the d-pad was, and the A button stays at the bottom right. You asked for the joystick at the bottom right, then picked this layout. Design: `docs/superpowers/specs/2026-11-05-joystick-design.md`.
+2. **Always on, touch screens only.** The controls show when Phaser reports a touch screen (`device.input.touch`, true on phones, iPads, and touch laptops). Players with a mouse and keyboard do not see them. D-PAD left Options, and an old stored `dpad` value is ignored.
+3. **Four directions.** The map moves one tile at a time, so the joystick picks up, down, left, or right. Nothing happens inside 4 pixels of the center. To change axis, the new axis must be 25% bigger than the current one, so a thumb near a diagonal does not make the player zigzag (`src/logic/joystick.ts`).
+4. **Grip.** The grab area is a 26-pixel radius, bigger than the ring. After a finger grabs the joystick, the joystick follows only that finger, anywhere on the screen, until it lifts. Lifting a different finger (for example, after a tap on A) does not stop the player. The UI scene has 2 touch pointers for this.
+5. **Art.** The ring and knob are pixel circles drawn in code (`discPath` in `src/art/svgPath.ts`), at 70% and 90% opacity so the map shows through.
