@@ -149,3 +149,9 @@ Choices that `docs/PLAN.md` does not cover. Each entry says what we chose and wh
 7. **Keyboard.** The plan asks for every game to work with a keyboard. Arrow keys or WASD steer the clippers from the top of the G at 60 pixels per second, and they cut wherever they go. Escape, Backspace, X, or B quit, as in the other minigames.
 8. **Results.** At the end, the HUD hides and a card above the hedge shows the time, the aim, and the score (with BEST! for a new best), so the finished GB stays in view. After 3.2 seconds you are back next to Jack.
 9. **Jack's verdict.** He says one of three lines with your score, picked by how the round went: "Could be better... you only scored X." when the time ran out, "Not bad, you scored X." for a finished round scoring 1000 or more (`greatScore` in `src/data/sideGames.ts`), and "Those look okay, you got X points." for any other finished round. The results card still shows your best.
+
+## Trim the GB on wide screens (2026-11-04)
+
+1. **The merge needed a fix git could not see.** Trim the GB came after the wide-screen work, so it drew in the left 240 pixels with a blank strip on the right. It now calls `setStage`, and the lawn backdrop is 384 wide: the sky, treeline, lawn, and mowed stripes repeat into the wings; the mulch bed and flagpole stay in the middle.
+2. **Cuts follow the finger.** `setStage` scrolls the camera, so the scene reads `pointer.worldX` and `pointer.worldY`. Screen coordinates put the cut up to 72 pixels left of the finger.
+3. **The treeline waves repeat every 240 pixels.** Each wave makes a whole number of cycles across the stage, so the copies in the wings join it with no step. The trees look almost the same as before.

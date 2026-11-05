@@ -229,12 +229,12 @@ function mapHedgeColor(x: number, y: number, inside: (x: number, y: number) => b
 
 // The backdrop: sky, a treeline like the woods behind the real hedge, the flagpole, the lawn, and the mulch bed.
 export const LAWN_BACKGROUND: Layer[] = [
-    { color: 'sky', path: rectPath(0, 0, WIDTH, 30) },
-    { color: 'treeline', path: columns((x) => 8 + Math.round(4 * Math.sin(x / 9) + 3 * Math.sin(x / 4.3 + 1)), 44) },
-    { color: 'leafDark', path: columns((x) => 14 + Math.round(4 * Math.sin(x / 6 + 2) + 2 * Math.sin(x / 2.7)), 40) },
-    { color: 'leaf', path: columns((x) => 24 + Math.round(5 * Math.sin(x / 11 + 4) + 2 * Math.sin(x / 3.1)), 36) },
-    { color: 'grass', path: rectPath(0, 44, WIDTH, HEIGHT - 44) },
-    { color: 'lawnMowed', path: stripes(44, 10) },
+    { color: 'sky', path: rectPath(0, 0, WIDTH, 30), repeat: WIDTH },
+    { color: 'treeline', path: columns((x) => 8 + Math.round(4 * wave(x, 4) + 3 * wave(x, 9, 1)), 44), repeat: WIDTH },
+    { color: 'leafDark', path: columns((x) => 14 + Math.round(4 * wave(x, 6, 2) + 2 * wave(x, 14)), 40), repeat: WIDTH },
+    { color: 'leaf', path: columns((x) => 24 + Math.round(5 * wave(x, 3, 4) + 2 * wave(x, 12)), 36), repeat: WIDTH },
+    { color: 'grass', path: rectPath(0, 44, WIDTH, HEIGHT - 44), repeat: WIDTH },
+    { color: 'lawnMowed', path: stripes(44, 10), repeat: WIDTH },
     { color: 'grassDark', path: roundedRect(MULCH.x - 1, MULCH.y - 1, MULCH.width + 2, MULCH.height + 2, 7) },
     { color: 'mulch', path: roundedRect(MULCH.x, MULCH.y, MULCH.width, MULCH.height, 6) },
     { color: 'mulchDark', path: speckles(0) },
@@ -256,6 +256,11 @@ export const CLIPPERS: Layer[] = [
     { color: 'red', path: 'M2 6h2v1h-2z M1 7h2v2h-2z M5 6h2v1h-2z M6 7h2v2h-2z' },
     { color: 'gold', path: 'M4 4h1v1h-1z' }
 ];
+
+// A whole number of cycles across the stage, so the treeline joins its own copies in the wings with no step.
+function wave(x: number, cycles: number, phase = 0): number {
+    return Math.sin((2 * Math.PI * cycles * x) / WIDTH + phase);
+}
 
 // One 1-pixel column per x, from `top(x)` down to `bottom`.
 function columns(top: (x: number) => number, bottom: number): string {

@@ -108,7 +108,7 @@ export function generatePlaceholderTextures(scene: Scene): void {
         makeTexture(scene, NOTE_TEXTURES[lane], 12, 12, (graphics) => paintArt(graphics, arrow(color)));
     });
 
-    makeTexture(scene, TEXTURES.lawnBackground, 240, 160, (graphics) => paintArt(graphics, LAWN_BACKGROUND));
+    makeTexture(scene, TEXTURES.lawnBackground, MAX_VIEW_WIDTH, GAME_HEIGHT, (graphics) => paintWide(graphics, LAWN_BACKGROUND));
     makeTexture(scene, TEXTURES.clippers, 9, 9, (graphics) => paintArt(graphics, CLIPPERS));
 
     for (const character of CHARACTER_IDS) {

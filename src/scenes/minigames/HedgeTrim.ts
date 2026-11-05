@@ -18,6 +18,7 @@ import { currentSave } from '../../state/session.ts';
 import { Button } from '../../ui/Button.ts';
 import { Panel } from '../../ui/Panel.ts';
 import { ProgressBar } from '../../ui/ProgressBar.ts';
+import { setStage } from '../../ui/stage.ts';
 import { addPixelText, centeredX, pixelTextWidth } from '../../ui/text.ts';
 
 const HEDGE_TEXTURE = 'hedge-live';
@@ -68,7 +69,7 @@ export class HedgeTrim extends Scene {
         this.hud = [];
         this.tipTexts = [];
 
-        this.add.image(0, 0, TEXTURES.lawnBackground).setOrigin(0);
+        setStage(this, TEXTURES.lawnBackground);
         this.createHedgeCanvas();
         this.clippers = this.add.image(0, 0, TEXTURES.clippers).setOrigin(4 / 9).setDepth(DEPTH.clippers).setVisible(false);
 
@@ -141,7 +142,7 @@ export class HedgeTrim extends Scene {
         }
 
         this.activePointer = pointer.id;
-        this.lastPoint = { x: pointer.x, y: pointer.y };
+        this.lastPoint = { x: pointer.worldX, y: pointer.worldY };
         this.keyboardPoint = null;
         this.cut(this.lastPoint, this.lastPoint);
     };
@@ -151,7 +152,7 @@ export class HedgeTrim extends Scene {
             return;
         }
 
-        const point = { x: pointer.x, y: pointer.y };
+        const point = { x: pointer.worldX, y: pointer.worldY };
         this.cut(this.lastPoint, point);
         this.lastPoint = point;
     };
