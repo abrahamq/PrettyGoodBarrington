@@ -1,6 +1,6 @@
 // Checks the SVG path helpers that turn mockup shapes into rows of whole pixels.
 import { describe, expect, it } from 'vitest';
-import { fillSpans, parsePath, pathToSpans, rectPath } from '../src/art/svgPath.ts';
+import { discPath, fillSpans, parsePath, pathToSpans, rectPath } from '../src/art/svgPath.ts';
 
 describe('parsePath', () => {
     it('reads a 1x1 square drawn with relative h and v', () => {
@@ -88,5 +88,16 @@ describe('pathToSpans', () => {
             { y: 0, x: 0, width: 1 },
             { y: 5, x: 5, width: 2 }
         ]);
+    });
+});
+
+describe('discPath', () => {
+    it('fills a round disc, widest in the middle rows and symmetric top to bottom', () => {
+        const rows = pathToSpans(discPath(0, 0, 7));
+
+        expect(rows).toHaveLength(14);
+        expect(Math.max(...rows.map((span) => span.width))).toBe(14);
+        expect(rows.map((span) => span.width)).toEqual(rows.map((span) => span.width).reverse());
+        expect(rows.every((span) => span.x + span.width / 2 === 7)).toBe(true);
     });
 });

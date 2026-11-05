@@ -1,48 +1,60 @@
-// The optional on-screen controls for touch screens (turn them on in Options): a d-pad at the bottom left
-// and an A button at the bottom right. Hold a direction to walk; tap A to talk to whoever you face.
-// Each button is 16 game pixels or larger, so it is easy to hit with a thumb.
-import type { GameObjects, Scene, Types } from 'phaser';
+// The on-screen controls for touch screens: a joystick at the bottom left and an A button at the bottom right.
+// Drag the knob to walk; tap A to talk to whoever you face. A second finger can tap A while the thumb walks.
+import { Geom, type GameObjects, type Input, type Scene, type Types } from 'phaser';
 import { TEXTURES } from '../art/textures.ts';
 import type { Direction } from '../logic/grid.ts';
+import { knobOffset, stickDirection } from '../logic/joystick.ts';
 import { colorNumber } from '../palette.ts';
 import { addPixelText } from './text.ts';
 
-const BUTTON = 16;
-const PAD = { x: 4, y: 104 };
+const STICK = { x: 24, y: 134, grabRadius: 26, travel: 11 };
 const ACTION = { x: 214, y: 118, size: 22 };
-const ROTATION: Record<Direction, number> = { up: 0, right: Math.PI / 2, down: Math.PI, left: -Math.PI / 2 };
-const PLACE: Record<Direction, [number, number]> = {
-    up: [BUTTON, 0],
-    left: [0, BUTTON],
-    right: [BUTTON * 2, BUTTON],
-    down: [BUTTON, BUTTON * 2]
-};
 
-type PointerHandler = (pointer: unknown, x: number, y: number, event: Types.Input.EventData) => void;
+type Part = GameObjects.GameObject & GameObjects.Components.Visible;
 
 export class TouchControls {
     direction: Direction | null = null;
     private actionQueued = false;
-    private readonly parts: (GameObjects.Rectangle | GameObjects.Image | GameObjects.Text)[] = [];
+    private grip: number | null = null;
+    private shown = true;
+    private readonly base: GameObjects.Image;
+    private readonly knob: GameObjects.Image;
+    private readonly parts: Part[] = [];
+    private readonly scene: Scene;
 
     constructor(scene: Scene) {
-        for (const direction of Object.keys(PLACE) as Direction[]) {
-            const [dx, dy] = PLACE[direction];
-            const button = this.addButton(scene, PAD.x + dx, PAD.y + dy, BUTTON);
+        this.scene = scene;
+        this.base = scene.add.image(STICK.x, STICK.y, TEXTURES.stickBase).setAlpha(0.7);
+        this.knob = scene.add.image(STICK.x, STICK.y, TEXTURES.stickKnob).setAlpha(0.9);
+        const grab = scene.add.zone(STICK.x, STICK.y, STICK.grabRadius * 2, STICK.grabRadius * 2)
+            .setInteractive(new Geom.Circle(STICK.grabRadius, STICK.grabRadius, STICK.grabRadius), Geom.Circle.Contains);
+        grab.on('pointerdown', (pointer: Input.Pointer, _x: number, _y: number, event: Types.Input.EventData) => {
+            if (!this.shown || this.grip !== null) {
+                return;
+            }
+            event.stopPropagation();
+            this.grip = pointer.id;
+            this.follow(pointer);
+        });
 
-            button.on('pointerdown', this.stopThen(() => { this.direction = direction; }));
-            button.on('pointerout', () => this.release(direction));
-            button.on('pointerup', () => this.release(direction));
+        const action = scene.add.rectangle(ACTION.x, ACTION.y, ACTION.size, ACTION.size, colorNumber('ink'), 0.7)
+            .setOrigin(0)
+            .setInteractive();
+        action.on('pointerdown', (_pointer: unknown, _x: number, _y: number, event: Types.Input.EventData) => {
+            event.stopPropagation();
+            this.actionQueued = true;
+        });
 
-            const arrow = scene.add.image(PAD.x + dx + BUTTON / 2, PAD.y + dy + BUTTON / 2, TEXTURES.arrow);
-            this.parts.push(arrow.setRotation(ROTATION[direction]));
-        }
+        this.parts.push(this.base, this.knob, grab, action, addPixelText(scene, ACTION.x + 7, ACTION.y + 7, 'A', 'cream'));
 
-        const action = this.addButton(scene, ACTION.x, ACTION.y, ACTION.size);
-        action.on('pointerdown', this.stopThen(() => { this.actionQueued = true; }));
-        this.parts.push(addPixelText(scene, ACTION.x + 7, ACTION.y + 7, 'A', 'cream'));
-
-        scene.input.on('pointerup', () => { this.direction = null; });
+        scene.input.on('pointermove', this.handleMove);
+        scene.input.on('pointerup', this.handleUp);
+        scene.input.on('pointerupoutside', this.handleUp);
+        scene.events.once('shutdown', () => {
+            scene.input.off('pointermove', this.handleMove);
+            scene.input.off('pointerup', this.handleUp);
+            scene.input.off('pointerupoutside', this.handleUp);
+        });
     }
 
     // Returns true once per tap of the A button.
@@ -53,30 +65,44 @@ export class TouchControls {
     }
 
     setVisible(visible: boolean): void {
+        if (visible === this.shown) {
+            return;
+        }
+        this.shown = visible;
         for (const part of this.parts) {
             part.setVisible(visible);
         }
         if (!visible) {
-            this.direction = null;
+            this.letGo();
         }
     }
 
-    private addButton(scene: Scene, x: number, y: number, size: number): GameObjects.Rectangle {
-        const button = scene.add.rectangle(x, y, size, size, colorNumber('ink'), 0.7).setOrigin(0).setInteractive();
-        this.parts.push(button);
-        return button;
-    }
-
-    private release(direction: Direction): void {
-        if (this.direction === direction) {
-            this.direction = null;
+    private readonly handleMove = (pointer: Input.Pointer): void => {
+        if (pointer.id === this.grip) {
+            this.follow(pointer);
         }
+    };
+
+    private readonly handleUp = (pointer: Input.Pointer): void => {
+        if (pointer.id === this.grip) {
+            this.letGo();
+        }
+    };
+
+    // Reads the pointer through this scene's camera, so the offset stays right when the camera scrolls.
+    private follow(pointer: Input.Pointer): void {
+        const point = this.scene.cameras.main.getWorldPoint(pointer.x, pointer.y);
+        const dx = point.x - this.base.x;
+        const dy = point.y - this.base.y;
+        const knob = knobOffset(dx, dy, STICK.travel);
+
+        this.knob.setPosition(this.base.x + knob.x, this.base.y + knob.y);
+        this.direction = stickDirection(dx, dy, this.direction);
     }
 
-    private stopThen(action: () => void): PointerHandler {
-        return (_pointer, _x, _y, event) => {
-            event.stopPropagation();
-            action();
-        };
+    private letGo(): void {
+        this.grip = null;
+        this.direction = null;
+        this.knob.setPosition(this.base.x, this.base.y);
     }
 }

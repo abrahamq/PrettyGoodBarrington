@@ -17,6 +17,19 @@ export function rectPath(x: number, y: number, width: number, height: number): s
     return `M${x} ${y}h${width}v${height}h${-width}z`;
 }
 
+// A filled circle, `radius * 2` pixels across, with its bounding box's top-left at (x, y).
+export function discPath(x: number, y: number, radius: number): string {
+    const rows: string[] = [];
+
+    for (let row = 0; row < radius * 2; row++) {
+        const fromMiddle = row + 0.5 - radius;
+        const half = Math.round(Math.sqrt(radius ** 2 - fromMiddle ** 2));
+        rows.push(rectPath(x + radius - half, y + row, half * 2, 1));
+    }
+
+    return rows.join(' ');
+}
+
 export function parsePath(d: string): Point[][] {
     const tokens = d.match(/[a-zA-Z]|-?\d*\.?\d+/g) ?? [];
     const shapes: Point[][] = [];

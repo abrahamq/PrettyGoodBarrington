@@ -15,7 +15,7 @@ import { BURGER, EXTRA_ICONS, KITCHEN_BACKGROUND, PATTIES, SMOKE } from './diner
 import { CLIPPERS, LAWN_BACKGROUND } from './hedge.ts';
 import { LANE_COLORS, SPARKLE, STAGE_BACKGROUND, arrow } from './stage.ts';
 import { CONE, EMPTY_SCOOP_ICON, SCOOPS, SHOP_BACKGROUND, scoopIcon } from './scoopShop.ts';
-import { rectPath } from './svgPath.ts';
+import { discPath, rectPath } from './svgPath.ts';
 import { TITLE_BACKGROUND } from './titleBackground.ts';
 
 export const TEXTURES = {
@@ -24,7 +24,8 @@ export const TEXTURES = {
     cursor: 'ui-cursor',
     pickArrow: 'ui-pick-arrow',
     stamp: 'ui-stamp',
-    arrow: 'ui-arrow',
+    stickBase: 'ui-stick-base',
+    stickKnob: 'ui-stick-knob',
     more: 'ui-more',
     tiles: TILESET_NAME,
     socoBackground: 'soco-bg',
@@ -74,7 +75,8 @@ export function generatePlaceholderTextures(scene: Scene): void {
     makeTexture(scene, TEXTURES.cursor, 6, 7, (graphics) => paintArt(graphics, CURSOR));
     makeTexture(scene, TEXTURES.pickArrow, 7, 4, (graphics) => paintArt(graphics, PICK_ARROW));
     makeTexture(scene, TEXTURES.stamp, 10, 10, (graphics) => paintArt(graphics, STAMP));
-    makeTexture(scene, TEXTURES.arrow, 7, 4, (graphics) => paintArt(graphics, ARROW));
+    makeTexture(scene, TEXTURES.stickBase, STICK_BASE_SIZE, STICK_BASE_SIZE, (graphics) => paintArt(graphics, STICK_BASE));
+    makeTexture(scene, TEXTURES.stickKnob, STICK_KNOB_SIZE, STICK_KNOB_SIZE, (graphics) => paintArt(graphics, STICK_KNOB));
     makeTexture(scene, TEXTURES.more, 5, 3, (graphics) => paintArt(graphics, MORE));
     makeTexture(scene, TEXTURES.tiles, TILESET_WIDTH, TILESET_HEIGHT, (graphics) => drawTileset(graphicsTarget(graphics)));
 
@@ -145,8 +147,17 @@ const STAMP: Layer[] = [
     { color: 'red', path: 'M2 0h6v1h-6z M1 1h8v8h-8z M2 9h6v1h-6z' },
     { color: 'cream', path: 'M3 3h4v4h-4z' }
 ];
-// An up arrow for the d-pad; the game rotates it for the other directions.
-const ARROW: Layer[] = [{ color: 'cream', path: 'M3 0h1v1h-1z M2 1h3v1h-3z M1 2h5v1h-5z M0 3h7v1h-7z' }];
+// The joystick: a dark ring with a cream rim, and a cream knob with a dark rim.
+export const STICK_BASE_SIZE = 36;
+export const STICK_KNOB_SIZE = 14;
+const STICK_BASE: Layer[] = [
+    { color: 'cream', path: discPath(0, 0, STICK_BASE_SIZE / 2) },
+    { color: 'ink', path: discPath(1, 1, STICK_BASE_SIZE / 2 - 1) }
+];
+const STICK_KNOB: Layer[] = [
+    { color: 'ink', path: discPath(0, 0, STICK_KNOB_SIZE / 2) },
+    { color: 'cream', path: discPath(1, 1, STICK_KNOB_SIZE / 2 - 1) }
+];
 // The small "more to read" arrow in the corner of the dialogue box.
 const MORE: Layer[] = [{ color: 'ink', path: 'M0 0h5v1h-5z M1 1h3v1h-3z M2 2h1v1h-1z' }];
 
