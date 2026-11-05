@@ -1,5 +1,5 @@
 // UI scene: runs on top of the Overworld and holds the HUD (street name, clock and stamp count,
-// the Passport button), the dialogue box, and the optional on-screen d-pad.
+// the Passport button), the dialogue box, and, on touch screens, the joystick and A button.
 // The Overworld asks it to show dialogue and checks isBusy() before it moves the player.
 import { Scene, type Types } from 'phaser';
 import { TEXTURES } from '../art/textures.ts';
@@ -8,7 +8,6 @@ import type { Direction } from '../logic/grid.ts';
 import { colorNumber } from '../palette.ts';
 import { stampCount } from '../state/progress.ts';
 import { currentSave } from '../state/session.ts';
-import { loadSettings } from '../state/settings.ts';
 import { DialogueBox, type DialogueRequest } from '../ui/DialogueBox.ts';
 import { Panel } from '../ui/Panel.ts';
 import { TouchControls } from '../ui/TouchControls.ts';
@@ -43,7 +42,8 @@ export class UI extends Scene {
 
         this.addPassportButton();
 
-        if (loadSettings().dpad) {
+        if (this.sys.game.device.input.touch) {
+            this.input.addPointer(Math.max(0, 2 - this.input.manager.pointersTotal));
             this.controls = new TouchControls(this);
         }
         this.dialogue = new DialogueBox(this);

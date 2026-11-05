@@ -4,22 +4,22 @@ import { SETTINGS_KEY, defaultSettings, loadSettings, saveSettings } from '../sr
 import { memoryStore } from './helpers/memoryStore.ts';
 
 describe('loadSettings', () => {
-    it('turns sound on and the d-pad off when nothing is stored', () => {
-        expect(loadSettings(memoryStore())).toEqual({ version: 1, sound: true, dpad: false, audioOffsetMs: 0 });
+    it('turns sound on when nothing is stored', () => {
+        expect(loadSettings(memoryStore())).toEqual({ version: 1, sound: true, audioOffsetMs: 0 });
     });
 
     it('loads back what was saved', () => {
         const store = memoryStore();
-        saveSettings({ version: 1, sound: false, dpad: true, audioOffsetMs: 0 }, store);
+        saveSettings({ version: 1, sound: false, audioOffsetMs: 0 }, store);
 
-        expect(loadSettings(store)).toEqual({ version: 1, sound: false, dpad: true, audioOffsetMs: 0 });
+        expect(loadSettings(store)).toEqual({ version: 1, sound: false, audioOffsetMs: 0 });
     });
 
     it('uses the defaults when the stored text is broken', () => {
         const store = memoryStore();
         store.data.set(SETTINGS_KEY, '{oops');
 
-        expect(loadSettings(store)).toEqual({ version: 1, sound: true, dpad: false, audioOffsetMs: 0 });
+        expect(loadSettings(store)).toEqual({ version: 1, sound: true, audioOffsetMs: 0 });
     });
 
     it('turns sound on when the stored sound value is not true or false', () => {
@@ -29,11 +29,11 @@ describe('loadSettings', () => {
         expect(loadSettings(store).sound).toBe(true);
     });
 
-    it('keeps older settings that have no d-pad value, with the d-pad off', () => {
+    it('fills in the settings that older versions did not store', () => {
         const store = memoryStore();
         store.data.set(SETTINGS_KEY, '{"version":1,"sound":false}');
 
-        expect(loadSettings(store)).toEqual({ version: 1, sound: false, dpad: false, audioOffsetMs: 0 });
+        expect(loadSettings(store)).toEqual({ version: 1, sound: false, audioOffsetMs: 0 });
     });
 
     it('keeps the rhythm calibration offset, between -300 and +300 ms', () => {
@@ -49,8 +49,15 @@ describe('loadSettings', () => {
         expect(loadSettings(store).audioOffsetMs).toBe(0);
     });
 
+    it('ignores the d-pad switch that older versions stored', () => {
+        const store = memoryStore();
+        store.data.set(SETTINGS_KEY, '{"version":1,"sound":false,"dpad":true}');
+
+        expect(loadSettings(store)).toEqual({ version: 1, sound: false, audioOffsetMs: 0 });
+    });
+
     it('works without localStorage', () => {
-        expect(loadSettings(null)).toEqual({ version: 1, sound: true, dpad: false, audioOffsetMs: 0 });
-        expect(saveSettings({ version: 1, sound: false, dpad: false, audioOffsetMs: 0 }, null)).toBe(false);
+        expect(loadSettings(null)).toEqual({ version: 1, sound: true, audioOffsetMs: 0 });
+        expect(saveSettings({ version: 1, sound: false, audioOffsetMs: 0 }, null)).toBe(false);
     });
 });

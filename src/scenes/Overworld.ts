@@ -1,5 +1,5 @@
 // Overworld scene: downtown Great Barrington. It draws the Tiled map, moves the player one tile at a time
-// (arrow keys or WASD, the on-screen d-pad, or tap-to-walk along a path), and handles talking to shopkeepers,
+// (arrow keys or WASD, the on-screen joystick, or tap-to-walk along a path), and handles talking to shopkeepers,
 // NPCs, and signs. It also runs the clock and its time-of-day tint, and starts minigames, including side games
 // like Jack's Trim the GB, which earn no stamp.
 // The HUD and the dialogue box live in the UI scene, which runs on top of this one.
