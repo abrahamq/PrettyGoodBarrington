@@ -1,5 +1,6 @@
 // Art for Curtain Call, copied from docs/mocks/Mahaiwe.dc.html: the stage backdrop (240x160) with four lanes,
 // curtains, a gold proscenium, and the audience; the 12x12 arrow for notes and targets; and a hit sparkle.
+import { GAME_WIDTH } from '../layout.ts';
 import type { ColorName } from '../palette.ts';
 import type { Layer, Offset } from './paint.ts';
 import { rectPath } from './svgPath.ts';
@@ -50,7 +51,7 @@ const LANE_BOXES = [0, 1, 2, 3].map((i) => rectPath(LANE_LEFT + i * LANE_WIDTH, 
 const LANE_LINES = [0, 1, 2, 3, 4].map((i) => rectPath(LANE_LEFT + i * LANE_WIDTH, 8, 1, 96)).join(' ');
 
 export const STAGE_BACKGROUND: Layer[] = [
-    { color: 'stageDark', path: rectPath(0, 0, 240, 160) },
+    { color: 'stageDark', path: rectPath(0, 0, 240, 160), repeat: GAME_WIDTH },
     { color: 'stageBack', path: rectPath(20, 8, 200, 104) },
     { color: 'spotlight', path: 'M110 8L130 8L162 108L78 108Z', alpha: 0.12 },
 
@@ -82,11 +83,11 @@ export const STAGE_BACKGROUND: Layer[] = [
     { color: 'stageFrameDark', path: rectPath(20, 8, 200, 1) },
 
     // The audience, in two rows of silhouettes
-    { color: 'laneShadow', path: rectPath(0, 124, 240, 36) },
+    { color: 'laneShadow', path: rectPath(0, 124, 240, 36), repeat: GAME_WIDTH },
     { color: 'audienceHead', path: 'M30 124h2v4h-2z M36 124h2v4h-2z M150 122h2v5h-2z M156 122h2v5h-2z M204 124h2v4h-2z' },
-    { color: 'audienceHead', path: 'M0 0h8v7h-8z', at: grid(16, 1, 4, 240, 131, 132) },
-    { color: 'audienceBack', path: 'M0 0h10v10h-10z', at: grid(16, 1, 10, 240, 144, 145) },
-    { color: 'audienceFloor', path: rectPath(0, 152, 240, 8) }
+    { color: 'audienceHead', path: 'M0 0h8v7h-8z', at: grid(16, 1, 4, 240, 131, 132), repeat: GAME_WIDTH },
+    { color: 'audienceBack', path: 'M0 0h10v10h-10z', at: grid(16, 1, 10, 240, 144, 145), repeat: GAME_WIDTH },
+    { color: 'audienceFloor', path: rectPath(0, 152, 240, 8), repeat: GAME_WIDTH }
 ];
 
 // 12x12, pointing up. The scene turns it for the other lanes.

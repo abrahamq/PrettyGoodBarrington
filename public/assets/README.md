@@ -4,6 +4,8 @@ The game draws placeholder art at startup (`src/art/textures.ts`). To swap in re
 
 All sizes are in game pixels. The game draws at 240x160 and scales up with nearest-neighbor filtering, so art must use whole pixels and no anti-aliasing.
 
+The four backgrounds are 384x160: the 240x160 picture in the middle, plus 72 pixels on each side that wide screens (a phone in landscape) show. The middle 240 must work alone, because a 3:2 screen shows only that part. A 240x160 image also works; wide screens then show a plain ink color at its sides.
+
 ## Character sprites
 
 `npm run export:sprites` saves the player and NPC art from `src/art/people.ts` as PNGs in `assets/sprites/`, one file per key below. Boot loads them, so a pixel edit made in Aseprite, Piskel, or LibreSprite shows in the game. The script skips files that already exist. To redraw one from `people.ts`, delete it and run the script again.
@@ -12,7 +14,7 @@ All sizes are in game pixels. The game draws at 240x160 and scales up with neare
 
 | Key | Size | Layout | Used by |
 |---|---|---|---|
-| `title-bg` | 240x160 | One image: sky, sun, mountains, skyline, street. No text. | Title, Options, Character Select |
+| `title-bg` | 384x160 | One image: sky, sun, mountains, skyline, street. No text. | Title, Options, Character Select |
 | `ui-panel` | 7x7 | 9-slice with 3px corners. From the outside in: 1px ink, 1px parchment, 1px wood, then cream. The 1x1 center stretches. | `src/ui/Panel.ts` |
 | `ui-cursor` | 6x7 | Right-pointing gold menu arrow on a transparent background. | `src/ui/Menu.ts` |
 | `ui-pick-arrow` | 7x4 | Down-pointing gold arrow over the chosen boy. | Character Select |
@@ -21,16 +23,16 @@ All sizes are in game pixels. The game draws at 240x160 and scales up with neare
 | `ui-more` | 5x3 | Small down arrow: "tap for more" in the dialogue box. | `src/ui/DialogueBox.ts` |
 | `tiles` | 128x144 | The overworld tileset: 16x16 tiles, 8 per row, in the order of `TILE_ART` in `src/map/tileset.ts`. Must match `public/maps/tiles.png`. | Overworld |
 | `player-five`, `player-eleven`, `player-fifteen` | 36x64 each | One spritesheet per boy, of 12x16 frames. Rows, top to bottom: facing down, left, right, up. Columns: standing, left foot forward, right foot forward. Frames are numbered 0-11 row by row. Feet are on the bottom row of each frame; the boys are 11, 14, and 16 pixels tall. Load a real one with `this.load.spritesheet('player-five', url, { frameWidth: 12, frameHeight: 16 })`. | Character Select, Overworld |
-| `soco-bg` | 240x160 | The inside of SoCo Creamery: wall, wainscot, floor, lamp, flavor board (swatches only), counter, ice cream case, tip jar. | Scoop Stack |
+| `soco-bg` | 384x160 | The inside of SoCo Creamery: wall, wainscot, floor, lamp, flavor board (swatches only), counter, ice cream case, tip jar. | Scoop Stack |
 | `cone` | 16x22 | The waffle cone (rows 0-17) in its holder (rows 17-21). The first scoop sits on row 0. | Scoop Stack |
 | `scoop-vanilla`, `scoop-dark-choc`, `scoop-strawberry`, `scoop-mint-chip` | 16x11 each | One scoop. Rows 9-10 are drips that hang over the scoop below; scoops stack 9px apart. | Scoop Stack |
 | `icon-scoop-vanilla`, `icon-scoop-dark-choc`, `icon-scoop-strawberry`, `icon-scoop-mint-chip`, `icon-scoop-empty` | 16x12 each | HUD icons for stacked scoops, and the outline for scoops still to go. | Scoop Stack |
-| `gbeats-bg` | 240x160 | The GB Eats kitchen: tile wall, steel backsplash, ticket rail, grill with knobs, pass-through board with a plate and fries, green floor. | Order Up! |
+| `gbeats-bg` | 384x160 | The GB Eats kitchen: tile wall, steel backsplash, ticket rail, grill with knobs, pass-through board with a plate and fries, green floor. | Order Up! |
 | `patty-raw`, `patty-rare`, `patty-medium`, `patty-well`, `patty-burnt` | 16x10 each | A patty from above, one per doneness. | Order Up! |
 | `smoke` | 10x11 | Smoke puffs over a burnt patty. | Order Up! |
 | `burger` | 20x16 | The finished burger shown on the plate after a good order. | Order Up! |
 | `icon-cheese`, `icon-fries` | 7x6 each | Extras icons on order tickets. | Order Up! |
-| `stage-bg` | 240x160 | The Mahaiwe stage: backdrop, spotlight, wood floor, four lanes with the gold hit line, curtains, valance, gold frame, audience. | Curtain Call |
+| `stage-bg` | 384x160 | The Mahaiwe stage: backdrop, spotlight, wood floor, four lanes with the gold hit line, curtains, valance, gold frame, audience. | Curtain Call |
 | `note-left`, `note-down`, `note-up`, `note-right` | 12x12 each | A note arrow, pointing up (the game turns it per lane). Pink, blue, amber, mint. | Curtain Call |
 | `arrow-off`, `arrow-lit` | 12x12 each | The targets on the hit line, dark and lit gold. | Curtain Call, Calibrate |
 | `sparkle` | 28x26 | Bright bits around a target on a Great hit, centered on (14, 14). | Curtain Call |

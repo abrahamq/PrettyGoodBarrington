@@ -1,4 +1,5 @@
-/* Page styles: an ink background that fills the screen, with the game canvas centered in it. */
+/* Page styles: an ink background that fills the screen, with the game canvas centered in it,
+   and the notice that asks phone players to turn the phone sideways. */
 
 html,
 body {
@@ -14,4 +15,39 @@ body {
     width: 100vw;
     height: 100vh;
     height: 100dvh;
+}
+
+/* Hidden unless a phone is upright; src/portrait.ts pauses the game at the same time. */
+#turn-notice {
+    display: none;
+    position: fixed;
+    inset: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    /* Same as PALETTE.ink and PALETTE.cream. */
+    background-color: #2b2230;
+    color: #f4ecd6;
+    /* The game loads this font; until then, the notice uses a plain monospace font. */
+    font-family: 'PressStart2P', monospace;
+    font-size: 16px;
+    line-height: 2;
+    text-align: center;
+}
+
+#turn-notice svg {
+    animation: turn-sideways 2s ease-in-out infinite;
+}
+
+@keyframes turn-sideways {
+    0%, 25% { transform: rotate(0deg); }
+    50%, 75% { transform: rotate(-90deg); }
+    100% { transform: rotate(0deg); }
+}
+
+@media (orientation: portrait) and (pointer: coarse) {
+    #turn-notice {
+        display: flex;
+    }
 }

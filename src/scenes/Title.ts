@@ -8,6 +8,7 @@ import { hasSave, loadSave } from '../state/save.ts';
 import { startGame } from '../state/session.ts';
 import { onFirstInput } from '../ui/input.ts';
 import { Menu } from '../ui/Menu.ts';
+import { setStage } from '../ui/stage.ts';
 import { addPixelText, addShadowedText, centeredX } from '../ui/text.ts';
 
 interface TitleData {
@@ -27,7 +28,7 @@ export class Title extends Scene {
 
     create(data: TitleData): void {
         this.menu = undefined;
-        this.add.image(0, 0, TEXTURES.titleBackground).setOrigin(0);
+        setStage(this, TEXTURES.titleBackground);
         addHeading(this);
 
         if (data.showMenu) {

@@ -123,6 +123,21 @@ Choices that `docs/PLAN.md` does not cover. Each entry says what we chose and wh
 3. **The script never overwrites a file that exists**, so a re-run cannot erase your painting. `build:map` is different: it overwrites `tiles.png`. Painted art takes longer to make again than a Tiled edit.
 4. **One drawing path.** `drawPlayerSheet` and `drawNpc` moved into `people.ts`. The game draws with them on a Graphics object, and the export script draws with them on a pixel buffer, the same way the tileset works (Phase 2 decision 3).
 
+## Wide screens and phones (2026-09-30)
+
+1. **Landscape, fill the width.** You picked this over keeping 3:2 with side bars, and over a portrait handheld layout. The view stays 160 pixels tall and grows from 240 up to 384 pixels wide to match the screen (`viewWidthFor` in `src/layout.ts`). An iPhone 13 in Safari gets about 346-352. The width is always even, so the centered 240-wide stage starts on a whole pixel.
+2. **Screens keep their 240 layout.** Menus and minigames stay centered: `setStage` (`src/ui/stage.ts`) scrolls each scene's camera so the stage sits in the middle. No positions in the scenes changed.
+3. **Backgrounds reach past the stage.** The four backgrounds are now 384 wide. Layers marked `repeat` (sky bands, mountains, skyline, floors, tiles, audience) continue into the 72-pixel wings; one-off things (the sun, the theater marquee, the flavor board, the grill, the stage frame) stay in the middle. The skyline repeats, so the steeple shows again at the right edge.
+4. **HUD at the edges.** In the Overworld, the street name, clock, Passport button, d-pad, and A button stay at the screen edges, where thumbs are (`pinToEdges`). The dialogue box stays centered. The Overworld itself just shows more of the map.
+5. **Curtain Call.** The two outer tap lanes reach the real screen edges.
+6. **Turn your phone.** In portrait on a touch screen, a notice asks the player to turn the phone sideways (`index.html`, `style.css`), and `src/portrait.ts` pauses the game and suspends the audio clock, so Curtain Call stays in sync when the phone turns back. This was planned for Phase 7; it moved here because it is part of fitting the phone.
+7. **Rotating mid-game works.** When the screen size changes, the game changes its width and every centered screen and pinned HUD piece moves to match, with no restart.
+8. **Not done yet (Phase 7):** notch safe areas with `viewport-fit=cover`, and blocking pinch and double-tap zoom. Safari already keeps the page out of the notch area, so the notch shows the page's ink color.
+
+## Light grey sidewalk (2026-09-30)
+
+1. **Sidewalks are light grey.** The plan lists `paver` (#dcc9a0, tan) for sidewalks. A playtest preferred light grey concrete, so the sidewalk tiles use two new scenery colors: `sidewalk` (#cfccc6) and `sidewalkJoint` (#aeaba4) for the brick lines. `paver` stays in the palette, because other art still uses it.
+
 ## Jack and Trim the GB (2026-10-02)
 
 1. **A side game, not a ninth stamp.** Jack mows the lawn at the east end of the map, north of Main Street, beside the GB hedge with a flagpole between the letters. Talking to him ("Help me trim these bushes?") offers Trim the GB. It earns no stamp, so the passport stays at 8 and the leaderboard does not change. The save keeps the best score in a new `sideBests` field (`src/data/sideGames.ts` lists the side games). Older saves load with no side-game scores; the version stays at 1.
@@ -134,3 +149,9 @@ Choices that `docs/PLAN.md` does not cover. Each entry says what we chose and wh
 7. **Keyboard.** The plan asks for every game to work with a keyboard. Arrow keys or WASD steer the clippers from the top of the G at 60 pixels per second, and they cut wherever they go. Escape, Backspace, X, or B quit, as in the other minigames.
 8. **Results.** At the end, the HUD hides and a card above the hedge shows the time, the aim, and the score (with BEST! for a new best), so the finished GB stays in view. After 3.2 seconds you are back next to Jack.
 9. **Jack's verdict.** He says one of three lines with your score, picked by how the round went: "Could be better... you only scored X." when the time ran out, "Not bad, you scored X." for a finished round scoring 1000 or more (`greatScore` in `src/data/sideGames.ts`), and "Those look okay, you got X points." for any other finished round. The results card still shows your best.
+
+## Trim the GB on wide screens (2026-11-04)
+
+1. **The merge needed a fix git could not see.** Trim the GB came after the wide-screen work, so it drew in the left 240 pixels with a blank strip on the right. It now calls `setStage`, and the lawn backdrop is 384 wide: the sky, treeline, lawn, and mowed stripes repeat into the wings; the mulch bed and flagpole stay in the middle.
+2. **Cuts follow the finger.** `setStage` scrolls the camera, so the scene reads `pointer.worldX` and `pointer.worldY`. Screen coordinates put the cut up to 72 pixels left of the finger.
+3. **The treeline waves repeat every 240 pixels.** Each wave makes a whole number of cycles across the stage, so the copies in the wings join it with no step. The trees look almost the same as before.

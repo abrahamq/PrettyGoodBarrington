@@ -15,6 +15,7 @@ import { hasSave, loadSave } from '../state/save.ts';
 import { Button } from '../ui/Button.ts';
 import { PANEL_BORDER, Panel } from '../ui/Panel.ts';
 import { StatusLine } from '../ui/StatusLine.ts';
+import { setStage } from '../ui/stage.ts';
 import { addPixelText, addShadowedText, centeredX, pixelTextWidth } from '../ui/text.ts';
 
 export interface LeaderboardData {
@@ -54,7 +55,7 @@ export class Leaderboard extends Scene {
         this.boardObjects = [];
         this.client = leaderboardClient();
 
-        this.add.image(0, 0, TEXTURES.titleBackground).setOrigin(0);
+        setStage(this, TEXTURES.titleBackground);
         addShadowedText(this, centeredX('LEADERBOARD', CENTER_X, 16), 3, 'LEADERBOARD', 'cream', [
             { color: 'brick', offset: 2 },
             { color: 'ink', offset: 3 }

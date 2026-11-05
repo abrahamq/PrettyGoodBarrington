@@ -7,6 +7,7 @@ import { CENTER_X } from '../layout.ts';
 import { hasSave, resetSave } from '../state/save.ts';
 import { loadSettings, saveSettings } from '../state/settings.ts';
 import { Menu } from '../ui/Menu.ts';
+import { setStage } from '../ui/stage.ts';
 import { addShadowedText, centeredX } from '../ui/text.ts';
 
 const MENU_TOP = 56;
@@ -20,7 +21,7 @@ export class Options extends Scene {
 
     create(): void {
         this.menu = undefined;
-        this.add.image(0, 0, TEXTURES.titleBackground).setOrigin(0);
+        setStage(this, TEXTURES.titleBackground);
         addShadowedText(this, centeredX('OPTIONS', CENTER_X, 16), 24, 'OPTIONS', 'cream', [
             { color: 'brick', offset: 2 },
             { color: 'ink', offset: 3 }

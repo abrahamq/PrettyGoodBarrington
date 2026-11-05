@@ -9,7 +9,7 @@ import { TEXTURES } from '../art/textures.ts';
 import { LINES, SIDE_GAME_SCRIPTS, STOP_SCRIPTS, fillNames, type SideGameScript } from '../data/dialogue.ts';
 import { SIDE_GAMES, type SideGameId } from '../data/sideGames.ts';
 import { stopById, type StopId } from '../data/stops.ts';
-import { GAME_HEIGHT, GAME_WIDTH, TILE_SIZE } from '../layout.ts';
+import { GAME_HEIGHT, MAX_VIEW_WIDTH, TILE_SIZE } from '../layout.ts';
 import { advanceClock, tintAt, type ClockState } from '../logic/clock.ts';
 import {
     DIRECTIONS, directionBetween, findPath, isWalkable, neighbor, sameTile, type Direction, type Tile
@@ -96,7 +96,7 @@ export class Overworld extends Scene {
             .setDepth(DEPTH.player);
         this.setUpCamera();
 
-        this.tint = this.add.rectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, 0, 0).setOrigin(0).setScrollFactor(0).setDepth(DEPTH.tint);
+        this.tint = this.add.rectangle(0, 0, MAX_VIEW_WIDTH, GAME_HEIGHT, 0, 0).setOrigin(0).setScrollFactor(0).setDepth(DEPTH.tint);
         this.clock = { dayMinutes: this.save.dayMinutes, carryMs: 0 };
         this.applyTint();
 

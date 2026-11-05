@@ -16,6 +16,7 @@ import { Button } from '../../ui/Button.ts';
 import { showBanner } from '../../ui/Banner.ts';
 import { Panel } from '../../ui/Panel.ts';
 import { ProgressBar } from '../../ui/ProgressBar.ts';
+import { setStage } from '../../ui/stage.ts';
 import { addPixelText, centeredX } from '../../ui/text.ts';
 
 interface ScoopStackData {
@@ -85,7 +86,7 @@ export class ScoopStack extends Scene {
         this.stackSprites = [];
         this.icons = [];
 
-        this.add.image(0, 0, TEXTURES.socoBackground).setOrigin(0);
+        setStage(this, TEXTURES.socoBackground);
         addPixelText(this, centeredX('FLAVORS', 188), 17, 'FLAVORS', 'gold');
         this.flavorArrow = this.add.image(149, 0, TEXTURES.cursor).setOrigin(0);
         this.add.image(CONE_LEFT, SCOOP_STACK.coneTopY, TEXTURES.cone).setOrigin(0).setDepth(DEPTH.cone);

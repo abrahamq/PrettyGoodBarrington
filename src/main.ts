@@ -1,8 +1,10 @@
-// Entry point: the Phaser game config (a 240x160 pixel-art canvas scaled to fit the screen) and the scene list.
+// Entry point: the Phaser game config (a pixel-art canvas 160 tall and 240-384 wide, scaled to fit the screen)
+// and the scene list.
 import { AUTO, Game, Scale } from 'phaser';
 import './style.css';
-import { GAME_HEIGHT, GAME_WIDTH } from './layout.ts';
+import { GAME_HEIGHT, viewWidthFor } from './layout.ts';
 import { PALETTE } from './palette.ts';
+import { pauseWhileUpright } from './portrait.ts';
 import { Boot } from './scenes/Boot.ts';
 import { Calibrate } from './scenes/Calibrate.ts';
 import { CharacterSelect } from './scenes/CharacterSelect.ts';
@@ -17,9 +19,15 @@ import { Overworld } from './scenes/Overworld.ts';
 import { Title } from './scenes/Title.ts';
 import { UI } from './scenes/UI.ts';
 
+const container = document.getElementById('game-container');
+
+function fittedWidth(): number {
+    return viewWidthFor(container?.clientWidth ?? window.innerWidth, container?.clientHeight ?? window.innerHeight);
+}
+
 const config: Phaser.Types.Core.GameConfig = {
     type: AUTO,
-    width: GAME_WIDTH,
+    width: fittedWidth(),
     height: GAME_HEIGHT,
     parent: 'game-container',
     backgroundColor: PALETTE.ink,
@@ -47,6 +55,16 @@ const config: Phaser.Types.Core.GameConfig = {
 };
 
 const game = new Game(config);
+
+// Phaser refits the canvas when the screen changes; this also makes the view wider or narrower to match.
+window.addEventListener('resize', () => {
+    const width = fittedWidth();
+
+    if (width !== game.scale.gameSize.width) {
+        game.scale.setGameSize(width, GAME_HEIGHT);
+    }
+});
+game.events.once('ready', () => pauseWhileUpright(game));
 
 // Dev builds only: lets you inspect the running game from the browser console as `game`.
 if (import.meta.env.DEV) {

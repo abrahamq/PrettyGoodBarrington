@@ -2,6 +2,7 @@
 // the waffle cone, the four scoop flavors, and the small scoop icons for the HUD.
 // The mockup's framed picture and flavor names are left out: at this game's 8px text size, the HUD panels
 // cover the picture, and the names do not fit on the board (DECISIONS.md, Phase 3).
+import { GAME_WIDTH } from '../layout.ts';
 import type { Flavor } from '../logic/scoopStack.ts';
 import type { ColorName } from '../palette.ts';
 import type { Layer, Offset } from './paint.ts';
@@ -19,15 +20,15 @@ function grid(stepX: number, stepY: number, fromX: number, toX: number, fromY: n
 
 export const SHOP_BACKGROUND: Layer[] = [
     // Pink striped wall, mint wainscot
-    { color: 'facadePink', path: rectPath(0, 0, 240, 100) },
-    { color: 'socoWallStripe', path: 'M0 0h2v100h-2z', at: grid(8, 100, 0, 240, 0, 1) },
-    { color: 'mintWainscot', path: rectPath(0, 84, 240, 16) },
-    { color: 'mint', path: 'M0 84h240v2h-240z' },
-    { color: 'mintTrimDark', path: 'M16 86h1v14h-1z M48 86h1v14h-1z M80 86h1v14h-1z M112 86h1v14h-1z M144 86h1v14h-1z M176 86h1v14h-1z M208 86h1v14h-1z' },
+    { color: 'facadePink', path: rectPath(0, 0, 240, 100), repeat: GAME_WIDTH },
+    { color: 'socoWallStripe', path: 'M0 0h2v100h-2z', at: grid(8, 100, 0, 240, 0, 1), repeat: GAME_WIDTH },
+    { color: 'mintWainscot', path: rectPath(0, 84, 240, 16), repeat: GAME_WIDTH },
+    { color: 'mint', path: 'M0 84h240v2h-240z', repeat: GAME_WIDTH },
+    { color: 'mintTrimDark', path: 'M16 86h1v14h-1z M48 86h1v14h-1z M80 86h1v14h-1z M112 86h1v14h-1z M144 86h1v14h-1z M176 86h1v14h-1z M208 86h1v14h-1z', repeat: 32 },
 
     // Checkered floor
-    { color: 'cream', path: rectPath(0, 100, 240, 60) },
-    { color: 'socoFloorTile', path: 'M0 0h8v8h-8z M8 8h8v8h-8z', at: grid(16, 16, 0, 240, 100, 160) },
+    { color: 'cream', path: rectPath(0, 100, 240, 60), repeat: GAME_WIDTH },
+    { color: 'socoFloorTile', path: 'M0 0h8v8h-8z M8 8h8v8h-8z', at: grid(16, 16, 0, 240, 100, 160), repeat: GAME_WIDTH },
 
     // One hanging lamp over the cone
     { color: 'ink', path: 'M120 0h1v10h-1z' },
@@ -47,9 +48,9 @@ export const SHOP_BACKGROUND: Layer[] = [
     },
 
     // Counter, display case with four tubs, tip jar
-    { color: 'counterTop', path: 'M0 122h240v4h-240z' },
-    { color: 'counterWood', path: rectPath(0, 126, 240, 34) },
-    { color: 'wood', path: 'M0 3h16v1h-16z M7 0h1v3h-1z', at: grid(16, 4, 0, 240, 126, 160) },
+    { color: 'counterTop', path: 'M0 122h240v4h-240z', repeat: GAME_WIDTH },
+    { color: 'counterWood', path: rectPath(0, 126, 240, 34), repeat: GAME_WIDTH },
+    { color: 'wood', path: 'M0 3h16v1h-16z M7 0h1v3h-1z', at: grid(16, 4, 0, 240, 126, 160), repeat: GAME_WIDTH },
     { color: 'ink', path: 'M8 107h64v1h-64z M8 107h1v15h-1z M71 107h1v15h-1z' },
     { color: 'caseGlass', path: 'M9 108h62v14h-62z' },
     { color: 'vanillaIce', path: 'M12 114h12v8h-12z' },

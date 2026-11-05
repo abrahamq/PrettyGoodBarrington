@@ -15,6 +15,7 @@ import { leaderboardProgress } from '../state/progress.ts';
 import { loadSave } from '../state/save.ts';
 import { PANEL_BORDER, Panel } from '../ui/Panel.ts';
 import { StatusLine } from '../ui/StatusLine.ts';
+import { setStage } from '../ui/stage.ts';
 import { addPixelText, addShadowedText, centeredX } from '../ui/text.ts';
 
 const NAME_PANEL_Y = 24;
@@ -58,7 +59,7 @@ export class NameEntry extends Scene {
         this.cells = [];
         this.sending = false;
 
-        this.add.image(0, 0, TEXTURES.titleBackground).setOrigin(0);
+        setStage(this, TEXTURES.titleBackground);
         addShadowedText(this, centeredX('PICK A NAME', CENTER_X, 16), 3, 'PICK A NAME', 'cream', [
             { color: 'brick', offset: 2 },
             { color: 'ink', offset: 3 }

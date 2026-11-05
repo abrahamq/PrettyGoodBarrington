@@ -13,6 +13,7 @@ import { CENTER_X } from '../layout.ts';
 import { clampOffset, loadSettings, saveSettings } from '../state/settings.ts';
 import { Button } from '../ui/Button.ts';
 import { Panel } from '../ui/Panel.ts';
+import { setStage } from '../ui/stage.ts';
 import { addPixelText, centeredX } from '../ui/text.ts';
 
 const BEAT_MS = 600;
@@ -43,7 +44,7 @@ export class Calibrate extends Scene {
         this.offsetMs = loadSettings().audioOffsetMs;
         this.taps = [];
 
-        this.add.image(0, 0, TEXTURES.titleBackground).setOrigin(0);
+        setStage(this, TEXTURES.titleBackground);
         new Panel(this, 14, 8, 212, 108, { shadow: true });
         this.addCentered('CALIBRATE', 15, 'red');
         this.addCentered('TAP ON EACH CLICK', 27, 'ink');

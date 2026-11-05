@@ -17,6 +17,7 @@ import { Button } from '../../ui/Button.ts';
 import { Panel } from '../../ui/Panel.ts';
 import { floatText } from '../../ui/Popup.ts';
 import { ProgressBar } from '../../ui/ProgressBar.ts';
+import { setStage } from '../../ui/stage.ts';
 import { addPixelText, centeredX } from '../../ui/text.ts';
 
 interface OrderUpData {
@@ -97,7 +98,7 @@ export class OrderUp extends Scene {
         this.spots = [];
         this.tickets = [];
 
-        this.add.image(0, 0, TEXTURES.gbeatsBackground).setOrigin(0);
+        setStage(this, TEXTURES.gbeatsBackground);
         this.burger = this.add.image(PLATE.x, PLATE.y, TEXTURES.burger).setOrigin(0).setVisible(false);
 
         SPOTS.forEach((spot, i) => this.addSpot(spot, i));
